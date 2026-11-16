@@ -1,0 +1,1929 @@
+VALIDATION REPORT  (model=claude-haiku-4-5, temperature=0)
+Rows checked: 367
+Each row is GOOD or lists its issues. Run-to-run disagreements are
+included as issues, so a row that wavered is never marked GOOD.
+
+Row 1 [AGNESI, MARIA GAETANA]: GOOD
+Row 2 [ABAILARD, PIERRE]: 3 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: School of Roscelin; William of Champeaux's School; School of Anselme and Ralph of Laon
+        run2: School of Roscelin; William of Champeaux's school; School of Anselme and Ralph of Laon
+    - DISAGREEMENT Education_Locations
+        run1: Loches, Unknown, France, 1094, 1096; Paris, Unknown, France, 1110, 1110; Unknown, Unknown, France, 1114, Unknown
+            evidence: school of Roscelin in Loches, William of Champeaux's school in Paris, Anselme and Ralph of Laon's theological school
+        run2: Loches, Unknown, France, 1094, 1096; Paris, Unknown, France, 1110, Unknown; Unknown, Unknown, France, 1114, Unknown
+            evidence: Loches ca. 1094–1096; Paris ca. 1110; theological school ca. 1114
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Philosophy; Logic; Theology; Metaphysics
+            evidence: logic, theology, philosophy in header; dialectic, metaphysics, language theory, universals throughout
+        run2: Philosophy; Logic; Theology; Natural Philosophy
+            evidence: logic, theology, philosophy in header; extensive discussion of dialectic, universals, logic of language
+Row 3 [ABANO, PIETRO]: GOOD
+Row 4 [ʿABBĀS IBN FIRNĀS, NONE]: 3 issue(s)
+    - DISAGREEMENT Last_Name
+        run1: ʿAbbās Ibn Firnās
+            evidence: heading ʿAbbās Ibn Firnās
+        run2: Ibn Firnās
+            evidence: heading ʿAbbās Ibn Firnās
+    - DISAGREEMENT Alt_Name
+        run1: Abbas Ibn Firnas; ʿAbbās ibn Firās
+        run2: ʿAbbās ibn Firās; Abbas ibn Firnas
+            evidence: variant spellings in entry
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Astronomy; Instrumentation; Technology; Mathematics
+            evidence: dissemination of oriental science; Sind Hind tables; astronomy; planetarium; clock; armillary sphere; flight attempt
+        run2: Astronomy; Astrology; Mathematics; Engineering; Instrumentation; Natural Philosophy
+            evidence: astrologer, astronomy tables, flight attempts, instrumentation
+Row 5 [ABBE, CLEVELAND]: 1 issue(s)
+    - DISAGREEMENT Dates_Lifespan
+        run1: 78
+            evidence: 1916 − 1838 = 78
+        run2: 77
+            evidence: 1916 − 1838 = 78; corrected to 77 per month/day
+Row 6 [ABBE, ERNST]: GOOD
+Row 7 [ABEL, JOHN JACOB]: 1 issue(s)
+    - DISAGREEMENT Patronage_Types
+        run1: Academic; Scientist
+            evidence: Victor Vaughan secured Michigan position; A. A. Noyes subsidized insulin work
+        run2: Academic
+            evidence: Victor Vaughan facilitated Michigan appointment; A. A. Noyes subsidized insulin research
+Row 8 [ABEL, NIELS HENRIK]: GOOD
+Row 9 [ABEL, OTHENIO]: 3 issue(s)
+    - DISAGREEMENT Education_Locations
+        run1: Vienna, Unknown, Austria, Unknown, 1899; Leoben, Unknown, Austria, 1899, 1900
+        run2: Vienna, Unknown, Austria, Unknown, 1899; Leoben, Unknown, Austria, 1900, 1900
+            evidence: University of Vienna and school of mining in Leoben mentioned
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Paleontology; Paleobiology; Geology; Botany; Zoology
+            evidence: paleontology, paleobiology in header; geology and paleontology in examination; botany in early work; cetacean and vertebrate paleobiology in major works
+        run2: Paleontology; Paleobiology; Geology; Zoology
+            evidence: paleontology, paleobiology in header; geology and paleontology in major examination; cetacean and vertebrate work throughout
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: Paleontological Society; Geological Society of London; National Academy of Sciences; Zoological–Botanical Society of Vienna; Austrian Academy of Sciences
+            evidence: president of Paleontological Society 1921; Bigsby Medal 1911; Elliot Medal 1922; Rainer Medal 1922; honorary member of numerous academies; honorary doctor of Cape Town and Athens; dean 1927/1928; rector 1932/1933
+        run2: Geological Society of London; National Academy of Sciences; Zoological-Botanical Society of Vienna; Paleontological Society; numerous scientific academies and learned societies
+            evidence: Bigsby Medal 1911, Elliot Medal 1922, Rainer Medal 1922, president of Paleontological Society 1921, honorary member of numerous academies, honorary doctor of Cape Town and Athens, dean and rector of University of Vienna
+Row 10 [ABETTI, ANTONIO]: 1 issue(s)
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: Accademia Nazionale dei Lincei; Royal Astronomical Society; Italian academies
+            evidence: member Accademia Nazionale dei Lincei, Royal Astronomical Society, Italian academies
+        run2: Accademia Nazionale dei Lincei; Royal Astronomical Society
+            evidence: member Accademia Nazionale dei Lincei; associate Royal Astronomical Society
+Row 11 [ABICH, OTTO HERMANN WILHELM]: 2 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Geology; Mineralogy; Petrography; Geomorphology; Glaciology; Geobotany; Meteorology; Geography; Paleontology
+            evidence: heading: geology; text details mineralogy, petrography, geomorphology, glaciology, geobotany, meteorology, geography, paleontology
+        run2: Geology; Mineralogy; Petrography; Geomorphology; Glaciology; Geobotany; Meteoritics
+            evidence: heading: geology; text details mineralogy, petrography, geomorphology, glaciology, geobotany, meteoritics
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Government; Patronage
+            evidence: extraordinary professor at Dorpat; assigned to Corps of Mining Engineers and viceregent's command; retired with pension 1876
+        run2: Academia; Government
+            evidence: extraordinary professor of mineralogy at Dorpat; assigned to Corps of Mining Engineers
+Row 12 [ABNEY, WILLIAM]: 1 issue(s)
+    - DISAGREEMENT Education_Locations
+        run1: Sandhurst, Unknown, England, Unknown, Unknown
+            evidence: graduated from Royal Military Academy
+        run2: Unknown, Unknown, England, Unknown, Unknown
+            evidence: graduated from the Royal Military Academy
+Row 13 [ABRAHAM BAR ḤIYYA HA-NASI, NONE]: GOOD
+Row 14 [ABRAHAM, MAX]: GOOD
+Row 15 [ABREU, ALEIXO]: 1 issue(s)
+    - DISAGREEMENT Religion_Affiliation_Certain
+        run1: 0
+            evidence: inferred, not explicit
+        run2: 1
+            evidence: inferred from cultural context
+Row 16 [ABU'L-BARAKĀT AL-BAGHDĀDĪ, NONE]: GOOD
+Row 17 [ABU'L-FIDĀʾ, NONE]: GOOD
+Row 18 [ABŪ ḤĀMID AL-GHARNĀṬĪ, NONE]: GOOD
+Row 19 [ABŪ KĀMIL SHUJĀʿ, NONE]: GOOD
+Row 20 [ABŪ MAʿSHAR AL-BALKHĪ, NONE]: GOOD
+Row 21 [ABŪ'L-WAFĀʾ AL-BŪZJĀNĪ, NONE]: 1 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Patronage
+            evidence: worked at Baghdad observatory and within mathematics-astronomy school
+        run2: Academia; Astronomy
+            evidence: conducted observations at Baghdad observatory; authored textbooks
+Row 22 [ACCUM, FRIEDRICH CHRISTIAN]: GOOD
+Row 23 [ACHARD, FRANZ KARL]: GOOD
+Row 24 [ACHARIUS, ERIK]: GOOD
+Row 25 [ACHILLINI, ALESSANDRO]: 1 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Medicine
+            evidence: appointed substitute lecturer of philosophy; taught medicine; teacher at Padua and Bologna
+        run2: Academia
+            evidence: appointed substitute lecturer of philosophy; taught medicine; taught at Padua and Bologna
+Row 26 [ACOSTA, CRISTÓBAL]: 1 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Medicine; Academia
+            evidence: appointed physician to Royal Hospital in Cochin 1569; practiced medicine in Burgos 1576–1587
+        run2: Medicine; Military
+            evidence: went to East Indies as soldier before 1550; appointed physician to Royal Hospital Cochin 1569; practiced medicine in Burgos 1576–1587
+Row 27 [ACOSTA, JOSÉ]: GOOD
+Row 28 [ACYUTA PIṢĀRAṬI, NONE]: 1 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Astrology
+            evidence: scholarly writing and patronage evident
+        run2: Patronage; Academia
+            evidence: patronized by King Ravivarman; engaged in scholarly writing
+Row 29 [ADAM OF BODENSTEIN, NONE]: GOOD
+Row 30 [ADAMS, FRANK DAWSON]: 1 issue(s)
+    - DISAGREEMENT Patronage_Types
+        run1: Government Official
+            evidence: A.R.C. Selwyn as director at Geological Survey granted him leave of absence
+        run2: Unknown
+            evidence: entry does not identify patrons
+Row 31 [ADAMS, JOHN COUCH]: 1 issue(s)
+    - DISAGREEMENT Instruments
+        run1: Simms transit circle
+            evidence: In 1870 the Cambridge Observatory acquired a Simms transit circle
+        run2: None
+Row 32 [ADAMS, WALTER SYDNEY]: 1 issue(s)
+    - DISAGREEMENT Instruments
+        run1: Telescope; Spectrograph; Coudé Spectrograph
+            evidence: contributed to design of 100-inch and 200-inch Hale telescopes; built Coudé spectrograph; used Snow reflector, tower solar telescopes, sixty-inch reflecting telescope
+        run2: Telescope; Spectrograph; Snow Reflector; Tower Solar Telescope; Coudé Spectrograph; Hartmann Test
+            evidence: entry names Snow reflector, sixty-foot and 150-foot tower solar telescopes, sixty-inch reflecting telescope, 100-inch and 200-inch Hale telescopes, Coudé spectrograph
+Row 33 [ADANSON, MICHEL]: GOOD
+Row 34 [ADDISON, THOMAS]: GOOD
+Row 35 [ADELARD OF BATH, NONE]: 1 issue(s)
+    - DISAGREEMENT Alt_Name
+        run1: Adelardus Bathensis; Aelardus
+            evidence: Latinized forms mentioned in entry
+        run2: Adelardus Bathensis; Aethelard
+            evidence: Latinized forms mentioned in entry
+Row 36 [ADET, PIERRE-AUGUSTE]: 2 issue(s)
+    - DISAGREEMENT Alt_Name
+        run1: None
+        run2: P. A. Adet
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Chemistry
+            evidence: chemist; devoted to chemistry
+        run2: Chemistry; Analytical Chemistry
+            evidence: deeply interested in chemistry; participated in founding Annales de chimie; keen supporter of new chemistry; work on acetic acids and chemical symbols
+Row 37 [ADRAIN, ROBERT]: GOOD
+Row 38 [AEPINUS, FRANZ ULRICH THEODOSICUS]: GOOD
+Row 39 [AËTIUS, NONE]: GOOD
+Row 40 [AGARDH, CARL ADOLPH]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Botany; Phycology; Plant Anatomy; Plant Physiology
+            evidence: fame based on contributions to taxonomy of algae; plant anatomy and plant physiology
+        run2: Botany; Phycology; Plant Anatomy; Plant Physiology; Chemistry
+            evidence: fame based on contributions to taxonomy of algae; works on plant anatomy, plant physiology, plant classification
+Row 41 [AGARDH, JACOB GEORG]: 1 issue(s)
+    - DISAGREEMENT Alt_Name
+        run1: J. G. Agardh
+            evidence: inferred from common abbreviation
+        run2: None
+Row 42 [AGASSIZ, ALEXANDER]: 2 issue(s)
+    - DISAGREEMENT Education_Locations
+        run1: Cambridge, Massachusetts, United States, Unknown, 1855; Cambridge, Massachusetts, United States, 1855, 1857; Cambridge, Massachusetts, United States, 1857, 1862
+            evidence: Harvard College 1855; Lawrence Scientific School engineering 1857; Lawrence Scientific School zoology 1862
+        run2: Cambridge, Unknown, United States, Unknown, 1855; Cambridge, Unknown, United States, 1857, 1857; Cambridge, Unknown, United States, 1860, 1862
+            evidence: lived at Freiburg 1847–1849; went to Cambridge Massachusetts 1849; Harvard College 1855; Lawrence Scientific School 1857, 1862
+    - DISAGREEMENT Patronage_Types
+        run1: Unknown
+        run2: None
+Row 43 [AGASSIZ, JEAN LOUIS RODOLPHE]: 5 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: University of Zurich; University of Heidelberg; University of Munich; University of Erlangen
+        run2: University of Zurich; University of Heidelberg; University of Munich; University of Erlangen; University of Paris
+    - DISAGREEMENT Education_Locations
+        run1: Zurich, Unknown, Switzerland, Unknown, Unknown; Heidelberg, Unknown, Germany, Unknown, Unknown; Munich, Unknown, Germany, Unknown, 1829; Erlangen, Unknown, Germany, Unknown, 1829
+            evidence: universities of Zurich, Heidelberg, Munich named; doctorate 1829; medicine degree 1830
+        run2: Zurich, Unknown, Switzerland, Unknown, Unknown; Heidelberg, Unknown, Germany, Unknown, Unknown; Munich, Unknown, Germany, Unknown, 1829; Erlangen, Unknown, Germany, Unknown, 1829; Paris, Unknown, France, 1830, Unknown
+            evidence: universities of Zurich, Heidelberg, Munich named; doctorate from Munich and Erlangen 1829; M.D. from Munich 1830; studied under Cuvier in Paris
+    - DISAGREEMENT Religion_Affiliation_Certain
+        run1: 1
+            evidence: explicitly stated pietism
+        run2: 0
+            evidence: inferred from cultural context, not explicitly stated as Protestant
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Museum
+            evidence: professorship at Neuchâtel 1832; Lowell Institute lectures 1846; Lawrence Scientific School Harvard 1847; Museum of Comparative Zoology 1859
+        run2: Academia; Patronage
+            evidence: professor at Neuchâtel 1832; lecturer at Lowell Institute 1846; professor at Harvard 1847
+    - DISAGREEMENT Patronage_Types
+        run1: Court; Government Official; Scientist
+            evidence: studied under Cuvier; admired by Humboldt and Lyell; advised federal government; private gifts and state funds for museum
+        run2: Court; Government Official; Scientist; Foundation
+            evidence: studied under Cuvier; admiration from Humboldt and Lyell; married Elizabeth Cabot Cary; advised government; received medals
+Row 44 [AGATHINUS, CLAUDIUS]: GOOD
+Row 45 [AGNESI, MARIA GAETANA]: GOOD
+Row 46 [AGRICOLA, GEORGIUS]: 4 issue(s)
+    - Means_of_Support: 'Mining' should be mapped to 'Industry'
+    - DISAGREEMENT Education_Institution
+        run1: Leipzig University; University of Bologna; University of Venice
+        run2: Leipzig University; Not Specified; University of Bologna; University of Venice
+    - DISAGREEMENT Education_Locations
+        run1: Leipzig, Unknown, Germany, 1514, 1517; Bologna, Unknown, Italy, 1523, 1526; Venice, Unknown, Italy, 1523, 1526
+            evidence: Leipzig University 1514–1517; Bologna and Venice 1523–1526
+        run2: Leipzig, Unknown, Germany, 1514, 1515; Zwickau, Unknown, Germany, 1517, 1523; Bologna, Unknown, Italy, 1523, 1526; Venice, Unknown, Italy, 1523, 1526
+            evidence: schools named; Leipzig 1514–1515; Zwickau 1517–1523; Bologna and Venice 1523–1526
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Medicine; Government; Mining
+            evidence: lecturer in Greek at Leipzig; town physician and apothecary; profited from mining shares; mayor and councillor; historiographer
+        run2: Academia; Medicine; Government; Patronage; Industry
+            evidence: lecturer in Greek; town physician and apothecary; mayor; councillor; ambassador; mining shares; historiographer
+Row 47 [AGRIPPA, HEINRICH CORNELIUS]: GOOD
+Row 48 [AGUILON, FRANÇOIS]: GOOD
+Row 49 [AḤMAD IBN YŪSUF, NONE]: GOOD
+Row 50 [AIDA, YASUAKI]: GOOD
+Row 51 [AILLY, PIERRE]: GOOD
+Row 52 [AIRY, GEORGE]: GOOD
+Row 53 [AITKEN, ROBERT GRANT]: GOOD
+Row 54 [AITON, WILLIAM]: GOOD
+Row 55 [AITON, WILLIAM TOWNSEND]: 1 issue(s)
+    - DISAGREEMENT Patronage_Types
+        run1: Court; Scientist
+            evidence: George IV and William IV as rulers; Sir Joseph Banks as scientific patron
+        run2: Court; Aristocrat
+            evidence: commissions from duke of Kent and noblemen; patronage of Sir Joseph Banks
+Row 56 [AJIMA, NAONOBU]: GOOD
+Row 57 [ALAIN OF LILLE, NONE]: GOOD
+Row 58 [ALBERT I OF MONACO, NONE]: 3 issue(s)
+    - DISAGREEMENT Dates_Lifespan
+        run1: 73
+            evidence: 1922 − 1848 = 74 (corrected: 73)
+        run2: 74
+            evidence: 1922 − 1848 = 74
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Oceanography; Physical Oceanography; Marine Biology; Zoology; Anthropology; Paleontology
+            evidence: header: oceanography; body: currents, Gulf Stream, water sampling, plankton, bathypelagic fauna, marine toxins, anthropology, paleontology
+        run2: Oceanography; Marine Biology; Meteorology; Geology; Paleontology; Anthropology
+            evidence: header: oceanography; body: currents, Gulf Stream, water sampling, bathymetry, marine physiology, plankton, paleontology, anthropology
+    - DISAGREEMENT Means_of_Support
+        run1: Court; Patronage; Personal Means
+            evidence: reigning prince; financed research from personal wealth
+        run2: Court; Patronage; Museum
+            evidence: reigning prince; financed own expeditions; founded museums and institutes
+Row 59 [ALBERT OF SAXONY, NONE]: GOOD
+Row 60 [ALBERTI, FRIEDRICH AUGUST]: 2 issue(s)
+    - DISAGREEMENT Father_Occupation
+        run1: Government Official
+            evidence: colonel in Württemberg and teacher at Karlsschule
+        run2: Soldier
+            evidence: father 'Karl Franz, was a colonel in Württemberg and a teacher'
+    - DISAGREEMENT Patronage_Types
+        run1: Unknown
+            evidence: absent
+        run2: Government Official
+            evidence: appointed mining counselor in 1836 by Württemberg
+Row 61 [ALBERTI, LEONE BATTISTA]: 3 issue(s)
+    - DISAGREEMENT Date_Died_Certain
+        run1: 0
+            evidence: month and year only, no day
+        run2: 1
+            evidence: month and year given in header
+    - DISAGREEMENT Education_Locations
+        run1: Padua, Unknown, Italy, Unknown, 1421; Bologna, Unknown, Italy, 1421, Unknown
+            evidence: Padua mentioned for early advanced education; Bologna after 1421 for law studies
+        run2: Padua, Unknown, Italy, Unknown, Unknown; Bologna, Unknown, Italy, 1421, Unknown
+            evidence: Padua mentioned for early advanced education; Bologna after 1421 for law studies
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Mathematics; Physics; Natural History; Technology; Geometry; Optics
+            evidence: header lists 'mathematics, physics, natural history, technology'; entry details work in geometry, optics, theory of vision
+        run2: Mathematics; Physics; Natural History; Technology; Geometry; Optics; Engineering
+            evidence: header lists 'mathematics, physics, natural history, technology'; entry details work in geometry, optics, engineering
+Row 62 [ALBERTI, SALOMON]: GOOD
+Row 63 [ALBERTUS MAGNUS, NONE]: GOOD
+Row 64 [ALBRECHT, CARL THEODOR]: 2 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: Polytechnicum in Dresden; University of Leipzig
+        run2: Polytechnicum; University of Leipzig
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Astronomy; Geodesy; Surveying; Meteorology
+            evidence: header lists surveying and astronomy; entry discusses geodesy and meteorology
+        run2: Astronomy; Geodesy; Mathematics; Meteorology
+            evidence: heading lists 'surveying, astronomy'; entry emphasizes geodesy and latitude determination
+Row 65 [ALCMAEON OF CROTONA, NONE]: GOOD
+Row 66 [ALCUIN OF YORK, NONE]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Mathematics; Geometry; Astronomy; Philosophy
+            evidence: seven liberal arts, trivium and quadrivium, astronomy for computus, mathematical puzzles with geometrical and algebraic solutions
+        run2: Mathematics; Geometry; Astronomy; Philosophy; Education
+            evidence: seven liberal arts, trivium and quadrivium, mathematics puzzles, astronomy for computus and Easter calculations
+Row 67 [ALDER, KURT]: GOOD
+Row 68 [ALDEROTTI, TADDEO]: GOOD
+Row 69 [ALDINI, GIOVANNI]: 1 issue(s)
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: Academia della Scienze di Bologna; Société Galvanique of Paris
+            evidence: Academia della Scienze di Bologna, Société Galvanique of Paris
+        run2: Academia della Scienze di Bologna; Société Galvanique
+            evidence: Academia della Scienze di Bologna; Société Galvanique of Paris
+Row 70 [ALDROVANDI, ULISSE]: GOOD
+Row 71 [ALEMBERT, JEAN]: GOOD
+Row 72 [ALEXANDER OF APHRODISIAS, NONE]: 1 issue(s)
+    - DISAGREEMENT Alt_Name
+        run1: Alexander Aphrodisiensis
+            evidence: Latinized form Alexandri Aphrodisiensis used in scholarly tradition
+        run2: Alexander Aphrodisiensis; the Interpreter
+            evidence: epithet 'the interpreter' (δἐξηγητής); Latinized form Aphrodisiensis
+Row 73 [ALEXANDER OF MYNDOS, NONE]: GOOD
+Row 74 [ALEXANDER OF TRALLES, NONE]: GOOD
+Row 75 [ALEXIS OF PIEDMONT, NONE]: GOOD
+Row 76 [ALFONSO X, NONE]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Astronomy; Mathematics; Philosophy; Occult Philosophy
+            evidence: entry header lists 'astronomy, dissemination of science and learning'; patronized astronomical tables, astrolabe studies, magical treatises
+        run2: Astronomy; Astrology; Mathematics; Philosophy; Occult Philosophy
+            evidence: header lists astronomy; text emphasizes astronomical patronage and translations
+Row 77 [ALLEN, EDGAR]: GOOD
+Row 78 [ALPINI, PROSPERO]: GOOD
+Row 79 [ALSTED, JOHANN HEINRICH]: 2 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Natural Philosophy; Philosophy; Logic; Mathematics; Astronomy; Physics; Alchemy
+            evidence: header: natural philosophy; body: logic, mathematics, astronomy, physics, alchemy, cabala
+        run2: Natural Philosophy; Philosophy; Mathematics; Astronomy; Logic; Physics
+            evidence: header: natural philosophy; body discusses logic, physics, mathematics, astronomy, cabala, mnemonics
+    - DISAGREEMENT Means_of_Support
+        run1: Academia
+            evidence: entry: teacher and examiner 1608, professor of philosophy 1610, rector and professor of theology 1619, first rector Stuhlweissenburg 1629
+        run2: Academia; Church Life
+            evidence: appointed teacher and examiner at Herborn 1608; professor of philosophy 1610; rector and professor of theology 1619; first rector at Stuhlweissenburg 1629
+Row 80 [ALZATE Y RAMÍREZ, JOSÉ ANTONIO]: GOOD
+Row 81 [AMAGAT, ÉMILE]: GOOD
+Row 82 [AMEGHINO, FLORENTINO]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Paleontology; Geology; Prehistory; Anthropology; Zoology
+            evidence: header lists 'paleontology, prehistory, anthropology, geology'; zoology evident in work
+        run2: Paleontology; Geology; Prehistory; Anthropology; Natural History
+            evidence: header line: paleontology, prehistory, anthropology, geology; body: fossil mammals, geological formations, human origins
+Row 83 [AMES, JOSEPH SWEETMAN]: GOOD
+Row 84 [AMES, WILLIAM]: 2 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Philosophy; Natural Philosophy; Theology
+            evidence: heading lists theology and natural philosophy; body discusses Ramist philosophy, empirical method, mathematics, physics, encyclopedic system
+        run2: Theology; Philosophy; Natural Philosophy; Mathematics; Physics
+            evidence: theology, natural philosophy in header; Ramist philosophy, mathematics, physics, empirical observation in body
+    - DISAGREEMENT Patronage_Types
+        run1: Aristocrat; Academic
+            evidence: chaplain to Sir Horace Vere; appointed to Franeker chair after Synod success; mentored by Perkins
+        run2: Ecclesiastical Official; Academic
+            evidence: advised Calvinist faction Synod of Dordrecht; appointed to chair at Franeker; Sir Horace Vere
+Row 85 [AMICI, GIOVAN BATTISTA]: 2 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Patronage
+            evidence: "mathematics teacher at the Modena lyceo" and "invited to Florence by the grand duke of Tuscany to head the astronomical observatory"
+        run2: Academia; Instruments
+            evidence: "mathematics teacher at the Modena lyceo" and "head the astronomical observatory and the Royal Museum" and instrument manufacture
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: Società Italiana delle Scienze; Accademia dei Georgofili
+            evidence: publications in Memorie della Società Italiana delle Scienze and Atti della Accademia dei Georgofili
+        run2: Società Italiana delle Scienze
+            evidence: publications in Memorie della Società Italiana delle Scienze
+Row 86 [AMMONIUS, NONE]: 1 issue(s)
+    - DISAGREEMENT Died_Year
+        run1: 517
+            evidence: ca. A.D. 517–526
+        run2: 526
+            evidence: ca. A.D. 517–526, upper bound
+Row 87 [AMONTONS, GUILLAUME]: GOOD
+Row 88 [AMPÈRE, ANDRÉ-MARIE]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Physics; Electrodynamics; Mathematics; Chemistry; Philosophy; Natural History; Taxonomy
+            evidence: header lists 'mathematics, chemistry, physics'; entry emphasizes electrodynamics, philosophy, natural history, taxonomy
+        run2: Mathematics; Physics; Chemistry; Alchemy; Philosophy; Natural History; Botany; Taxonomy; Electrodynamics; Astronomy
+            evidence: header lists 'mathematics, chemistry, physics'; entry details work in electrodynamics, philosophy, natural history, botany, taxonomy, astronomy
+Row 89 [AMSLER, JAKOB]: 2 issue(s)
+    - DISAGREEMENT Education_Locations
+        run1: Jena, Unknown, Germany, Unknown, Unknown; Königsberg, Unknown, Germany, Unknown, 1848; Geneva, Unknown, Switzerland, 1848, 1849; Zurich, Unknown, Switzerland, 1849, 1851
+            evidence: universities of Jena and Königsberg named; Geneva observatory; Zurich mentioned for Habilitation
+        run2: Jena, Unknown, Germany, Unknown, Unknown; Königsberg, Unknown, Germany, Unknown, 1848; Geneva, Unknown, Switzerland, 1848, 1849; Zurich, Unknown, Switzerland, 1849, Unknown
+            evidence: universities of Jena and Königsberg; year with Plantamour at Geneva observatory; Zurich
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Mathematics; Physics; Instrumentation
+            evidence: header lists 'mathematics, precision instruments'; body describes mathematical physics work and planimeter invention
+        run2: Mathematics; Mathematical Physics; Instrumentation
+            evidence: header: mathematics, precision instruments; body: mathematical physics, magnetic distribution, heat conduction, attraction theory, polar planimeter
+Row 90 [ANATOLIUS OF ALEXANDRIA, NONE]: GOOD
+Row 91 [ANAXAGORAS, NONE]: 2 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Philosophy; Natural Philosophy; Astronomy; Physics
+            evidence: natural philosophy in header; theory of matter, cosmology, astronomy in content
+        run2: Natural Philosophy; Physics; Astronomy; Metaphysics
+            evidence: header lists natural philosophy; body discusses physics, astronomy, metaphysics of matter and causation
+    - DISAGREEMENT Means_of_Support
+        run1: Personal Means
+            evidence: born of wealthy parents, neglected inheritance
+        run2: Patronage
+            evidence: friend of Pericles; spent thirty years at Athens
+Row 92 [ANAXILAUS OF LARISSA, NONE]: GOOD
+Row 93 [ANAXIMANDER, NONE]: GOOD
+Row 94 [ANAXIMENES OF MILETUS, NONE]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Philosophy; Natural Philosophy; Astronomy
+            evidence: entry states philosophy; cosmological and astronomical views detailed
+        run2: Philosophy; Natural Philosophy; Astronomy; Cosmology
+            evidence: philosophy stated in header; cosmological and astronomical views detailed
+Row 95 [ANCEL, PAUL ALBERT]: GOOD
+Row 96 [ANDERSON, ERNEST MASSON]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Geology; Geophysics; Structural Geology; Mineralogy; Optics
+            evidence: header line (geology) and body (structural geology, tectonist, mathematical geophysicist, faulting, intrusion, lineation, heat, volcanism, mineral optics)
+        run2: Geology; Geophysics; Mathematics
+            evidence: header line (geology) and body (structural geologist, tectonist, mathematical geophysicist, mineral optics)
+Row 97 [ANDERSON, OSKAR]: GOOD
+Row 98 [ANDERSON, THOMAS]: GOOD
+Row 99 [ANDOYER, HENRI]: GOOD
+Row 100 [ANDRÉ, CHARLES LOUIS FRANÇOIS]: GOOD
+Row 101 [ANDREAE, JOHANN VALENTIN]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Theology; Philosophy; Natural Philosophy; Mathematics; Astronomy; Music
+            evidence: avid interest in astronomy, mathematics, mechanics, music, painting; studied natural philosophy and nature mysticism; wrote on mathematics and theology
+        run2: Philosophy; Theology; Natural Philosophy; Mathematics; Astronomy; Mechanics; Music
+            evidence: avid interest in astronomy, mathematics, mechanics, music; studied natural philosophy and nature mysticism; advocated observation and experiment
+Row 102 [ANDREWS, THOMAS]: 1 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: Belfast Academy; Belfast Academical Institution; University of Glasgow; University of Paris; University of Dublin; University of Edinburgh
+        run2: Belfast Academy; Belfast Academical Institution; University of Glasgow; Not Specified; University of Dublin; University of Edinburgh
+Row 103 [ANDRUSOV, NIKOLAI]: 2 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Government
+            evidence: Multiple academic positions and government geological committee post named
+        run2: Academia
+            evidence: series of academic positions from 1889 onward
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: Petersburg Society of Naturalists; Kiev Society of Naturalists; Academy of Sciences; Ukrainian Academy of Sciences
+            evidence: Petersburg Society of Naturalists, Kiev Society of Naturalists, Academy of Sciences, Ukrainian Academy of Sciences named
+        run2: Novorossiysk Society of Naturalists; Petersburg Society of Naturalists; Kiev Society of Naturalists; Academy of Sciences; Ukrainian Academy of Sciences
+            evidence: Novorossiysk Society of Naturalists, Petersburg Society of Naturalists, Kiev Society of Naturalists, Academy of Sciences, Ukrainian Academy of Sciences
+Row 104 [ANGELI, STEFANO]: 2 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Mathematics; Physics
+            evidence: header line 'mathematics, physics'
+        run2: Mathematics; Physics; Geometry
+            evidence: header: mathematics, physics; developed indivisibles, spirals, fluid statics
+    - DISAGREEMENT Patronage_Types
+        run1: Unknown
+            evidence: absent
+        run2: Government Official
+            evidence: Republic of Venice offered professorship in 1663
+Row 105 [ANGELUS, JOHANNES]: GOOD
+Row 106 [ÅNGSTRÖM, ANDERS JONAS]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Physics; Spectroscopy; Astronomy; Optics; Magnetism
+            evidence: heading lists astronomy, physics; body emphasizes spectroscopy, terrestrial magnetism, heat conduction, optics
+        run2: Physics; Spectroscopy; Astronomy; Physics; Terrestrial Magnetism; Heat Conduction
+            evidence: astronomy, physics; papers on spectroscopy, terrestrial magnetism, heat conduction
+Row 107 [ANGUILLARA, LUIGI]: 1 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Medicine
+            evidence: director botanical garden Padua 1546–1561; herbalist to duke of Ferrara
+        run2: Academia; Patronage
+            evidence: first director of botanical garden Padua 1546–1561; herbalist to duke of Ferrara after 1561
+Row 108 [ANSCHÜTZ, RICHARD]: GOOD
+Row 109 [VOITURET, ANTHELME]: 2 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Astronomy; Instrumentation
+            evidence: astronomy in header; comets, variable stars, star catalog in text
+        run2: Astronomy; Observational Astronomy
+            evidence: astronomy in header; observational work on comets and variable stars
+    - DISAGREEMENT Instruments
+        run1: Telescope; Open Sights
+            evidence: open sights mentioned; telescope inferred from astronomical work
+        run2: None
+Row 110 [ANTHEMIUS OF TRALLES, NONE]: 1 issue(s)
+    - DISAGREEMENT Instruments
+        run1: Reflector; Elliptical Mirror; Parabolic Mirror
+            evidence: elliptical reflector, parabolic reflector, steam apparatus described in anecdote
+        run2: Reflector; Elliptical Reflector; Parabolic Reflector
+            evidence: On Remarkable Mechanical Devices treated reflectors; elliptical reflector with foci; parabolic reflector; steam-pressure devices
+Row 111 [ANTIPHON, NONE]: GOOD
+Row 112 [ANTONIADI, EUGÈNE]: 1 issue(s)
+    - DISAGREEMENT Religion_Affiliation
+        run1: Greek Orthodox
+            evidence: Born of a Greek family
+        run2: Unknown
+Row 113 [ANUCHIN, DMITRII]: GOOD
+Row 114 [ANVILLE, JEAN-BAPTISTE]: GOOD
+Row 115 [APÁTHY, STEPHAN]: 5 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: University of Budapest
+        run2: University of Budapest; Institute of Pathology; Institute of Zoology and Comparative Anatomy; Marine Biological Laboratory
+    - DISAGREEMENT Education_Locations
+        run1: Budapest, Unknown, Austria-Hungary, Unknown, 1885
+            evidence: studied medicine at University of Budapest; obtained degree 1885
+        run2: Budapest, Unknown, Austria-Hungary, Unknown, 1885; Budapest, Unknown, Austria-Hungary, 1883, 1884; Budapest, Unknown, Austria-Hungary, 1885, Unknown; Naples, Unknown, Italy, 1886, 1889
+            evidence: Budapest university, Institute of Pathology, Institute of Zoology, Naples marine laboratory named
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Zoology; Histology; Medicine; Anatomy; Neurohistology; Embryology
+            evidence: header lists 'medical science, histology, zoology'; body emphasizes neurohistology, anatomy, embryology, microscopic technique
+        run2: Zoology; Histology; Anatomy; Neurohistology; Embryology
+            evidence: header lists medical science, histology, zoology; text emphasizes neurohistology, embryology, anatomy
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Medicine
+            evidence: assistant at Institute of Zoology 1885; scholarship at Naples 1886–1889; professor of zoology 1890; professor of histology and embryology at Kolozsvár; professor of zoology at Szeged
+        run2: Academia; Government
+            evidence: assistant at Institute, appointed professor at Kolozsvár, government commissioner, professor at Szeged
+    - DISAGREEMENT Patronage_Types
+        run1: Government Official
+            evidence: appointed government commissioner of Transylvanian affairs by Hungarian Republic after WWI
+        run2: Unknown
+            evidence: absent
+Row 116 [APELT, ERNST FRIEDRICH]: GOOD
+Row 117 [APIAN, PETER]: GOOD
+Row 118 [APOLLONIUS OF PERGA, NONE]: 4 issue(s)
+    - DISAGREEMENT Born_Year
+        run1: -250
+            evidence: between 246 and 221 B.C., when Ptolemy Euergetes was king
+        run2: -240
+            evidence: between 246 and 221 B.C., when Ptolemy Euergetes was king
+    - DISAGREEMENT Died_Year
+        run1: -200
+            evidence: early second century B.C., inferred from chronological evidence
+        run2: -190
+            evidence: early second century B.C., inferred from chronological evidence
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Patronage
+            evidence: domiciled at Alexandria; correspondence with Eudemus and Attalus
+        run2: Unknown
+    - DISAGREEMENT Patronage_Types
+        run1: Aristocrat
+            evidence: prefaces addressed to Eudemus and Attalus
+        run2: Unknown
+            evidence: absent
+Row 119 [APPELL, PAUL]: 3 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: École Normale
+        run2: Lycée; University of Nancy; École Normale
+    - DISAGREEMENT Education_Locations
+        run1: Paris, Unknown, France, 1873, 1876
+            evidence: entered École Normale 1873, graduated 1876
+        run2: Strasbourg, Unknown, France, Unknown, 1869; Nancy, Unknown, France, 1871, 1873; Paris, Unknown, France, 1873, 1876
+            evidence: lycée Strasbourg 1869; Nancy 1871–1873; École Normale 1873–1876
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Mathematics; Algebraic Functions; Differential Equations; Complex Analysis; Mathematical Physics; Mechanics; Geometry; Projective Geometry
+            evidence: header: mathematics, mathematical physics; body: projective geometry, algebraic functions, differential equations, complex analysis, mechanics, elliptic functions, hypergeometric functions, Appell polynomials
+        run2: Mathematics; Algebra; Analysis; Geometry; Mathematical Physics; Mechanics
+            evidence: header: mathematics, mathematical physics; body details algebraic functions, differential equations, complex analysis, elliptic functions, hypergeometric functions, mechanics
+Row 120 [APPLETON, EDWARD VICTOR]: 3 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: University of London; St. John's College, Cambridge
+        run2: University of London; St. John's College, Cambridge; University of Cambridge
+    - DISAGREEMENT Education_Degrees
+        run1: B.A.; M.A.
+            evidence: graduated with first class honours in physics in 1913; postgraduate work in crystallography
+        run2: B.A.; Ph.D.
+            evidence: graduated with first class honours in physics in 1913; postgraduate work in crystallography
+    - DISAGREEMENT Education_Locations
+        run1: London, Unknown, England, Unknown, Unknown; Cambridge, Unknown, England, Unknown, 1913
+            evidence: University of London at sixteen; St. John's College, Cambridge; graduated 1913
+        run2: London, Unknown, England, Unknown, Unknown; Cambridge, Unknown, England, Unknown, 1913; Cambridge, Unknown, England, 1913, Unknown
+            evidence: University of London, St. John's College Cambridge, postgraduate at Cambridge
+Row 121 [AQUINAS, THOMAS]: 3 issue(s)
+    - DISAGREEMENT Born_Town
+        run1: Roccasecca, near Monte Cassino
+            evidence: born at Roccasecca, near Monte Cassino
+        run2: Roccasecca
+            evidence: header 'Roccasecca'
+    - DISAGREEMENT Died_Town
+        run1: Fossanuova, near Maenza
+            evidence: died at Fossanuova, near Maenza
+        run2: Fossanuova
+            evidence: header 'Fossanuova'
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Philosophy; Scholastic Philosophy; Theology; Natural Philosophy; Physics; Mechanics; Astronomy; Chemistry; Alchemy; Biology; Psychology; Metaphysics
+            evidence: header lists philosophy and theologian; entry discusses physics, mechanics, astronomy, chemistry, biology, psychology, metaphysics
+        run2: Philosophy; Scholastic Philosophy; Theology; Natural Philosophy; Physics; Mechanics; Astronomy; Chemistry; Alchemy; Biology; Psychology; Metaphysics; Logic
+            evidence: entry states 'philosopher and theologian', discusses physics, astronomy, chemistry, biology, psychology contributions
+Row 122 [ARAGO, DOMINIQUE FRANÇOIS JEAN]: GOOD
+Row 123 [ARANZIO, GIULIO CESARE]: 1 issue(s)
+    - DISAGREEMENT Patronage_Types
+        run1: Unknown
+            evidence: absent
+        run2: Court
+            evidence: uncle was 'principal court physician of Julius III'
+Row 124 [ARATUS OF SOLI, NONE]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Astronomy; Poetry
+            evidence: astronomy stated in header; poetry evident from Phaenomena and other poems
+        run2: Astronomy; Mathematics
+            evidence: header line 'astronomy'; Phaenomena describes constellations, celestial circles, calendar, Metonic cycle, weather signs
+Row 125 [ARBER, AGNES]: 2 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: University College London; Botany School
+        run2: University College London; Botany School, Cambridge
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Botany; Plant Anatomy; Plant Morphology
+            evidence: header lists 'botany'; text emphasizes comparative plant anatomy and morphology
+        run2: Botany; Plant Anatomy; Plant Morphology; Paleobotany
+            evidence: header lists 'botany'; entry emphasizes comparative plant anatomy, monocotyledons, grasses, paleobotany
+Row 126 [ARBOGAST, LOUIS FRANÇOIS ANTOINE]: GOOD
+Row 127 [ARBOS, PHILIPPE]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Geography; Human Geography
+            evidence: geography (header); pastoral life in the French Alps; urban geography; regional geography; Massif Central
+        run2: Geography; Human Geography; Regional Geography; Urban Geography
+            evidence: geography (header); pastoral life in the French Alps; urban geography of Clermont-Ferrand; regional geography of the Auvergne and Massif Central
+Row 128 [ARBUTHNOT, JOHN]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Mathematics; Statistics; Medicine; Natural Philosophy
+            evidence: mathematical statistics; probability theory; medicine; physician
+        run2: Mathematics; Statistics; Medicine; Physics
+            evidence: mathematical statistics paper; probability theory; medicine
+Row 129 [ARCHIAC, ÉTIENNE-JULES-ADOLPHE DESMIER]: 3 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: School for Pages; Military Academy of Saint-Cyr
+        run2: Saint-Cyr Military Academy
+    - DISAGREEMENT Education_Locations
+        run1: Versailles, Unknown, France, Unknown, Unknown; Saint-Cyr, Unknown, France, 1819, Unknown
+            evidence: Versailles and Saint-Cyr named
+        run2: Saint-Cyr, Unknown, France, 1819, Unknown
+            evidence: text 'admitted in November 1819' to Saint-Cyr
+    - DISAGREEMENT Patronage_Types
+        run1: Government Official
+            evidence: Ministry of Public Works commissioned geological map
+        run2: Government Official; Academic
+            evidence: text 'Ministry of Public Works commissioned him' and 'supported by the assembly of the professors of the museum and by the Academy of Sciences'
+Row 130 [ARCHIGENES, NONE]: GOOD
+Row 131 [ARCHIMEDES, NONE]: GOOD
+Row 132 [ARCHYTAS OF TARENTUM, NONE]: 2 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Mathematics; Geometry; Music; Physics; Astronomy
+            evidence: header line: philosophy, mathematics, physics; body: number theory, geometry, music theory, astronomy, sound theory
+        run2: Mathematics; Geometry; Music; Physics; Philosophy; Astronomy
+            evidence: header: philosophy, mathematics, physics; body: number theory, geometry, music theory, physical theory of sound, astronomy
+    - DISAGREEMENT Patronage_Types
+        run1: Unknown
+            evidence: absent; political role mentioned but no patron identified
+        run2: Court
+            evidence: concluded alliance with Dionysius the Younger through Plato
+Row 133 [ARDUINO, GIOVANNI]: 2 issue(s)
+    - Means_of_Support: 'Mining' should be mapped to 'Industry'
+    - DISAGREEMENT Dates_Lifespan
+        run1: 80
+            evidence: 1795 − 1714 = 81; correction: 1795 − 1714 = 81, but recalculating: March 21, 1795 minus October 16, 1714 is 80 years
+        run2: 81
+            evidence: 1795 − 1714 = 81
+Row 134 [ARETAEUS OF CAPPADOCIA, NONE]: GOOD
+Row 135 [ARGAND, ÉMILE]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Geology; Structural Geology; Alpine Geology
+            evidence: header line geology; structural geology and Alpine geology throughout
+        run2: Geology; Structural Geology; Alpine Geology; Tectonics
+            evidence: header: geology; body: structural geology, Alpine geology, tectonics, embryotectonics
+Row 136 [ARGAND, JEAN ROBERT]: GOOD
+Row 137 [ARGELANDER, FRIEDRICH WILHELM AUGUST]: 3 issue(s)
+    - DISAGREEMENT Alt_Name
+        run1: None
+        run2: F. W. A. Argelander
+            evidence: inferred from common abbreviation
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Astronomy; Stellar Astronomy
+            evidence: heading lists 'astronomy'; work on stellar positions and proper motions
+        run2: Astronomy; Astrometry
+            evidence: heading states 'astronomy'; proper motions and stellar cataloging are astrometry
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: Academy of Sciences of St. Petersburg; Royal Society of London; Academy of Sciences of Berlin; Academy of Sciences of Stockholm; Academy of Sciences of Paris; Academy of Sciences of Vienna; Academy of Sciences of Boston; Academy of Sciences of Brussels; Societas Fennica; Royal Astronomical Society of London; National Academy of Sciences of the United States; Astronomische Gesellschaft
+            evidence: member of the academies of St. Petersburg, London, Berlin, Stockholm, Paris, Vienna, Boston, and Brussels; Societas Fennica; Royal Astronomical Society; National Academy of Sciences; Astronomische Gesellschaft
+        run2: Academy of St. Petersburg; Royal Society of London; Academy of Berlin; Academy of Stockholm; Academy of Paris; Academy of Vienna; Academy of Boston; Academy of Brussels; Societas Fennica; Royal Astronomical Society of London; National Academy of Sciences of the United States; Astronomische Gesellschaft
+            evidence: entry lists eight academies and four societies
+Row 138 [ARGENVILLE, ANTOINE-JOSEPH]: GOOD
+Row 139 [ARGOLI, ANDREA]: 2 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: Not Specified
+        run2: None
+    - DISAGREEMENT Education_Locations
+        run1: Padua, Unknown, Italy, 1600, Unknown
+            evidence: studied with Magini in Padua around 1600
+        run2: None
+Row 140 [ARISTAEUS, NONE]: GOOD
+Row 141 [ARISTARCHUS OF SAMOS, NONE]: GOOD
+Row 142 [ARISTOTLE, NONE]: 2 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Physics; Natural Philosophy; Astronomy; Meteorology; Biology; Zoology; Anatomy; Physiology; Psychology; Mathematics; Mechanics; Optics
+            evidence: contributed to physics, physical astronomy, meteorology, psychology, biology; natural history and zoology; anatomy and physiology
+        run2: Physics; Natural Philosophy; Astronomy; Meteorology; Biology; Zoology; Anatomy; Physiology; Mathematics; Optics; Mechanics
+            evidence: header line: physics, physical astronomy, meteorology, psychology, biology; body: natural history, zoology, anatomy, physiology, mathematics, optics, mechanics
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Patronage
+            evidence: remained with Academy twenty years; lectured at Lyceum; organized research programs
+        run2: Academia; Court
+            evidence: member of Academy twenty years; tutor to Alexander; lectured at Lyceum twelve years
+Row 143 [ARISTOTLE, NONE]: GOOD
+Row 144 [ARISTOTLE, NONE]: 1 issue(s)
+    - DISAGREEMENT Patronage_Types
+        run1: Court
+            evidence: inferred from court patronage in Macedonia
+        run2: Unknown
+            evidence: absent
+Row 145 [ARISTOTLE, NONE]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Philosophy; Logic; Metaphysics; Natural Philosophy; Physics; Biology; Zoology; Botany; Anatomy; Rhetoric; Poetics
+            evidence: works span logic, metaphysics, natural philosophy, physics, biology, rhetoric, poetics
+        run2: Philosophy; Logic; Metaphysics; Natural Philosophy; Physics; Biology; Zoology; Anatomy; Rhetoric; Poetics
+            evidence: entry discusses logic, metaphysics, natural philosophy, physics, biology, zoology, anatomy, rhetoric, poetics
+Row 146 [ARISTOXENUS, NONE]: 1 issue(s)
+    - DISAGREEMENT Education_Locations
+        run1: Mantinea, Unknown, Greece, Unknown, Unknown; Athens, Unknown, Greece, Unknown, 322
+            evidence: studied at Mantinea; pupil of Aristotle in Athens; Lyceum position until 322 B.C.
+        run2: Mantinea, Unknown, Greece, Unknown, Unknown; Athens, Unknown, Greece, Unknown, -322
+            evidence: studied at Mantinea; pupil of Aristotle in Athens; Aristotle died 322 B.C.
+Row 147 [ARISTYLLUS, NONE]: GOOD
+Row 148 [ARKADIEV, VLADIMIR]: 1 issue(s)
+    - DISAGREEMENT Instruments
+        run1: Lightning Generator; Electromagnetic Spectrograph; Photographic Plate for Centimeter Waves
+            evidence: 1922 generator for electromagnetic spectra; 1925 high-tension impulse generator; 1934 photographic plate for centimeter waves; 1947 magnet levitation demonstration
+        run2: Lightning Generator; Electromagnetic Spectrograph; Photographic Plate
+            evidence: generator 1922, photographic plate 1934, lightning generator 1925, superconductor levitation 1947
+Row 149 [ARKELL, WILLIAM]: GOOD
+Row 150 [ARMSTRONG, EDWARD]: GOOD
+Row 151 [ARMSTRONG, EDWIN HOWARD]: 3 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Physics; Radio Engineering; Electrical Engineering
+            evidence: radio engineering header; triode feedback circuit, super-heterodyne circuit, superregeneration, frequency modulation
+        run2: Physics; Radio Engineering; Electronics
+            evidence: radio engineering header; triode feedback circuit, super-heterodyne circuit, superregeneration, frequency modulation inventions
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Patronage; Industry
+            evidence: assistant at Columbia; sold patents to Westinghouse; RCA cross-license; became millionaire
+        run2: Academia; Patronage
+            evidence: assistant at Columbia; sold patents to Westinghouse and RCA, became millionaire
+    - DISAGREEMENT Patronage_Types
+        run1: Unknown
+        run2: Government Official; Scientist
+            evidence: U.S. Army Signal Corps officer; RCA acquired patent rights
+Row 152 [ARMSTRONG, HENRY EDWARD]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Chemistry; Organic Chemistry; Chemistry Education; Crystallography; Chemical Engineering
+            evidence: chemistry, science education; pioneer work on benzene, naphthalene, crystallography, enzyme reactions; father of chemical engineering
+        run2: Chemistry; Organic Chemistry; Chemistry; Crystallography; Chemistry; Analytical Chemistry
+            evidence: chemistry, science education; pioneer work on benzene, naphthalene, crystallography, enzyme reactions
+Row 153 [ARNALD OF VILLANOVA, NONE]: GOOD
+Row 154 [ARNAULD, ANTOINE]: GOOD
+Row 155 [ARNOLD, HAROLD DE FOREST]: GOOD
+Row 156 [AROMATARI, GIUSEPPE]: 1 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: Not Specified; Not Specified; University of Padua
+        run2: University of Perugia; University of Montpellier; University of Padua
+Row 157 [ARONHOLD, SIEGFRIED HEINRICH]: GOOD
+Row 158 [ARREST, HEINRICH LOUIS]: GOOD
+Row 159 [ARRHENIUS, SVANTE AUGUST]: GOOD
+Row 160 [ARSONVAL, ARSÈNE]: 5 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: Lycée Impérial de Limoges; Collège Ste.-Barbe; Université de Poitiers
+        run2: Lycée Impérial de Limoges; Collège Ste.-Barbe; Université de Poitiers; University of Paris
+    - DISAGREEMENT Education_Locations
+        run1: Limoges, Unknown, France, Unknown, Unknown; Paris, Unknown, France, Unknown, Unknown; Poitiers, Unknown, France, Unknown, 1869
+            evidence: named institutions and cities in entry
+        run2: Limoges, Unknown, France, Unknown, Unknown; Paris, Unknown, France, Unknown, Unknown; Poitiers, Unknown, France, Unknown, 1869; Paris, Unknown, France, 1870, Unknown
+            evidence: Lycée Impérial de Limoges, Collège Ste.-Barbe in Paris, Université de Poitiers (1869), University of Paris after 1870
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Research
+            evidence: préparateur, assistant, directed laboratories, government consultant
+        run2: Academia; Medicine; Government
+            evidence: directed laboratory rue St.-Jacques 1882–1910, Nogent-sur-Marne 1910–1931; government consultant WWI; medical practice
+    - DISAGREEMENT Patronage_Types
+        run1: Government Official; Academic
+            evidence: Paul Bert as Minister; Claude Bernard's mentorship
+        run2: Government Official; Scientific Society
+            evidence: Paul Bert as Minister established laboratory; founded multiple scientific societies
+    - DISAGREEMENT Instruments
+        run1: Calorimeter; Thermoelectric Needles; Galvanometer; Electrodes; Myographic Equipment; High Frequency Oscillator; Electrotherapy Apparatus; Electrocoagulation Apparatus; Temperature Incubator
+            evidence: calorimeter, thermoelectric needles, galvanometer, electrodes, myographic equipment, oscillator, electrotherapy apparatus, electrocoagulation, incubator
+        run2: Calorimeter; Thermoelectric Needles; Galvanometer; Electrodes; Myographic Equipment; High Frequency Oscillator; Incubator; Electrocoagulation Apparatus
+            evidence: double-chambered calorimeter, thermoelectric needles, mobile circuit galvanometer with Deprez, electrodes, myographic equipment with Marey, incubator, high-frequency oscillator, electrocoagulation apparatus
+Row 161 [ARTEDI, PETER]: 2 issue(s)
+    - DISAGREEMENT Education_Locations
+        run1: Hernösand, Unknown, Sweden, 1716, Unknown; Uppsala, Unknown, Sweden, 1724, 1729
+            evidence: school at Hernösand from autumn 1716; Uppsala University from matriculation 1724
+        run2: Hernösand, Unknown, Sweden, Unknown, Unknown; Uppsala, Unknown, Sweden, 1724, 1729
+            evidence: school at Hernösand; matriculated at Uppsala University 30 October 1724
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Biology; Ichthyology; Zoology; Botany; Mineralogy; Alchemy; Anatomy
+            evidence: header states biology; entry emphasizes ichthyology, zoology, botany, mineralogy, alchemy, anatomy
+        run2: Biology; Ichthyology; Zoology; Botany; Natural History; Mineralogy; Alchemy; Anatomy
+            evidence: biology stated in header; ichthyology, zoology, botany, mineralogy, alchemy, anatomy evident from text
+Row 162 [ARTIN, EMIL]: GOOD
+Row 163 [ĀRYABHAṬA I, NONE]: 1 issue(s)
+    - DISAGREEMENT Born_Town
+        run1: Kusumapura
+            evidence: clearly states connection with Kusumapura (Pāṭaliputra, modern Patna)
+        run2: Unknown
+Row 164 [ARYABHAṬA II, NONE]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Mathematics; Astronomy; Algebra; Geometry; Geography
+            evidence: Mahāsiddhānta chapters on arithmetic, geometry, algebra, geography, astronomy, eclipses, planetary motion
+        run2: Mathematics; Astronomy; Algebra; Geometry; Arithmetic
+            evidence: Mahāsiddhānta chapters on arithmetic, geometry, algebra, astronomy, eclipses, planetary motion
+Row 165 [ASADA, GŌRYŪ]: 3 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Astronomy; Instrumentation
+            evidence: astronomy in header; instrumentation from telescope/lens work
+        run2: Astronomy; Mathematics; Medicine
+            evidence: astronomy in header; mathematics inferred from formulas and calculations; medicine from medical practice
+    - DISAGREEMENT Patronage_Types
+        run1: Merchant
+            evidence: wealthy Osaka merchant Hazama Shigetomi sponsored observation
+        run2: Aristocrat
+            evidence: feudal lord permitted annual gifts and did not charge desertion
+    - DISAGREEMENT Instruments
+        run1: Telescope; Gnomon
+            evidence: ground lenses and made telescope; gnomon mentioned in context
+        run2: Telescope; Lens
+            evidence: ground lenses and made telescope; observed Jupiter's satellites
+Row 166 [ASCLEPIDES, NONE]: GOOD
+Row 167 [ASELLI, GASPARE]: 2 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Anatomy; Physiology
+            evidence: header: anatomy; entry emphasizes physiology and discovery of chylous vessels
+        run2: Anatomy; Physiology; Surgery
+            evidence: Header lists anatomy; entry emphasizes physiology and vascular discovery
+    - DISAGREEMENT Patronage_Types
+        run1: Government Official
+            evidence: appointed first surgeon of the Spanish army in Italy from 1612 to 1620
+        run2: Government Official; Aristocrat
+            evidence: first surgeon of Spanish army; honorary citizenship Milan; support from Senator Settala and Tadino
+Row 168 [ASHMOLE, ELIAS]: 3 issue(s)
+    - DISAGREEMENT Religion_Affiliation_Certain
+        run1: 1
+            evidence: inferred from context of Restoration England and conservative stance
+        run2: 0
+            evidence: inferred from context, not explicitly stated
+    - DISAGREEMENT Means_of_Support
+        run1: Law; Government; Patronage; Academia
+            evidence: law practice 1638; comptroller of excise and Windsor herald 1660; marriage provided independent means; museum keeper role
+        run2: Government; Law; Personal Means
+            evidence: established law practice in 1638; comptroller of excise and Windsor herald from 1660; fortunate marriage provided independent means
+    - DISAGREEMENT Patronage_Types
+        run1: Court; Aristocrat
+            evidence: rewarded by Charles II; married into Dugdale family
+        run2: Court
+            evidence: Charles II granted him offices of comptroller of excise and Windsor herald in 1660
+Row 169 [ASSALTI, PIETRO]: GOOD
+Row 170 [ASTBURY, WILLIAM THOMAS]: 4 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: University of Cambridge; University College London; Royal Institution
+        run2: University of Cambridge; University College London
+    - DISAGREEMENT Education_Locations
+        run1: Cambridge, Unknown, England, Unknown, Unknown; London, Unknown, England, 1921, 1923; London, Unknown, England, 1923, 1928
+        run2: Cambridge, Unknown, England, Unknown, Unknown; London, Unknown, England, 1921, 1923
+            evidence: Cambridge; University College, London, 1921; Royal Institution, 1923
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Physics; X-ray Crystallography; Chemistry; Molecular Biology; Biochemistry
+            evidence: X-ray crystallography, molecular biology in header; protein and DNA structure work in body
+        run2: Physics; X-ray Crystallography; Chemistry; Molecular Biology
+            evidence: X-ray crystallography, molecular biology in header; tartaric acids, space groups, keratin fiber structure, DNA structure in body
+    - DISAGREEMENT Instruments
+        run1: X-ray Diffractometer
+            evidence: X-ray diffraction work throughout; took first good X-ray pictures of sodium thymonucleate
+        run2: X-ray Diffraction Equipment
+            evidence: X-ray beam; took first good X-ray pictures of sodium thymonucleate
+Row 171 [ASTON, FRANCIS WILLIAM]: 3 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: Harbonne Vicarage School; Malvern College; Mason's College; Birmingham University
+        run2: Malvern College; Mason's College; Birmingham University
+    - DISAGREEMENT Education_Locations
+        run1: Harbonne, Unknown, England, Unknown, Unknown; Malvern, Unknown, England, Unknown, Unknown; Birmingham, Unknown, England, 1893, 1898; Birmingham, Unknown, England, 1903, 1908
+            evidence: entry names schools and universities attended
+        run2: Malvern, Unknown, England, Unknown, Unknown; Birmingham, Unknown, England, 1893, 1898; Birmingham, Unknown, England, 1903, 1908
+            evidence: entry names Malvern College, Mason's College Birmingham, Birmingham University
+    - DISAGREEMENT Patronage_Types
+        run1: Academic; Scientist
+            evidence: worked under J. J. Thomson; mentored by Poynting, Frankland, Tilden; sought aid from Lindemann, Fowler, Sawyer
+        run2: Academic; Court
+            evidence: entry: worked under J. J. Thomson; elected fellow of Trinity College; received Nobel Prize
+Row 172 [ASTRUC, JEAN]: 2 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Medicine; Anatomy; Physiology; Pathology; Surgery; Gynecology; Pediatrics; Venereology; Neurology; Iatrochemistry; Iatrophysics; Theology
+            evidence: header line states medicine; body describes anatomy, physiology, psychology, gerontology, pathology, therapy, venereology, gynecology, neurology, pediatrics, iatrochemistry, iatrophysics, biblical exegesis
+        run2: Medicine; Anatomy; Physiology; Pathology; Surgery; Gynecology; Pediatrics; Venereology; Neurology; Gerontology; Iatrochemistry; Iatrophysics; Theology
+            evidence: header: medicine; body: anatomy, physiology, psychology, gerontology, pathology, therapy, venereology, gynecology, neurology, pediatrics; iatrochemist and iatrophysicist; biblical exegesis
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: None
+        run2: Faculty of Medicine of Paris
+            evidence: elected regent doctor of the Faculty of Medicine of Paris in 1743
+Row 173 [ATHENAEUS OF ATTALIA, NONE]: GOOD
+Row 174 [ATWATER, WILBUR OLIN]: 1 issue(s)
+    - Religion_Affiliation: 'Methodist' should be mapped to 'Wesleyan'
+Row 175 [ATWOOD, GEORGE]: 1 issue(s)
+    - DISAGREEMENT Education_Locations
+        run1: Cambridge, Unknown, England, 1764, 1769
+            evidence: Trinity College, Cambridge; graduated 1769, M.A. 1772
+        run2: Cambridge, Unknown, England, Unknown, 1769
+            evidence: Trinity College, Cambridge; graduated B.A. in 1769
+Row 176 [AUBUISSON DE VOISINS, JEAN-FRANÇOIS]: 1 issue(s)
+    - DISAGREEMENT Alt_Name
+        run1: D'Aubuisson de Voisins; Daubuisson
+            evidence: variant spellings in sources and text
+        run2: D'Aubuisson; Daubuisson
+            evidence: text uses 'd'Aubuisson' and 'Daubuisson' variants
+Row 177 [AUDOUIN, JEAN VICTOR]: 4 issue(s)
+    - Father_Occupation: 'Notary' should be mapped to 'Lawyer'
+    - DISAGREEMENT Education_Institution
+        run1: Rheims; Not Specified; Not Specified; Lycée Louis-le-Grand
+        run2: Lycée at Rheims; Lycée at Paris; School at Lucca; Lycée Louis-le-Grand
+    - DISAGREEMENT Education_Locations
+        run1: Rheims, Unknown, France, 1807, Unknown; Paris, Unknown, France, 1809, Unknown; Lucca, Unknown, Italy, 1812, 1814; Paris, Unknown, France, Unknown, Unknown
+            evidence: entry names Rheims, Paris, Lucca, and Lycée Louis-le-Grand
+        run2: Rheims, Unknown, France, 1807, Unknown; Paris, Unknown, France, 1809, 1812; Lucca, Unknown, Italy, 1812, 1814; Paris, Unknown, France, Unknown, Unknown
+            evidence: entry names Rheims 1807, Paris 1809, Lucca 1812–1814, Lycée Louis-le-Grand
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Zoology; Entomology; Anatomy; Physiology
+            evidence: header: zoology; entry emphasizes entomology, anatomy, physiology
+        run2: Zoology; Entomology; Anatomy; Physiology; Marine Biology
+            evidence: header: zoology; entry emphasizes entomology, anatomy, physiology, marine biology
+Row 178 [AUDUBON, JOHN JAMES]: 2 issue(s)
+    - DISAGREEMENT Education_Locations
+        run1: Nantes, Unknown, France, Unknown, Unknown; Coūeron, Unknown, France, Unknown, Unknown; Pennsylvania, Unknown, United States, 1803, Unknown
+            evidence: received education at Nantes, Coūeron, and Pennsylvania; worked in New York
+        run2: Nantes, Unknown, France, Unknown, Unknown; Coūeron, Unknown, France, Unknown, Unknown; Pennsylvania, Unknown, United States, 1803, Unknown; New York, Unknown, United States, Unknown, Unknown
+            evidence: Nantes, Coūeron, Pennsylvania farm 1803, New York taxidermist work
+    - DISAGREEMENT Means_of_Support
+        run1: Art; Patronage; Schoolmastering
+            evidence: failed as merchant and miller; itinerant artist and tutor; secured subscribers and patrons in England
+        run2: Art; Academia; Patronage
+            evidence: failed as merchant and miller 1808–1819; itinerant artist and tutor from 1820; supported by subscribers and patrons in England
+Row 179 [AUENBRUGGER, JOSEPH LEOPOLD]: GOOD
+Row 180 [AUGUSTINE OF HIPPO, NONE]: GOOD
+Row 181 [AUSTIN, LOUIS WINSLOW]: GOOD
+Row 182 [AUTOLYCUS OF PITANE, NONE]: GOOD
+Row 183 [AUWERS, ARTHUR]: 3 issue(s)
+    - DISAGREEMENT First_Name
+        run1: Arthur
+            evidence: heading 'Auwers, Arthur Julius Georg Friedrich von'
+        run2: Arthur Julius Georg Friedrich von
+            evidence: heading 'Auwers, Arthur Julius Georg Friedrich von'
+    - DISAGREEMENT Alt_Name
+        run1: Arthur Julius Georg Friedrich von Auwers
+            evidence: full name in heading
+        run2: None
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Scientific Society
+            evidence: assistant at Königsberg 1859–1862; Gotha Observatory; Berlin Academy astronomer 1866–1915; Academy permanent secretary 1878–1915; Astronomical Society secretary and president
+        run2: Academia; Government
+            evidence: assistant at Königsberg 1859–1862; four years with Hansen at Gotha observatory; appointed astronomer of Berlin Academy 1866; permanent secretary from 1878
+Row 184 [AUWERS, KARL FRIEDRICH]: GOOD
+Row 185 [AUZOUT, ADRIEN]: GOOD
+Row 186 [AVERY, OSWALD T.]: GOOD
+Row 187 [AVOGADRO, AMEDEO]: 3 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Physics; Chemistry; Physical Chemistry; Electricity; Thermodynamics
+            evidence: header lists physics, chemistry; entry discusses electricity, thermodynamics, physical chemistry
+        run2: Physics; Chemistry; Mathematics; Electricity; Physical Chemistry
+            evidence: header lists physics and chemistry; entry discusses electricity, physical chemistry, mathematics
+    - DISAGREEMENT Patronage_Types
+        run1: Government Official
+            evidence: entry describes government appointments and state support
+        run2: Unknown
+            evidence: entry does not identify specific patrons
+    - DISAGREEMENT Instruments
+        run1: None
+        run2: Voltmeter Multiplier
+            evidence: entry describes the voltmeter multiplier he designed
+Row 188 [IBN AL-'AWWĀM, NONE]: GOOD
+Row 189 [AZARA, FÉLIX]: 3 issue(s)
+    - DISAGREEMENT Alt_Name
+        run1: Félix de Azara; Felix de Azara
+        run2: Félix de Azara
+            evidence: text 'Félix de Azara'
+    - DISAGREEMENT Father_Occupation
+        run1: Gentry
+            evidence: son of Alejandro de Azara y Loscertales; family name and standing suggest gentry
+        run2: Aristocrat
+            evidence: text 'third son of Alejandro de Azara y Loscertales' with nobiliary particle
+    - DISAGREEMENT Means_of_Support
+        run1: Government; Military; Academia
+            evidence: infantry cadet 1764; second lieutenant 1769; taught mathematics in army until 1774; captain of frigate; mayor of Huesca
+        run2: Government; Military
+            evidence: text 'infantry cadet', 'second lieutenant', 'taught mathematics in the army', 'captain of a frigate'
+Row 190 [BAADE, WILHELM]: 4 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Academia
+            evidence: scientific assistant, observer, Privatdozent, staff member at Mt. Wilson, Gauss professor
+        run2: Academia; Patronage
+            evidence: scientific assistant Hamburg 1919, Privatdozent 1928, Mt. Wilson 1931, Gauss professor 1958
+    - DISAGREEMENT Patronage_Types
+        run1: Unknown
+        run2: Scientific Society; Foundation
+            evidence: Rockefeller fellowship 1926, Mt. Wilson and Palomar institutional support
+    - DISAGREEMENT Instruments
+        run1: Telescope; Spectroscope
+            evidence: telescopic observations, spectroscopic work, Schmidt wide-angle telescopes
+        run2: Telescope; Spectroscope; Photoelectric Photometer
+            evidence: worked with 100-inch and 200-inch telescopes, spectroscopic techniques, photoelectric methods
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: American Philosophical Society; Academy of Sciences of Amsterdam; Academy of Sciences of Göttingen; Academy of Sciences of Lund; Academy of Sciences of Munich; Academy of Sciences of Mainz
+            evidence: member of the American Philosophical Society, and of scientific academies in Amsterdam, Göttingen, Lund, Munich, and Mainz
+        run2: American Philosophical Society; Academy of Sciences Amsterdam; Academy of Sciences Göttingen; Academy of Sciences Lund; Academy of Sciences Munich; Academy of Sciences Mainz
+            evidence: member of American Philosophical Society and academies in Amsterdam, Göttingen, Lund, Munich, Mainz
+Row 191 [BABBAGE, CHARLES]: GOOD
+Row 192 [BABCOCK, STEPHEN MOULTON]: GOOD
+Row 193 [BABINET, JACQUES]: GOOD
+Row 194 [BABINGTON, CHARLES]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Botany; Natural History
+            evidence: header: botany; natural history activities mentioned throughout
+        run2: Botany; Taxonomy
+            evidence: botany in header; taxonomy evident from Flora Bathoniensis, Manual of British Botany, British Rubi
+Row 195 [BABINGTON, WILLIAM]: 2 issue(s)
+    - Education_Degrees: 'L.R.C.P.' should be mapped to 'M.B.'
+    - DISAGREEMENT Education_Degrees
+        run1: M.D.; L.R.C.P.
+            evidence: M.D. by Aberdeen University 1795; licentiate of the College of Physicians 1796
+        run2: M.D.
+            evidence: awarded an M.D. by Aberdeen University in 1795
+Row 196 [BACCELLI, GUIDO]: GOOD
+Row 197 [BACH, ALEKSEI NIKOLAEVICH]: 3 issue(s)
+    - DISAGREEMENT First_Name
+        run1: Aleksei Nikolaevich
+            evidence: NAME heading: Bach, Aleksei Nikolaevich
+        run2: Aleksei
+            evidence: NAME heading: Bach, Aleksei Nikolaevich
+    - DISAGREEMENT Alt_Name
+        run1: None
+        run2: Aleksei Nikolaevich Bach
+            evidence: Full name in header and throughout entry
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: Société de Physique et d'Histoire Naturelle de Genève; Academy of Sciences of the U.S.S.R.; Imperial Society of the Chemical Industry (London); American Chemical Society; Dmitrii Ivanovich Mendeleev All-Union Chemical Society
+            evidence: chairman Société de Physique et d'Histoire Naturelle de Genève 1916; Academy of Sciences U.S.S.R. 1929; honorary member Imperial Society Chemical Industry and American Chemical Society 1943; permanent president Mendeleev Society from 1932
+        run2: Société de Physique et d'Histoire Naturelle de Genève; Academy of Sciences of the U.S.S.R.; Imperial Society of the Chemical Industry (London); American Chemical Society
+            evidence: Chairman Société de Physique et d'Histoire Naturelle de Genève (1916); member Academy of Sciences USSR (1929); honorary member Imperial Society Chemical Industry London and American Chemical Society (1943); president Mendeleev Chemical Society (1932–1946)
+Row 198 [BACHE, ALEXANDER DALLAS]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Physics; Terrestrial Magnetism; Meteorology; Astronomy; Chemistry; Geology; Seismology
+            evidence: physics in header; terrestrial magnetism, meteorology, astronomy, chemistry, geology, seismology in body
+        run2: Physics; Terrestrial Magnetism; Meteorology; Astronomy; Chemistry; Seismology; Geodesy
+            evidence: physics stated in header; terrestrial magnetism, meteorology, astronomy, chemistry, seismology, geodesy evidenced in body
+Row 199 [BACHELARD, GASTON]: GOOD
+Row 200 [BACHELIER, LOUIS]: 1 issue(s)
+    - DISAGREEMENT Education_Locations
+        run1: Unknown, Unknown, France, Unknown, Unknown
+        run2: Unknown, Unknown, France, Unknown, 1898
+Row 201 [BACHET DE MÉZIRIAC, CLAUDE-GASPAR]: 2 issue(s)
+    - DISAGREEMENT Alt_Name
+        run1: Claude Gaspar Bachet; Bachet
+        run2: Bachet De Meziriac; Claude Gaspar Bachet
+            evidence: variant forms in entry
+    - DISAGREEMENT Education_Institution
+        run1: Jesuit School; University of Padua
+        run2: Not Specified; University of Padua
+Row 202 [BACHMANN, AUGUSTUS]: GOOD
+Row 203 [BACHMANN, PAUL]: 3 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: University of Berlin; University of Göttingen; University of Berlin; University of Breslau
+        run2: University of Berlin; University of Göttingen
+    - DISAGREEMENT Education_Locations
+        run1: Berlin, Unknown, Germany, Unknown, 1856; Göttingen, Unknown, Germany, 1856, Unknown; Berlin, Unknown, Germany, Unknown, 1862; Breslau, Unknown, Germany, Unknown, 1864
+            evidence: entry names Berlin, Göttingen, Breslau with dates 1856, 1862, 1864
+        run2: Berlin, Unknown, Germany, Unknown, 1862; Göttingen, Unknown, Germany, 1856, Unknown
+            evidence: studied mathematics at University of Berlin; transferred to Göttingen in 1856; completed habilitation in Breslau
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Publishing
+            evidence: entry states 'extraordinary professor in Breslau', 'professorship in Münster', 'mathematical writing', 'music critic'
+        run2: Academia; Music
+            evidence: extraordinary professor in Breslau, professorship in Münster; in Weimar composed and served as music critic
+Row 204 [BACK, ERNST E. A.]: 1 issue(s)
+    - DISAGREEMENT Education_Locations
+        run1: Strasbourg, Unknown, Germany, 1902, Unknown; Berlin, Unknown, Germany, Unknown, Unknown; Munich, Unknown, Germany, Unknown, Unknown; Tübingen, Unknown, Germany, 1908, 1913
+            evidence: University of Strasbourg 1902; Berlin and Munich; University of Tübingen 1908 onward
+        run2: Strasbourg, Unknown, France, 1902, Unknown; Berlin, Unknown, Germany, Unknown, Unknown; Munich, Unknown, Germany, Unknown, Unknown; Tübingen, Unknown, Germany, 1908, 1913
+            evidence: University of Strasbourg 1902; Berlin and Munich law study; Tübingen physics 1908–1913
+Row 205 [BACKLUND, JÖNS OSKAR]: GOOD
+Row 206 [BACON, FRANCIS]: GOOD
+Row 207 [BACON, ROGER]: 2 issue(s)
+    - DISAGREEMENT Died_Country
+        run1: Unknown
+        run2: England
+    - DISAGREEMENT Instruments
+        run1: Lens; Astrolabe; Magnet
+            evidence: lenses for magnification, astrolabe, magnet experiments described
+        run2: Lens; Astrolabe
+            evidence: lenses for magnification and burning; spherical astrolabe
+Row 208 [BAEKELAND, LEO HENDRIK]: GOOD
+Row 209 [BAER, KARL ERNST VON]: 2 issue(s)
+    - DISAGREEMENT Patronage_Types
+        run1: Court; Government Official
+            evidence: text states Grand Duchess Helen Pavlovna was patron; Academy of Sciences provided support for expeditions
+        run2: Court
+            evidence: Grand Duchess Helen Pavlovna 'enlightened and intelligent patron of the arts and the sciences; Baer instructed her two daughters'
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: Academy of Sciences (St. Petersburg); Royal Society of London; Paris Academy; Russian Geographical Society; Russian Entomological Society; German Anthropological Society
+            evidence: text names Academy of Sciences, Royal Society of London, Paris Academy, Russian Geographical Society, Russian Entomological Society, German Anthropological Society
+        run2: Academy of Sciences in St. Petersburg; Royal Society of London; Paris Academy; Russian Geographical Society; Russian Entomological Society
+            evidence: elected Academy of Sciences St. Petersburg 1826; Royal Society of London; Paris Academy; Russian Geographical Society; Russian Entomological Society
+Row 210 [BAEYER, ADOLF]: 2 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: Friedrich-Wilhelms Gymnasium; University of Berlin; University of Heidelberg; Kekulé's Private Laboratory; University of Ghent
+        run2: Friedrich-Wilhelms Gymnasium; University of Berlin; University of Heidelberg; Not Specified; University of Ghent
+    - DISAGREEMENT Education_Locations
+        run1: Berlin, Unknown, Germany, Unknown, Unknown; Berlin, Unknown, Germany, Unknown, 1856; Heidelberg, Unknown, Germany, 1856, 1858; Heidelberg, Unknown, Germany, 1858, 1858; Ghent, Unknown, Belgium, 1858, 1860
+            evidence: entry names all institutions and cities
+        run2: Berlin, Unknown, Germany, Unknown, Unknown; Berlin, Unknown, Germany, Unknown, 1856; Heidelberg, Unknown, Germany, 1856, 1858; Heidelberg, Unknown, Germany, 1858, 1860; Ghent, Unknown, Belgium, 1858, 1860
+            evidence: Friedrich-Wilhelms Gymnasium, University of Berlin, Heidelberg, Ghent mentioned with dates
+Row 211 [BAGLIVI, GEORGIUS]: 2 issue(s)
+    - DISAGREEMENT Education_Locations
+        run1: Dubrovnik, Unknown, Croatia, Unknown, Unknown; Naples, Unknown, Italy, Unknown, 1688; Salerno, Unknown, Italy, Unknown, 1688; Pisa, Unknown, Italy, Unknown, Unknown
+            evidence: Jesuit College of Dubrovnik; medical studies in Naples; M.D. from Salerno 1688; Bellini's lectures at Pisa
+        run2: Dubrovnik, Unknown, Croatia, Unknown, Unknown; Naples, Unknown, Italy, Unknown, Unknown; Salerno, Unknown, Italy, Unknown, 1688; Pisa, Unknown, Italy, Unknown, Unknown
+            evidence: Jesuit College of Dubrovnik; medical studies Naples; M.D. Salerno 1688; Bellini's lectures Pisa
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Medicine; Anatomy; Physiology; Microscopy; Biology
+            evidence: experimental physiology, postmortem examinations, anatomical research, microscopic observations, muscle fiber structure, blood circulation, iatrophysical school
+        run2: Medicine; Anatomy; Physiology; Microscopy; Chemistry
+            evidence: anatomy, physiology, microscopy, experimental medicine, chemistry (chemotherapy prediction)
+Row 212 [BAIER, JOHANN JACOB]: GOOD
+Row 213 [BAILEY, EDWARD]: GOOD
+Row 214 [BAILEY, LIBERTY HYDE]: GOOD
+Row 215 [BAILEY, LORING]: GOOD
+Row 216 [BAILEY, SOLON IRVING]: GOOD
+Row 217 [BAILLIE, MATTHEW]: 2 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: Glasgow University; Balliol College; Windmill Street School of Anatomy
+        run2: Hamilton Grammar School; Glasgow University; Balliol College, Oxford; Windmill Street School of Anatomy
+    - DISAGREEMENT Education_Locations
+        run1: Glasgow, Unknown, Scotland, Unknown, Unknown; Oxford, Unknown, England, Unknown, Unknown; London, Unknown, England, Unknown, Unknown
+        run2: Shots Manse, Lanarkshire, Scotland, Unknown, Unknown; Glasgow, Unknown, Scotland, Unknown, Unknown; Oxford, Unknown, England, Unknown, Unknown; London, Unknown, England, Unknown, Unknown
+Row 218 [BAILLOU, GUILLAUME]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Medicine; Epidemiology; Anatomy; Astrology
+            evidence: revived Hippocratic tradition; epidemics 1570–1579; descriptions of plague, measles, diphtheria; brought rheumatism into nosology
+        run2: Medicine; Epidemiology; Anatomy
+            evidence: medicine; epidemiology; anatomy from clinical descriptions and nosology work
+Row 219 [BAILLY, JEAN-SYLVAIN]: 1 issue(s)
+    - DISAGREEMENT Patronage_Types
+        run1: Court; Government Official
+            evidence: keeper of king's paintings; first mayor of Paris
+        run2: Court
+            evidence: hereditary court position as keeper of the king's paintings
+Row 220 [BAILY, FRANCIS]: 1 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Merchant; Academia
+            evidence: stockbroker; retired at fifty to astronomy; published actuarial tables
+        run2: Stockbroking; Academia
+            evidence: became a stockbroker; retired at fifty to devote full time to astronomy
+Row 221 [BAIN, ALEXANDER]: 2 issue(s)
+    - DISAGREEMENT Father_Occupation
+        run1: Weaver
+            evidence: George Bain, a handloom weaver
+        run2: Artisan
+            evidence: son of George Bain, a handloom weaver
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Publishing
+            evidence: taught mental and moral philosophy five years; various lectureships fifteen years; chair of logic 1860–1880; founded and edited Mind sixteen years
+        run2: Academia; Scientific Society
+            evidence: taught mental and moral philosophy at Marischal; held various lectureships; elected to chair of logic at Aberdeen University in 1860; founded and edited Mind
+Row 222 [BAIRD, SPENCER FULLERTON]: 3 issue(s)
+    - DISAGREEMENT Education_Locations
+        run1: Carlisle, Pennsylvania, United States, 1836, 1843
+            evidence: entered Dickinson College in 1836, receiving B.A. in 1840 and M.A. in 1843
+        run2: Carlisle, Unknown, United States, 1836, 1843
+            evidence: Dickinson College in Carlisle, Pennsylvania, 1836-1843
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Zoology; Ornithology; Mammalogy; Ichthyology; Herpetology; Anthropology
+            evidence: zoology, scientific administration in header; taxonomic studies of birds and mammals; wrote on reptiles, amphibians, fishes; 'Distribution and Migrations' paper; History of North American Birds
+        run2: Zoology; Ornithology; Mammalogy; Ichthyology; Herpetology; Anthropology; Scientific Administration
+            evidence: zoology, scientific administration in header; ornithology, mammalogy, ichthyology, herpetology from works; anthropological collections mentioned
+    - DISAGREEMENT Patronage_Types
+        run1: Government Official
+            evidence: recommendations from politicians and scientists secured his appointment; Congress established the U.S. Fish Commission under Baird's direction
+        run2: Government Official; Scientific Society
+            evidence: recommendations from politicians and scientists secured Smithsonian appointment; Congress established Fish Commission under his direction
+Row 223 [BAIRE, RENÉ LOUIS]: 2 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: Lycée Lakanal; Lycée Henri IV; École Normale Supérieure; University of Italy; Faculté des Sciences, Paris
+        run2: Lycée Lakanal; Lycée Henri IV; École Normale Supérieure
+    - DISAGREEMENT Education_Locations
+        run1: Paris, Unknown, France, 1886, 1890; Paris, Unknown, France, 1891, 1892; Paris, Unknown, France, 1892, 1895; Unknown, Unknown, Italy, Unknown, Unknown; Paris, Unknown, France, Unknown, 1899
+        run2: Paris, Unknown, France, 1886, 1890; Paris, Unknown, France, 1891, 1892; Paris, Unknown, France, 1892, 1895
+            evidence: Lycée Lakanal, Lycée Henri IV, École Normale Supérieure all in Paris; studied in Italy on scholarship
+Row 224 [IBN BĀJJA, NONE]: GOOD
+Row 225 [BAKER, HENRY]: 2 issue(s)
+    - DISAGREEMENT Patronage_Types
+        run1: Scientific Society
+            evidence: fellow of Royal Society 1741; Copley Medal 1744; first honorary secretary of Society for Encouragement of Arts
+        run2: Unknown
+            evidence: absent
+    - DISAGREEMENT Instruments
+        run1: Microscope; Bead Microscope
+            evidence: The Microscope Made Easy; examined and measured Leeuwenhoek's bead microscopes
+        run2: Microscope
+            evidence: especially noted for popularization of the use of the microscope; examined Leeuwenhoek's bead microscopes
+Row 226 [BAKER, JOHN GILBERT]: 3 issue(s)
+    - Means_of_Support: 'Drapery Business' should be mapped to 'Merchant'
+    - DISAGREEMENT Education_Locations
+        run1: Ackworth, Unknown, England, Unknown, Unknown; Bootham, York, England, Unknown, 1847
+        run2: Ackworth, Unknown, England, Unknown, Unknown; Bootham, York, Unknown, England, Unknown, 1847
+            evidence: attended Friends' School at Ackworth; transferred to Friends' School at Bootham, York; formal education ended in 1847
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Drapery Business
+            evidence: drapery business in Thirsk; lectured at London Hospital Medical School; lecturer at Chelsea Physic Garden; keeper of herbarium at Kew
+        run2: Academia; Merchant
+            evidence: drapery business in Thirsk; appointed first assistant in Kew Herbarium 1866; lectured at London Hospital Medical School 1869–1881; lecturer at Chelsea Physic Garden 1882; keeper of herbarium and library at Kew 1890–1899
+Row 227 [BAKEWELL, ROBERT]: 3 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Geology; Mineralogy; Natural History
+            evidence: geology; working as a mineralogical surveyor and teaching mineralogy and geology
+        run2: Geology; Mineralogy
+            evidence: geology; mineralogy; working as mineralogical surveyor and teaching mineralogy and geology
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Industry
+            evidence: working as a mineralogical surveyor and teaching mineralogy and geology
+        run2: Academia; Patronage
+            evidence: working as a mineralogical surveyor and teaching mineralogy and geology
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: Geological Society of London
+            evidence: one was published by the Geological Society of London, to which Bakewell was never admitted as a member
+        run2: None
+            evidence: one article published by Geological Society of London, to which Bakewell was never admitted as a member
+Row 228 [AL-BAKRĪ, NONE]: GOOD
+Row 229 [BALANDIN, ALEKSEY]: GOOD
+Row 230 [BALARD, ANTOINE JÉROME]: 1 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Apothecary
+            evidence: préparateur roles, succeeded Anglada, chairs at Sorbonne and Collège de France
+        run2: Academia; Pharmacy
+            evidence: préparateur positions, succeeded Anglada, Sorbonne chair, Collège de France chair
+Row 231 [BALBIANI, EDOUARD-GÉRARD]: GOOD
+Row 232 [BALBUS, NONE]: GOOD
+Row 233 [BALDI, BERNARDINO]: GOOD
+Row 234 [BALFOUR, FRANCIS MAITLAND]: GOOD
+Row 235 [BALFOUR, ISAAC BAYLEY]: GOOD
+Row 236 [BALFOUR, JOHN HUTTON]: 2 issue(s)
+    - DISAGREEMENT Father_Occupation
+        run1: Physician
+            evidence: Andrew Balfour, an army surgeon who became a printer and publisher
+        run2: Physician; Publisher
+            evidence: army surgeon who became a printer and publisher
+    - DISAGREEMENT Education_Locations
+        run1: Edinburgh, Unknown, Scotland, Unknown, Unknown; Edinburgh, Unknown, Scotland, Unknown, 1832; St. Andrews, Unknown, Scotland, Unknown, Unknown; Paris, Unknown, France, 1832, 1834
+        run2: Edinburgh, Unknown, Scotland, Unknown, Unknown; Edinburgh, Unknown, Scotland, Unknown, Unknown; St. Andrews, Unknown, Scotland, Unknown, Unknown; Paris, Unknown, France, Unknown, Unknown
+Row 237 [BALIANI, GIOVANNI BATTISTA]: GOOD
+Row 238 [BALMER, JOHANN JAKOB]: 2 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: Not Specified; Not Specified; University of Karlsruhe; University of Berlin; University of Basel
+        run2: University of Karlsruhe; University of Berlin; University of Basel
+    - DISAGREEMENT Education_Locations
+        run1: Liestal, Unknown, Switzerland, Unknown, Unknown; Basel, Unknown, Switzerland, Unknown, Unknown; Karlsruhe, Unknown, Germany, Unknown, Unknown; Berlin, Unknown, Germany, Unknown, Unknown; Basel, Unknown, Switzerland, Unknown, 1849
+            evidence: district school Liestal, secondary school Basel, studied Karlsruhe and Berlin, doctorate Basel 1849
+        run2: Karlsruhe, Unknown, Germany, Unknown, Unknown; Berlin, Unknown, Germany, Unknown, Unknown; Basel, Unknown, Switzerland, Unknown, 1849
+            evidence: studied mathematics at Karlsruhe and Berlin; doctorate at Basel 1849
+Row 239 [BAMBERGER, EUGEN]: 1 issue(s)
+    - DISAGREEMENT Education_Locations
+        run1: Breslau, Unknown, Germany, 1875, Unknown; Heidelberg, Unknown, Germany, 1876, 1876; Berlin, Unknown, Germany, Unknown, Unknown
+            evidence: entered Breslau 1875; studied Heidelberg summer 1876; worked Berlin with Liebermann and Hofmann
+        run2: Breslau, Unknown, Germany, 1875, Unknown; Heidelberg, Unknown, Germany, 1876, Unknown; Berlin, Unknown, Germany, Unknown, Unknown
+Row 240 [BANACH, STEFAN]: 1 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Schoolmastering
+            evidence: from age fifteen supported himself by private lessons; appointed lecturer 1919; associate professor; full professor 1927; dean 1939-1941; wrote college and secondary texts
+        run2: Academia
+            evidence: lecturer and professor at Institute of Technology and University of Lvov; wrote texts
+Row 241 [BANACHIEWICZ, THADDEUS]: 1 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: University of Warsaw; University of Göttingen; Pulkovo Observatory; Moscow University
+        run2: Warsaw University; University of Göttingen; Pulkovo Observatory; Moscow University
+Row 242 [BANCROFT, WILDER DWIGHT]: GOOD
+Row 243 [BANISTER, JOHN]: GOOD
+Row 244 [BANKS, JOSEPH]: 4 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: Harrow; Eton; Christ Church, Oxford
+        run2: Harrow School; Eton College; Christ Church, Oxford
+    - DISAGREEMENT Education_Locations
+        run1: Harrow, Unknown, England, 1752, 1756; Eton, Unknown, England, 1756, 1760; Oxford, Unknown, England, 1760, 1764
+            evidence: Harrow, Eton, Christ Church Oxford named; dates from entry
+        run2: Harrow, Unknown, England, 1752, 1756; Eton, Unknown, England, 1756, 1760; Oxford, Unknown, England, 1760, Unknown
+            evidence: entered Harrow 1752, transferred Eton 1756, entered Christ Church Oxford 1760; Israel Lyons came to Oxford to instruct Banks
+    - DISAGREEMENT Patronage_Types
+        run1: Court; Aristocrat
+            evidence: introduced to King George III 1771; friendship based on horticulture; made baronet 1781, knight 1795, Privy Council 1797
+        run2: Court; Government Official; Scientific Society
+            evidence: friendship with King George III from 1771; consulted on convict settlement; president Royal Society
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: Royal Society of London; Linnean Society; Royal Institution; Institute of France
+            evidence: elected fellow Royal Society 1766; president 1778–1820; founder Linnean Society; assisted Royal Institution; Board of Longitude; elected Institute of France 1802
+        run2: Royal Society of London; Linnean Society; Royal Institution; Institute
+            evidence: elected fellow Royal Society 1766; president 1778–1820; one of founders Linnean Society; assisted founding Royal Institution; active in Board of Longitude; elected Institute 1802
+Row 245 [IBN AL-BANNĀ AL MARRĀKUSHĪ, NONE]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Mathematics; Algebra; Geometry; Astronomy
+            evidence: header states mathematics; body describes algebra, geometry, astronomy teaching and works
+        run2: Mathematics; Algebra; Geometry; Astronomy; Medicine
+            evidence: header: mathematics; body: taught arithmetic, algebra, geometry, astronomy; studied medicine
+Row 246 [BANTI, GUIDO]: GOOD
+Row 247 [BANTING, FREDERICK GRANT]: 1 issue(s)
+    - DISAGREEMENT Patronage_Types
+        run1: Government Official; Academic
+            evidence: Macleod gave him place to work; Parliament awarded annuity
+        run2: Government Official; Scientific Society
+            evidence: Macleod provided laboratory support; Parliament awarded annuity; institute established
+Row 248 [BANŪ MŪSĀ, NONE]: 1 issue(s)
+    - DISAGREEMENT Instruments
+        run1: Hinged Rules Instrument
+            evidence: constructed an instrument from hinged rules for two mean proportionals
+        run2: Hinged Rules
+            evidence: constructed instrument from hinged rules for mean proportionals
+Row 249 [BÁRÁNY, ROBERT]: GOOD
+Row 250 [BARANZANO, GIOVANNI ANTONIO]: 2 issue(s)
+    - DISAGREEMENT Alt_Name
+        run1: Redento Baranzano; Giovanni Antonio Baranzano
+            evidence: took his vows as a Barnabite and assumed the name Redento
+        run2: Redento; Giovanni Antonio Baranzano
+            evidence: took vows as a Barnabite and assumed the name Redento
+    - DISAGREEMENT Education_Institution
+        run1: Not Specified; Not Specified; Not Specified; Not Specified
+        run2: Crevalcuore; Vercelli; Novara; Milan
+Row 251 [BARBA, ALVARO ALONSO]: GOOD
+Row 252 [BARBIER, JOSEPH-ÉMILE]: 4 issue(s)
+    - DISAGREEMENT Religion_Affiliation
+        run1: Unknown
+        run2: Catholic
+            evidence: attempted to enter a religious order in 1865
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Mathematics; Astronomy; Geometry; Calculus
+            evidence: mathematics, astronomy in header; spherical geometry, trigonometry, infinitesimal calculus, geometry, polyhedra, integral calculus, number theory in body
+        run2: Mathematics; Geometry; Calculus; Astronomy; Spherical Geometry; Infinitesimal Calculus
+            evidence: mathematics, astronomy in header; spherical geometry, infinitesimal calculus, geometry, polyhedra, integral calculus, number theory in body
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Government
+            evidence: taught mathematics at lycée of Nice; assistant astronomer at Paris Observatory; financial help from Academy foundation
+        run2: Academia; Patronage
+            evidence: taught mathematics at lycée of Nice; assistant astronomer at Paris Observatory; financial help from Academy foundation
+    - DISAGREEMENT Patronage_Types
+        run1: Government Official; Academic
+            evidence: Le Verrier offered position; Bertrand secured financial help from foundation
+        run2: Government Official; Scientist
+            evidence: Le Verrier offered position; Bertrand secured financial support
+Row 253 [BARBOUR, HENRY]: 1 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Academia
+            evidence: taught pharmacology at Yale, McGill, Louisville, and Yale again
+        run2: Academia; Medicine
+            evidence: entry lists teaching positions at Yale, McGill, Louisville, Yale again
+Row 254 [BARCHUSEN, JOHANN CONRAD]: 1 issue(s)
+    - DISAGREEMENT Patronage_Types
+        run1: Government Official
+            evidence: city council granted permission, laboratory, salary, title, promotion
+        run2: Government Official; City Magistrate
+            evidence: city council granted permission, laboratory, salary, and title
+Row 255 [BARCLAY, JOHN]: 1 issue(s)
+    - DISAGREEMENT Religion_Affiliation
+        run1: Protestant
+            evidence: acted as preacher in the Church of Scotland
+        run2: Presbyterian
+            evidence: licensed preacher in the Church of Scotland
+Row 256 [BARCROFT, JOSEPH]: 2 issue(s)
+    - DISAGREEMENT Education_Degrees
+        run1: B.S.; B.A.
+            evidence: took B.Sc. at University of London; graduated 1896 from King's College Cambridge studying natural science
+        run2: B.Sc.; B.A.
+            evidence: took B.Sc. at University of London; graduated 1896 from King's College, Cambridge studying natural science
+    - DISAGREEMENT Education_Locations
+        run1: Cambridge, Unknown, England, 1888, Unknown; London, Unknown, England, Unknown, Unknown; Cambridge, Unknown, England, Unknown, 1896
+            evidence: Sent to Leys School Cambridge 1888; B.Sc. University of London; entered King's College Cambridge; graduated 1896
+        run2: Cambridge, Unknown, England, 1888, Unknown; London, Unknown, England, Unknown, Unknown; Cambridge, Unknown, England, 1893, 1896
+            evidence: Sent to Leys School Cambridge 1888; took B.Sc. University of London while student at Leys; entered King's College Cambridge 1893 after year off; graduated 1896
+Row 257 [BARKHAUSEN, HEINRICH GEORG]: GOOD
+Row 258 [BARKLA, CHARLES GLOVER]: 7 issue(s)
+    - Religion_Affiliation: 'Methodist' should be mapped to 'Wesleyan'
+    - Education_Degrees: 'B.Sc.' should be mapped to 'B.S.'
+    - Education_Degrees: 'M.Sc.' should be mapped to 'M.S.'
+    - DISAGREEMENT Education_Institution
+        run1: Liverpool Institute; University College Liverpool; Trinity College, Cambridge; King's College, Cambridge; University of Liverpool
+        run2: Liverpool Institute; University College, Liverpool; Trinity College, Cambridge; King's College, Cambridge; University of Liverpool
+    - DISAGREEMENT Education_Degrees
+        run1: B.Sc.; M.Sc.; D.Sc.
+            evidence: B.Sc. 1898, M.Sc. 1899, D.Sc. 1904 all explicitly named
+        run2: B.Sc.; M.Sc.; B.A.; D.Sc.
+            evidence: B.Sc. examination 1898; M.Sc. in 1899; Cambridge B.A.; Liverpool's D.Sc. in 1904
+    - DISAGREEMENT Education_Locations
+        run1: Liverpool, Unknown, England, Unknown, Unknown; Liverpool, Unknown, England, 1895, 1899; Cambridge, Unknown, England, 1899, 1901; Cambridge, Unknown, England, 1901, 1902; Liverpool, Unknown, England, 1902, 1904
+            evidence: entry names all institutions and dates attended
+        run2: Liverpool, Lancashire, England, Unknown, Unknown; Liverpool, Lancashire, England, 1895, 1899; Cambridge, Unknown, England, 1899, 1901; Cambridge, Unknown, England, 1901, 1902; Liverpool, Lancashire, England, 1902, 1905
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Physics; Optics; Electricity
+            evidence: header lists physics; entry details X-ray work, optics, electricity
+        run2: Physics; Optics
+            evidence: physics; secondary X rays; polarization; characteristic X-ray spectra; Nobel Prize for physics for 1917
+Row 259 [BARLOW, PETER]: GOOD
+Row 260 [BARLOW, WILLIAM]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Crystallography; Mathematics; Chemistry; Mineralogy
+            evidence: header line and sustained focus throughout entry
+        run2: Crystallography; Mathematics; Mineralogy
+            evidence: header line and body
+Row 261 [BARNARD, EDWARD EMERSON]: GOOD
+Row 262 [BAROCIUS, FRANCISCUS]: GOOD
+Row 263 [BARRANDE, JOACHIM]: GOOD
+Row 264 [BARRELL, JOSEPH]: GOOD
+Row 265 [BARRESWIL, CHARLES-LOUIS]: 1 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Industry; Government
+            evidence: professor at École Municipale Turgot and École Supérieure de Commerce; inspector of child labor
+        run2: Academia; Industry
+            evidence: professor of chemistry at École Municipale Turgot and École Supérieure de Commerce; industrial chemistry work
+Row 266 [BARROIS, CHARLES]: 2 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Academia
+            evidence: assistant at Faculté des Sciences Lille 1871; lecturer 1878; professeur adjoint 1888; director Institute of Geology Lille 1902; retired 1926
+        run2: Academia; Personal Means
+            evidence: assistant at Faculté des Sciences 1871; lecturer 1878; professeur adjoint 1888; director of Institute of Geology 1902; personal fortune facilitated research
+    - DISAGREEMENT Patronage_Types
+        run1: Scientist
+            evidence: Jules Gosselet's devoted disciple half a century; James Hall developed paternal affection, took him to United States
+        run2: Academic; Scientist
+            evidence: Jules Gosselet's devoted disciple for half a century; Hébert supervised thesis; James Hall developed paternal affection and conducted tours
+Row 267 [BARROW, ISAAC]: 1 issue(s)
+    - DISAGREEMENT Patronage_Types
+        run1: Court; Government Official
+            evidence: rewarded with chair upon Restoration of Charles II; appointed royal chaplain; chosen by king for mastership
+        run2: Court
+            evidence: rewarded with chair upon restoration of Charles II; appointed royal chaplain; king's choice for mastership
+Row 268 [BARRY, MARTIN]: GOOD
+Row 269 [BARTELS, JULIUS]: GOOD
+Row 270 [BARTHEZ, PAUL-JOSEPH]: 1 issue(s)
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: Académie des Sciences; Société Royale de Médecine; Institut National
+            evidence: membership in Académie des Sciences, Société Royale de Médecine, Institut National
+        run2: Académie des Sciences; Société Royale de Médecine
+            evidence: membership in the Académie des Sciences and the Société Royale de Médecine
+Row 271 [BARTHOLIN, CASPAR]: 1 issue(s)
+    - DISAGREEMENT Alt_Name
+        run1: None
+        run2: Casper Bartholin
+            evidence: inferred from period naming conventions
+Row 272 [BARTHOLIN, ERASMUS]: GOOD
+Row 273 [BARTHOLIN, THOMAS]: GOOD
+Row 274 [BARTOLI, DANIELLO]: GOOD
+Row 275 [BARTOLOTTI, GIAN GIACOMO]: GOOD
+Row 276 [BARTON, BENJAMIN SMITH]: 1 issue(s)
+    - DISAGREEMENT Education_Locations
+        run1: York, Pennsylvania, United States, Unknown, Unknown; Edinburgh, Unknown, Scotland, 1786, 1787; Lisbon, Unknown, Portugal, Unknown, Unknown
+            evidence: York academy; University of Edinburgh 1786–1787; Lisbon Academy
+        run2: York, Pennsylvania, Unknown, United States, Unknown, Unknown; Edinburgh, Unknown, Scotland, 1786, 1787; Lisbon, Unknown, Portugal, Unknown, Unknown
+            evidence: academy in York, Pennsylvania; University of Edinburgh 1786–1787; Lisbon Academy
+Row 277 [BARTRAM, JOHN]: 1 issue(s)
+    - DISAGREEMENT Patronage_Types
+        run1: Aristocrat; Scientist; Government Official
+            evidence: dukes of Richmond, Norfolk, Argyll, and Bedford; Lord Petre; Sir Hans Sloane; Peter Collinson; named king's botanist in 1765
+        run2: Court; Aristocrat; Scientist
+            evidence: Peter Collinson as principal patron; dukes and lords enriched gardens with his plants; named king's botanist
+Row 278 [BARTRAM, WILLIAM]: GOOD
+Row 279 [BARUS, CARL]: 1 issue(s)
+    - DISAGREEMENT Instruments
+        run1: Fog Chamber; Thermocouple
+            evidence: thermocouples for temperature measurement; fog chamber for condensation studies
+        run2: Fog Chamber
+            evidence: fog chamber for studying condensation
+Row 280 [BASSANI, FRANCESCO]: GOOD
+Row 281 [BASSI, AGOSTINO MARIA]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Natural History; Botany; Medicine; Mycology; Parasitology; Agriculture
+            evidence: header lists 'law, agriculture, natural science'; entry emphasizes fungal parasites, disease, silkworms, contagion
+        run2: Natural History; Mycology; Medicine; Agriculture
+            evidence: silkworm disease research, fungal parasite discovery, agricultural interests, contagion theory
+Row 282 [BASSLER, RAYMOND SMITH]: GOOD
+Row 283 [BASSO, SEBASTIAN]: GOOD
+Row 284 [BASTIAN, HENRY CHARLTON]: GOOD
+Row 285 [BATAILLON, JEAN EUGÈNE]: 2 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: Collège d'Arbois; Lycée of Belfort; Lycée of Lyons; University of Lyons
+        run2: Collège d'Arbois; Lycée de Belfort; Lycée of Lyons; University of Lyons
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Biology; Zoology; Embryology
+            evidence: header lists 'biology, zoology'; embryology central to work
+        run2: Biology; Zoology; Embryology; Comparative Anatomy
+            evidence: header lists 'biology, zoology'; text emphasizes embryology and comparative anatomy
+Row 286 [BATEMAN, HARRY]: 4 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: Trinity College, Cambridge; Johns Hopkins University
+        run2: Manchester Grammar School; Trinity College, Cambridge; Johns Hopkins University
+    - DISAGREEMENT Education_Locations
+        run1: Cambridge, Unknown, England, Unknown, 1903; Baltimore, Maryland, United States, 1912, 1913
+            evidence: Trinity College, Cambridge; Johns Hopkins from 1912 to 1917
+        run2: Manchester, Unknown, England, Unknown, Unknown; Cambridge, Unknown, England, Unknown, 1906; Baltimore, Maryland, United States, 1912, 1913
+            evidence: Manchester Grammar School, Trinity College Cambridge (B.A. 1903, M.A. 1906), Johns Hopkins (Ph.D. 1913)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Mathematics; Mathematical Physics; Physics; Aerodynamics; Hydrodynamics
+            evidence: mathematics, mathematical physics; partial differential equations; electromagnetic equations; integral equations; hydrodynamics and aerodynamics
+        run2: Mathematics; Mathematical Physics; Physics; Aeronautics; Hydrodynamics
+            evidence: header: mathematics, mathematical physics; body: partial differential equations, electromagnetic theory, integral equations, hydrodynamics, aerodynamics
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: Royal Society; National Academy of Sciences
+            evidence: fellow of the Royal Society in 1928; member of the U.S. National Academy of Sciences in 1930; vice-president of the American Mathematical Society in 1935
+        run2: Royal Society; National Academy of Sciences; American Mathematical Society
+            evidence: fellow Royal Society 1928, National Academy of Sciences 1930, vice-president American Mathematical Society 1935, Gibbs lecture 1943
+Row 287 [BATES, HENRY WALTER]: 3 issue(s)
+    - DISAGREEMENT Father_Is_Wealthy
+        run1: -1
+        run2: 0
+            evidence: no indication of wealth; apprenticed to manufacturer, modest circumstances
+    - DISAGREEMENT Patronage_Types
+        run1: Unknown
+            evidence: absent
+        run2: Scientist; Government Official
+            evidence: Darwin encouraged and reviewed his work; Emperor of Brazil bestowed Order of the Rose; Doubleday of British Museum offered encouragement
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: Entomological Society of London; Linnean Society; Zoological Society; Royal Society; Royal Geographical Society
+            evidence: elected to Entomological Society of London 1861; fellow of Linnean Society 1871; fellow of Zoological Society 1863; fellow of Royal Society 1881; assistant secretary of Royal Geographical Society from 1864
+        run2: Entomological Society of London; Linnean Society; Zoological Society; Royal Society
+            evidence: elected Entomological Society 1861, president 1868/1869/1878; fellow Linnean 1871; fellow Zoological 1863; fellow Royal Society 1881; secretary Geographical Section British Association
+Row 288 [BATESON, WILLIAM]: GOOD
+Row 289 [BATHER, FRANCIS ARTHUR]: GOOD
+Row 290 [AL-BATTĀNĪ, NONE]: 1 issue(s)
+    - Dates_Lifespan (71) != Died_Year - Born_Year (1173)
+Row 291 [IBN BAṬṬŪṬA, NONE]: GOOD
+Row 292 [BAUDRIMONT, ALEXANDRE ÉDOUARD]: 1 issue(s)
+    - DISAGREEMENT Education_Degrees
+        run1: M.D.; B.S.; Ph.D.
+            evidence: medical degree 1831, first-class pharmacy degree 1834, licentiate 1839, doctorate 1847
+        run2: M.D.; B.S.; Licentiate; Ph.D.
+            evidence: medical degree 1831, first-class pharmacy degree 1834, licentiate 1839, doctorate 1847
+Row 293 [BAUER, EDMOND]: GOOD
+Row 294 [BAUER, FERDINAND LUCAS]: GOOD
+Row 295 [BAUER, FRANZ ANDREAS]: GOOD
+Row 296 [BAUER, LOUIS]: GOOD
+Row 297 [BAUHIN, GASPARD]: 2 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: University of Basel; University of Padua; University of Montpellier; Not Specified; Not Specified; University of Bologna
+        run2: University of Basel; University of Padua; University of Montpellier; University of Tübingen
+    - DISAGREEMENT Education_Locations
+        run1: Basel, Unknown, Switzerland, 1572, 1575; Padua, Unknown, Italy, 1577, 1579; Montpellier, Unknown, France, 1579, 1579; Paris, Unknown, France, 1579, 1580; Tübingen, Unknown, Germany, 1580, 1580; Bologna, Unknown, Italy, Unknown, Unknown
+            evidence: entry names Basel, Padua, Montpellier, Paris, Tübingen, Bologna with dates
+        run2: Basel, Unknown, Switzerland, 1572, 1575; Padua, Unknown, Italy, 1577, 1579; Montpellier, Unknown, France, 1579, Unknown; Tübingen, Unknown, Germany, 1580, 1580
+            evidence: University of Basel 1572; Padua October 1577 for eighteen months; Montpellier spring 1579; Paris 1579; Tübingen May 1580
+Row 298 [BAUHIN, JEAN]: 3 issue(s)
+    - DISAGREEMENT Died_Country
+        run1: Württemberg–Montbéliard
+            evidence: header: d. Montbéliard, principality of Württemberg–Montbéliard
+        run2: principality of Württemberg–Montbéliard
+            evidence: d. Montbéliard, principality of Württemberg–Montbéliard
+    - DISAGREEMENT Education_Degrees
+        run1: M.D.
+            evidence: assumed M.D. at Montpellier but not supported by university records; established medical practice 1563
+        run2: None
+            evidence: university records do not support M.D. assumption
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Botany; Natural History; Medicine; Geology
+            evidence: header: botany; entry emphasizes botany as primary interest; also natural history, medicine, geology/fossils
+        run2: Botany; Natural History; Medicine
+            evidence: header: botany; body: Historia plantarum, alpine flora, mineral waters, fossils, insects
+Row 299 [BAUMÉ, ANTOINE]: GOOD
+Row 300 [BAUMHAUER, EDOUARD HENRI]: GOOD
+Row 301 [BAUMHAUER, HEINRICH ADOLF]: 2 issue(s)
+    - DISAGREEMENT Education_Degrees
+        run1: Ph.D.
+            evidence: earned his degree in 1869 with dissertation
+        run2: None
+            evidence: earned his degree in 1869; no degree type named
+    - DISAGREEMENT Means_of_Support
+        run1: Academia
+            evidence: teaching posts at Lüdinghausen and University of Fribourg
+        run2: Academia; Schoolmastering
+            evidence: teaching posts; teacher at agricultural school 1873–1896; professor at Fribourg 1896
+Row 302 [BAYEN, PIERRE]: 1 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Apothecary; Government; Academia
+            evidence: placed with pharmacist Faciot; apothicaire-major des camps et armées du roi 1763–1793; pharmacien inspecteur 1793; Institut de France member 1795
+        run2: Pharmacy; Government; Academia
+            evidence: commissioned by government 1753; chief pharmacist on army expedition 1755; apothicaire-major 1763–1793; pharmacien inspecteur 1793
+Row 303 [BAYER, JOHANN]: GOOD
+Row 304 [BAYES, THOMAS]: 1 issue(s)
+    - Religion_Affiliation: 'Nonconformist' should be mapped to 'Protestant'
+Row 305 [BAYLAK AL-QIBJĀQĪ, NONE]: 1 issue(s)
+    - DISAGREEMENT Instruments
+        run1: Magnetic Needle Compass
+            evidence: first Arabic author to describe magnetic needle as ship's compass; needle through straw floated in water
+        run2: Magnetic Needle; Compass
+            evidence: magnetic needle as ship's compass; hollow iron fish compasses reported
+Row 306 [BAYLISS, LEONARD ERNEST]: 3 issue(s)
+    - DISAGREEMENT Father_Is_Wealthy
+        run1: 1
+            evidence: parents entertained generously, attracted many overseas physiologists, had private laboratory and workshop
+        run2: -1
+            evidence: inferred
+    - DISAGREEMENT Education_Institution
+        run1: University College School; Trinity College, Cambridge; University of Cambridge; University of Pennsylvania
+        run2: University College School; Trinity College, Cambridge
+    - DISAGREEMENT Education_Locations
+        run1: London, Unknown, England, Unknown, Unknown; Cambridge, Unknown, England, 1922, 1922; Cambridge, Unknown, England, 1922, 1925; Philadelphia, Unknown, United States, 1928, 1929
+            evidence: University College School, Trinity College Cambridge, University of Pennsylvania 1928-1929
+        run2: London, Unknown, England, Unknown, Unknown; Cambridge, Unknown, England, 1922, 1925
+            evidence: University College School mentioned; Trinity College, Cambridge with 1922 graduation and 1925 Ph.D.
+Row 307 [BAYLISS, WILLIAM]: 2 issue(s)
+    - Education_Degrees: 'B.Sc.' should be mapped to 'B.S.'
+    - DISAGREEMENT Education_Locations
+        run1: London, Unknown, England, 1880, 1882; Oxford, Unknown, England, 1885, 1888
+            evidence: University College London 1880–1882; Wadham College Oxford 1885–1888
+        run2: London, Unknown, England, 1880, 1888; Oxford, Unknown, England, 1885, 1888
+            evidence: University College London 1880–1888; Wadham College Oxford 1885–1888
+Row 308 [IBN AL-BAYṬĀR, NONE]: GOOD
+Row 309 [BEALE, LIONEL SMITH]: 1 issue(s)
+    - DISAGREEMENT Education_Degrees
+        run1: B.M.
+            evidence: graduated M.B. from University of London in 1851
+        run2: M.B.
+            evidence: graduated M.B. from University of London in 1851
+Row 310 [BEAUGRAND, JEAN]: GOOD
+Row 311 [BEAUMONT, WILLIAM]: GOOD
+Row 312 [BECCARI, NELLO]: 1 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: University of Florence
+        run2: Unknown
+Row 313 [BECCARIA, GIAMBATISTA]: 2 issue(s)
+    - DISAGREEMENT Alt_Name
+        run1: Francesco Beccaria; Giovanni Battista Beccaria
+            evidence: christened Francesco; Giovanni Battista is Italian form
+        run2: Francesco Beccaria
+            evidence: christened Francesco
+    - DISAGREEMENT Instruments
+        run1: Electrical thermometer; Parallel plate condenser
+            evidence: electrical thermometer invention usually wrongly ascribed to Kinnersley; constructed parallel plate condensers
+        run2: Electrical Thermometer; Parallel Plate Condenser
+            evidence: electrical thermometer invention; parallel plate condensers constructed
+Row 314 [BECHER, JOHANN JOACHIM]: GOOD
+Row 315 [BECKE, FRIEDRICH]: GOOD
+Row 316 [BECKER, GEORGE FERDINAND]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Geology; Geophysics; Geochemistry; Mining Geology
+            evidence: geology header; geophysical and geochemical approaches; mining geology; earth structure papers
+        run2: Geology; Geophysics; Geochemistry; Mining Geology; Mineralogy
+            evidence: geology header; geophysical and geochemical approaches; mining geology; mineralogy evident in Comstock Lode and mining district studies
+Row 317 [BECKMANN, ERNEST OTTO]: GOOD
+Row 318 [BECKMANN, JOHANN]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Agriculture; Chemistry; Physics; Natural History; Botany; Mineralogy; Technology; Mathematics; Philology
+            evidence: header lists economy and technology; body emphasizes agriculture, technology, history of inventions, chemistry, physics, natural history, botany, mineralogy, mathematics, philology
+        run2: Agriculture; Chemistry; Physics; Mathematics; Natural History; Botany; Mineralogy; Technology; Engineering
+            evidence: header lists 'economy, technology'; body emphasizes agriculture, technology, history of inventions, chemistry, physics, mathematics, natural history, botany, mineralogy
+Row 319 [BECQUEREL, ALEXANDRE-EDMOND]: 1 issue(s)
+    - DISAGREEMENT Instruments
+        run1: Electrostatic balance; Actinometer; Phosphoroscope
+            evidence: entry names electrostatic balance (father's), actinometer, and phosphoroscope
+        run2: Actinometer; Phosphoroscope
+            evidence: entry describes actinometer and phosphoroscope inventions
+Row 320 [BECQUEREL, ANTOINE-CÉSAR]: 3 issue(s)
+    - DISAGREEMENT Alt_Name
+        run1: A. C. Becquerel
+        run2: None
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Chemistry; Electrochemistry; Physics; Mineralogy; Thermoelectricity
+            evidence: electrochemistry in header; mineralogy, piezoelectricity, thermoelectricity, voltaic cell, electrolysis in body
+        run2: Physics; Electrochemistry; Mineralogy; Thermoelectricity
+            evidence: electrochemistry; mineralogy; piezoelectric effect; thermoelectricity; voltaic cell; mineral synthesis
+    - DISAGREEMENT Patronage_Types
+        run1: Government Official; Scientific Society
+            evidence: elected Académie des Sciences 1829; appointed chair at Muséum 1838
+        run2: Government Official
+            evidence: appointed sous inspecteur of École Polytechnique; chair founded 1838
+Row 321 [BECQUEREL, HENRI]: GOOD
+Row 322 [BECQUEREL, PAUL]: GOOD
+Row 323 [BEDDOE, JOHN]: 2 issue(s)
+    - DISAGREEMENT Education_Institution
+        run1: University College London; University of Edinburgh; University of Vienna
+        run2: University College London; University of Edinburgh
+    - DISAGREEMENT Education_Locations
+        run1: London, Unknown, England, Unknown, Unknown; Edinburgh, Unknown, Scotland, Unknown, 1853; Vienna, Unknown, Austria, Unknown, Unknown
+            evidence: studied medicine at University College, London, and the University of Edinburgh; went to Vienna to complete his medical training
+        run2: London, Unknown, England, Unknown, Unknown; Edinburgh, Unknown, Scotland, Unknown, 1853
+            evidence: University College London and University of Edinburgh named; Vienna mentioned for completion of training but no formal degree
+Row 324 [BEDDOES, THOMAS]: 3 issue(s)
+    - Father_Occupation: 'Tanner' should be mapped to 'Artisan'
+    - DISAGREEMENT Father_Occupation
+        run1: Tanner
+            evidence: father was a tanner
+        run2: Artisan
+            evidence: father was a tanner
+    - DISAGREEMENT Father_Is_Wealthy
+        run1: -1
+        run2: 0
+            evidence: no indication of wealth
+Row 325 [BEDE, NONE]: GOOD
+Row 326 [BEECKMAN, ISAAC]: 2 issue(s)
+    - DISAGREEMENT Religion_Affiliation
+        run1: Reformed
+            evidence: In preparation for a career in the Reformed Church
+        run2: Protestant
+            evidence: preparation for a career in the Reformed Church; Brownist influence
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Physics; Mechanics; Astronomy; Mathematics; Engineering; Hydraulics; Magnetism
+            evidence: physics, mechanics; astronomy; mathematics; engineering; hydraulics; magnetism
+        run2: Physics; Mechanics; Astronomy; Mathematics; Engineering; Hydraulics; Meteorology
+            evidence: physics, mechanics (header); astronomy, mathematics, engineering, hydraulics, meteorology (body)
+Row 327 [BEER, WILHELM]: 3 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Merchant
+            evidence: banker by profession
+        run2: Patronage; Merchant
+            evidence: banker by profession; private observatory owner
+    - DISAGREEMENT Patronage_Types
+        run1: Unknown
+        run2: None
+    - DISAGREEMENT Instruments
+        run1: Fraunhofer Refractor; Micrometer
+            evidence: private observatory with Fraunhofer refractor 9.4-centimeter; micrometric measurements
+        run2: Refractor; Micrometer
+            evidence: Fraunhofer refractor 9.4-centimeter; micrometrically measured lunar features
+Row 328 [BEEVOR, CHARLES EDWARD]: 1 issue(s)
+    - Education_Degrees: 'L.S.A.' should be mapped to 'M.B.'
+Row 329 [BÉGHIN, HENRI]: GOOD
+Row 330 [BEGUIN, JEAN]: GOOD
+Row 331 [BÉGUYER DE CHANCOURTOIS, ALEXANDRE-ÉMILE]: GOOD
+Row 332 [BEHAIM, MARTIN]: 1 issue(s)
+    - DISAGREEMENT Patronage_Types
+        run1: Government Official
+            evidence: member of Council of Mathematicians created by John II; entrusted with official missions
+        run2: Court
+            evidence: member of Council of Mathematicians created by John II; entrusted with official missions
+Row 333 [BEHRING, EMIL]: GOOD
+Row 334 [BEILSTEIN, KONRAD FRIEDRICH]: GOOD
+Row 335 [BEKETOV, NIKOLAI]: GOOD
+Row 336 [BEKHTEREV, VLADIMIR]: 3 issue(s)
+    - DISAGREEMENT First_Name
+        run1: Vladimir
+            evidence: NAME heading: Vladimir Mikhailovich
+        run2: Vladimir Mikhailovich
+            evidence: heading 'Bekhterev, Vladimir Mikhailovich'
+    - DISAGREEMENT Alt_Name
+        run1: Vladimir Mikhailovich Bekhterev
+            evidence: Full patronymic form in heading
+        run2: V. M. Bekhterev
+            evidence: inferred from Russian naming convention
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Neurology; Anatomy; Physiology; Psychology; Psychiatry
+            evidence: neurology, psychology in header; anatomy and physiology of nervous system; psychiatry; reflexology
+        run2: Medicine; Neurology; Psychology; Anatomy; Physiology
+            evidence: header lists neurology, psychology; body describes neuroanatomy, physiology, anatomy
+Row 337 [BELAIEW, NICHOLAS TIMOTHY]: GOOD
+Row 338 [BÉLIDOR, BERNARD]: GOOD
+Row 339 [BELL, ALEXANDER GRAHAM]: 1 issue(s)
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: National Academy of Sciences; Smithsonian Institution; National Geographic Society
+            evidence: elected to National Academy of Sciences 1883; regent of Smithsonian 1898; organized National Geographic Society, president 1898-1903
+        run2: National Academy of Sciences; Smithsonian Institution
+            evidence: elected to National Academy of Sciences in 1883; appointed regent of Smithsonian Institution in 1898; president of National Geographic Society 1898-1903
+Row 340 [BELL, CHARLES]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Anatomy; Physiology; Neurology; Medicine
+            evidence: anatomy; functional anatomy of nervous system; spinal and cranial nerves; physiology
+        run2: Anatomy; Physiology; Neurology
+            evidence: anatomy stated in header; physiology and neurology evident from nerve function work
+Row 341 [BELL, ERIC TEMPLE]: GOOD
+Row 342 [BELL, ROBERT]: 1 issue(s)
+    - DISAGREEMENT Instruments
+        run1: Compass; Sextant; Rochon Micrometer
+            evidence: compass, sextant, boat log, and Rochon micrometer
+        run2: Compass; Sextant; Boat Log; Rochon Micrometer
+            evidence: compass, sextant, boat log, Rochon micrometer
+Row 343 [BELLANI, ANGELO]: 1 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Industry
+            evidence: member of Istituto Lombardo and Società Italiana; established thermometer factory in Milan 1808
+        run2: Academia; Industry; Church Life
+            evidence: member of academies; established thermometer factory; honorary canon position
+Row 344 [BELLARDI, LUIGI]: GOOD
+Row 345 [BELLARMINE, ROBERT]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Philosophy; Natural Philosophy; Theology
+            evidence: header lists theology, philosophy; natural philosophy studied at Roman College; cosmology and astronomy discussed
+        run2: Philosophy; Theology
+            evidence: natural philosophy studied at Roman College; theology; engagement with cosmology and scriptural interpretation in Galileo dispute
+Row 346 [BELLAVITIS, GIUSTO]: GOOD
+Row 347 [BELLEVAL, PIERRE]: GOOD
+Row 348 [BELLINI, LORENZO]: 1 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Physiology; Medicine; Anatomy; Mechanics
+            evidence: physiology, medical theory; anatomy; mechanical philosophy applied to physiology
+        run2: Physiology; Medicine; Anatomy; Iatromechanism
+            evidence: physiology, medical theory; anatomy; mechanical philosophy applied to physiology
+Row 349 [BELLINSGAUZEN, FADDEI]: GOOD
+Row 350 [BELON, PIERRE]: 3 issue(s)
+    - DISAGREEMENT Alt_Name
+        run1: Pierre Belon du Mans
+            evidence: entry refers to 'Pierre Belon du Mans'
+        run2: None
+    - DISAGREEMENT Education_Degrees
+        run1: Licentiate in Medicine
+            evidence: in 1560 obtained the licentiate in medicine from the Paris Faculty of Medicine
+        run2: B.A.
+            evidence: obtained licentiate in medicine 1560; never acquired doctorate
+    - DISAGREEMENT Means_of_Support
+        run1: Apothecary; Academia; Patronage
+            evidence: apothecary to Duprat and Cardinal de Tournon; studied at universities; pension from Charles IX
+        run2: Medicine; Apothecary; Patronage
+            evidence: apothecary to Duprat and Cardinal de Tournon; licentiate in medicine; pension from Charles IX
+Row 351 [BELOPOLSKY, ARISTARKH]: 2 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Patronage
+            evidence: worked at Moscow Observatory from 1879; appointed Pulkovo 1888; vice-director 1908–1916, director 1917–1919; academician 1903, 1906
+        run2: Academia
+            evidence: worked at Moscow Observatory 1879; Pulkovo Observatory 1888-1933 in various positions
+    - DISAGREEMENT Patronage_Types
+        run1: Government Official; Scientific Society
+            evidence: Bredikhin enlisted him at Moscow Observatory; Bredikhin became director at Pulkovo; joined Hale's International Union 1904
+        run2: Unknown
+            evidence: absent
+Row 352 [BELTRAMI, EUGENIO]: GOOD
+Row 353 [BENEDEN, EDOUARD]: GOOD
+Row 354 [BENEDEN, PIERRE-JOSEPH]: GOOD
+Row 355 [BENEDETTI, ALESSANDRO]: 2 issue(s)
+    - DISAGREEMENT Religion_Affiliation
+        run1: Unknown
+        run2: Catholic
+            evidence: inferred from Italian Renaissance context
+    - DISAGREEMENT Patronage_Types
+        run1: Unknown
+        run2: Government Official; Aristocrat
+            evidence: served Venice abroad in Greece, Crete, Melos, Dalmatian coast; friends high in Venetian nobility and government
+Row 356 [BENEDETTI, GIOVANNI BATTISTA]: 2 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Mathematics; Physics; Mechanics; Astronomy; Music
+            evidence: header 'mathematics, physics'; body discusses mechanics, hydrostatics, music theory, astronomy, perspective
+        run2: Mathematics; Physics; Astronomy; Music; Mechanics; Hydrostatics; Astrology
+            evidence: header lists 'mathematics, physics'; entry discusses astronomy, music mechanics, hydrostatics, astrology
+    - DISAGREEMENT Instruments
+        run1: Sundials
+            evidence: entry: 'constructed sundials mentioned in a later book on that subject'; 'De gnomonum...the most comprehensive treatise on the subject to that time'
+        run2: Sundial; Fountain
+            evidence: entry mentions 'constructed sundials' and 'designed and constructed various public and private works, such as sundials and fountains'
+Row 357 [BENEDICKS, CARL AXEL FREDRIK]: 2 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Metallography; Metallurgy; Physics; Chemistry; Geology
+            evidence: metallography header; metal microscopy, thermoelectrical phenomena, steel properties, meteoritic iron, superconductivity in body
+        run2: Metallography; Metallurgy; Physics; Chemistry; Microscopy
+            evidence: metallography; metal microscopy; thermoelectrical phenomena; physical properties of steel
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Government; Industry
+            evidence: appointed professor of physics at University of Stockholm 1910; director Swedish Institute of Metallography 1920; Laboratorium Benedicks
+        run2: Academia; Research Institution
+            evidence: appointed professor of physics at University of Stockholm 1910; director Swedish Institute of Metallography 1920 for fifteen years; Laboratorium Benedicks
+Row 358 [BENEDICT, FRANCIS GANO]: 2 issue(s)
+    - DISAGREEMENT Education_Locations
+        run1: Boston, Unknown, United States, 1888, 1889; Cambridge, Massachusetts, United States, 1889, 1894; Heidelberg, Unknown, Germany, 1894, 1895
+            evidence: Massachusetts College of Pharmacy, Harvard University, University of Heidelberg
+        run2: Boston, Unknown, United States, 1888, 1889; Cambridge, Unknown, United States, 1889, 1894; Heidelberg, Unknown, Germany, Unknown, 1895
+            evidence: Massachusetts College of Pharmacy; Harvard University; Heidelberg
+    - DISAGREEMENT Patronage_Types
+        run1: Government Official; Foundation
+            evidence: Carnegie Foundation trustees established nutrition laboratory; Department of Agriculture position
+        run2: Foundation
+            evidence: Carnegie Foundation trustees established nutrition laboratory under Benedict's direction
+Row 359 [BENIVIENI, ANTONIO]: 2 issue(s)
+    - Father_Occupation: 'Notary' should be mapped to 'Lawyer'
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Medicine; Pathological Anatomy; Surgery; Anatomy
+            evidence: header: pathological anatomy; entry emphasizes autopsies, pathological observations, and surgery
+        run2: Medicine; Anatomy; Surgery
+            evidence: header: pathological anatomy; entry emphasizes autopsies and pathological observations
+Row 360 [BENOIT, JUSTIN-MIRANDE RENÉ]: GOOD
+Row 361 [BENSLEY, ROBERT RUSSELL]: 2 issue(s)
+    - DISAGREEMENT Scientific_Disciplines
+        run1: Anatomy; Cytology; Histology; Physiology
+            evidence: anatomy stated in header; cytology, histology, physiology evident from work on cells and organelles
+        run2: Anatomy; Cytology; Physiology
+            evidence: anatomy in header; cell organelles, cytology, physiology throughout
+    - DISAGREEMENT Instruments
+        run1: Microscope; Freezing-Drying Apparatus
+            evidence: tissue staining expertise; freezing-drying technique modified 1934 with Gersh
+        run2: None
+            evidence: absent
+Row 362 [BENTHAM, GEORGE]: 1 issue(s)
+    - DISAGREEMENT Patronage_Types
+        run1: Unknown
+        run2: Scientific Society
+            evidence: Royal Horticultural Society secretary and Linnean Society president
+Row 363 [BENZENBERG, JOHANN FRIEDRICH]: 2 issue(s)
+    - DISAGREEMENT Means_of_Support
+        run1: Academia; Government; Personal Means
+            evidence: professor of mathematics at Lyceum in Düsseldorf 1805; directed land survey of duchy of Berg 1805-1810; devoted himself to science as private citizen
+        run2: Academia; Government; Patronage
+            evidence: professor of mathematics at Lyceum in Düsseldorf 1805; directed land survey of duchy of Berg; private citizen later
+    - DISAGREEMENT Patronage_Types
+        run1: Unknown
+        run2: Government Official
+            evidence: directed the land survey of the duchy of Berg
+Row 364 [BÉRARD, JACQUES ÉTIENNE]: GOOD
+Row 365 [BÉRARD, JOSEPH FRÉDÉRIC]: GOOD
+Row 366 [BERENGARIO DA CARPI, GIACOMO]: 2 issue(s)
+    - Father_Occupation: 'Surgeon' should be mapped to 'Physician'
+    - DISAGREEMENT Religion_Affiliation
+        run1: Unknown
+            evidence: absent
+        run2: Catholic
+            evidence: inferred from Italian Renaissance context and papal patronage
+Row 367 [BERG, LEV]: 1 issue(s)
+    - DISAGREEMENT Scientific_Societies_Membership
+        run1: Russian Geographical Society; All-Union Geographical Society; Academy of Sciences of the U.S.S.R.
+            evidence: Russian Geographical Society awarded him medal 1909 and 1915; Academy of Sciences elected him 1928 and 1946; president All-Union Geographical Society 1940–1950
+        run2: Russian Geographical Society; All-Union Geographical Society; Asiatic Society of India
+            evidence: Russian Geographical Society awarded medals; All-Union Geographical Society president 1940–1950; Asiatic Society of India awarded medal
+
+--- summary ---
+  clean rows:   179/367
+  rows flagged: 188
+  total issues: 343
+  most common:
+       71  DISAGREEMENT Scientific_Disciplines
+       43  DISAGREEMENT Education_Locations
+       42  DISAGREEMENT Patronage_Types
+       42  DISAGREEMENT Means_of_Support
+       32  DISAGREEMENT Education_Institution
+       21  DISAGREEMENT Instruments
+       17  DISAGREEMENT Alt_Name
+       17  DISAGREEMENT Scientific_Societies_Membership
+        9  DISAGREEMENT Education_Degrees
+        6  DISAGREEMENT Religion_Affiliation
+        5  DISAGREEMENT Father_Occupation
+        5  Education_Degrees

@@ -1,0 +1,50 @@
+Step 0: Set VOLUME and doc_ids in scraper.py, and run scraper.py
+
+Step 1: Set INPUT_CSV to Raw Volumes/raw_volXX.csv, and update VOLUME to the current volume
+
+Step 2: Run extract.py
+
+Step 3: Review failures_report.txt, and rerun/manually fill any failed figures
+
+Step 4: Run export_vocab.py to produce vocab.json
+
+Step 4: Import dsb_extracted.csv, raw_volXX.csv, dsb_validation.txt, vocab.json into review_tool.html
+
+Step 5: Human review with review_tool.html (upload vocab.json), make changes as necessary, export to
+        produce dsb_vocab_additions.json and extracted_reviewed.csv
+
+Step 6: Save copy of extracted_reviewed.csv to Archive (dsb_extracted_reviewed_volXX.csv)
+
+Step 7: Move dsb_vocab_additions.json into PyCharm, run apply_additions.py to fold updated vocab into vocab.py
+
+Step 8: Run build_prompt.py to fold new vocab into the prompt for next run
+
+Step 9: Run validate.py on extracted_reviewed.csv (SHOW_DISAGREEMENTS=FALSE), and make changes if necessary
+
+Step 10: Set VOLUME, and run extracted_reviewed.csv through geocoder.py
+
+Step 11: Human review with review_geocode.html (upload memory.json), make changes as necessary,
+         export to produce geocoded_reviewed.csv and a new memory.json for next run
+
+Step 12: Save copy of geocoded_reviewed.csv to Archive (dsb_geocoded_reviewed_volXX.csv)
+
+Step 13: Clean up geocoded_reviewed.csv, and add to the running database
+
+Step 14: Upload updated database to visualization
+
+
+Archive Files Explained:
+dsb_agreement_volXX.txt : by person, lists all categories that disagree between run1 and run2; shows output from run1 and run2 for comparison
+dsb_evidence_volXX.csv : in the same format as the database, lists AI agent's justification for each cell
+dsb_extracted_reviewed_volXX.csv : file produced after human review with review_tool.html but before geocoding
+dsb_extracted_volXX.csv : file produced by Claude API before human review
+dsb_failures_volXX.txt : lists any errors that occurred when running through Claude API
+dsb_geocode_volXX.txt : geocoding report from running geocoder.py
+dsb_geocoded_reviewed_volXX.csv file produced after human review with review_geocode.html, the final version with only one column per coordinate
+dsb_geocoded_volXX.csv : file produced by geocoder.py before human review (contains many coordinate columns)
+dsb_new_vocab_volXX.txt : lists all new non-canonical vocab terms that Claude API introduced
+dsb_validation_volXX.txt : comprehensive report with mechanical checks, disagreement checks, and output/evidence for both run1 and run2
+prompt_volXX.md : the prompt used by Claude API for volume XX; vocab appendices change between volumes
+
+
+

@@ -1,0 +1,1205 @@
+AGREEMENT REPORT  (2 runs/entry, temperature=0, model=claude-haiku-4-5, batch)
+Entries checked: 346
+Every disagreement across the compared fields is listed. Comparison ignores
+ordering and duplicates, so a mere reordering is not counted. Free-text
+'_Notes' and source fields are excluded (they vary in wording by design).
+
+FIELD VOLATILITY (entries where the runs disagreed on this field):
+  61/346  Scientific_Disciplines
+  38/346  Means_of_Support
+  35/346  Patronage_Types
+  33/346  Education_Locations
+  28/346  Education_Institution
+  21/346  Scientific_Societies_Membership
+  16/346  Instruments
+  16/346  Alt_Name
+  7/346  Education_Degrees
+  6/346  Religion_Affiliation
+  5/346  Father_Is_Wealthy
+  4/346  Father_Occupation
+  4/346  Dates_Born_Certain
+  4/346  Dates_Lifespan
+  2/346  Religion_Affiliation_Certain
+  2/346  First_Name
+  1/346  Gender
+  1/346  Died_Year
+  1/346  Born_Country
+
+PER-ENTRY DISAGREEMENTS (review these cells):
+
+=== Berger, Hans ===
+  Instruments:
+     run1: Lippmann capillary electrometer; Edelmann galvanometer; Einthoven string galvanometer
+     run2: Lippmann Capillary Electrometer; Edelmann Galvanometer; Einthoven String Galvanometer
+
+=== Berger, Johann Gottfried ===
+  Scientific_Disciplines:
+     run1: Medicine; Physiology; Anatomy; Botany; Iatrochemistry
+     run2: Medicine; Physiology; Anatomy; Botany; Iatrochemistry; Iatromechanics
+
+=== Bergius, Friedrich ===
+  Means_of_Support:
+     run1: Academia; Industry; Patronage
+     run2: Academia; Industry
+  Patronage_Types:
+     run1: Merchant
+     run2: Aristocrat
+
+=== Bergman, Torbern Olof ===
+  Scientific_Disciplines:
+     run1: Chemistry; Mineralogy; Analytical Chemistry; Crystallography; Physics; Astronomy; Entomology; Geography; Electricity
+     run2: Chemistry; Analytical Chemistry; Mineralogy; Crystallography; Entomology; Astronomy; Physics; Geography; Physical Geography; Electricity
+  Means_of_Support:
+     run1: Academia; Medicine
+     run2: Academia
+
+=== Bergson, Henri Louis ===
+  Religion_Affiliation:
+     run1: Agnostic; Catholic
+     run2: Agnostic
+
+=== Berkeley, Miles Joseph ===
+  Education_Institution:
+     run1: Christ's College, Cambridge
+     run2: Rugby School; Christ's College, Cambridge
+  Education_Locations:
+     run1: Cambridge, Unknown, England, 1821, 1825
+     run2: Rugby, Unknown, England, Unknown, Unknown; Cambridge, Unknown, England, 1821, 1825
+
+=== Bernard of Le Treille (Trilia) ===
+  Education_Institution:
+     run1: Not Specified; Not Specified; Not Specified; Not Specified; Not Specified; Not Specified; Not Specified; St.-Jacques
+     run2: Not Specified; Not Specified
+  Education_Locations:
+     run1: Montpellier, Unknown, France, Unknown, Unknown; Paris, Unknown, France, 1260, 1265; Montpellier, Unknown, France, 1266, 1268; Avignon, Unknown, France, 1267, 1274; Bordeaux, Unknown, France, 1271, 1271; Marseilles, Unknown, France, 1272, 1272; Toulouse, Unknown, France, 1273, 1276; Paris, Unknown, France, 1279, 1287
+     run2: Montpellier, Unknown, France, Unknown, Unknown; Paris, Unknown, France, 1260, 1265
+
+=== Bernard Silvestre (Bernardus Silvestris) ===
+  Scientific_Disciplines:
+     run1: Philosophy; Natural Philosophy; Mathematics
+     run2: Philosophy; Natural Philosophy; Literature
+
+=== Bernard of Trevisan ===
+  Gender:
+     run1: Male
+     run2: Unknown
+
+=== Bernard, Claude ===
+  Patronage_Types:
+     run1: Court; Government Official
+     run2: Court; Government Official; Academic
+
+=== Bernoulli,* Daniel ===
+  Education_Locations:
+     run1: Basel, Unknown, Switzerland, Unknown, 1716; Heidelberg, Unknown, Germany, 1718, 1718; Strasbourg, Unknown, France, 1719, 1719; Venice, Unknown, Italy, 1723, 1724
+     run2: Basel, Unknown, Switzerland, 1713, 1716; Heidelberg, Unknown, Germany, 1718, 1718; Strasbourg, Unknown, France, 1719, 1719; Basel, Unknown, Switzerland, 1719, 1721; Venice, Unknown, Italy, 1723, 1724
+
+=== Bernoulli, Jakob (Jacques) I ===
+  Education_Institution:
+     run1: University of Basel; Geneva; University of Paris; Netherlands; England
+     run2: University of Basel; Not Specified; Not Specified; Not Specified; Not Specified
+  Education_Degrees:
+     run1: M.A.; L.D.
+     run2: M.A.; Licentiate in Theology
+  Education_Locations:
+     run1: Basel, Unknown, Switzerland, Unknown, 1671; Geneva, Unknown, Switzerland, 1676, 1677; Paris, Unknown, France, 1677, 1679; Unknown, Unknown, Netherlands, 1681, 1682; Unknown, Unknown, England, 1681, 1682
+     run2: Basel, Unknown, Switzerland, Unknown, 1671; Geneva, Unknown, Switzerland, 1676, 1677; France, Unknown, France, 1677, 1679; Netherlands, Unknown, Netherlands, 1681, 1682; England, Unknown, England, 1681, 1682
+  Scientific_Disciplines:
+     run1: Mathematics; Algebra; Geometry; Infinitesimal Calculus; Calculus of Variations; Mechanics; Astronomy; Physics; Probability Theory
+     run2: Mathematics; Algebra; Geometry; Infinitesimal Calculus; Calculus of Variations; Mechanics; Probability Theory; Series Theory; Astronomy
+
+=== Bernoulli, Johann (Jean) I ===
+  Education_Locations:
+     run1: Basel, Unknown, Switzerland, 1683, 1694
+     run2: Basel, Unknown, Switzerland, 1683, 1690; Basel, Unknown, Switzerland, 1690, 1694
+
+=== Bernoulli, Johann (Jean) II ===
+  Scientific_Societies_Membership:
+     run1: None
+     run2: Scientific Society
+
+=== Bernthsen, Heinrich August ===
+  Father_Occupation:
+     run1: Contractor
+     run2: Architect
+
+=== Bert, Paul ===
+  Education_Institution:
+     run1: Collège Amyot; University of Paris; University of Paris; Collège de France
+     run2: Collège Amyot; University of Paris; University of Paris
+  Education_Locations:
+     run1: Auxerre, Unknown, France, 1843, 1852; Paris, Unknown, France, 1853, 1860; Paris, Unknown, France, 1857, 1863; Paris, Unknown, France, 1863, 1866
+     run2: Auxerre, Unknown, France, 1843, 1852; Paris, Unknown, France, 1853, 1857; Paris, Unknown, France, 1857, 1866
+  Scientific_Disciplines:
+     run1: Physiology; Comparative Anatomy; Natural History; Zoology; Plant Physiology; Marine Biology; Respiration Physiology; Altitude Physiology; Anesthesiology
+     run2: Physiology; Comparative Anatomy; Natural History; Respiration; Hematology; Anesthesiology
+  Patronage_Types:
+     run1: Government Official; Academic
+     run2: Government Official; Scientist
+
+=== Berthelot, Pierre Eugène Marcellin1 ===
+  Education_Institution:
+     run1: Collège Henri IV; University of Paris, Faculty of Science; Collège de France; École de Pharmacie
+     run2: Collège Henri IV; Faculty of Science, University of Paris; Private laboratory of Pelouze; Collège de France; École de Pharmacie
+  Education_Degrees:
+     run1: B.A.; B.S.; Ph.D.
+     run2: B.A.; Ph.D.
+  Education_Locations:
+     run1: Paris, Unknown, France, Unknown, Unknown; Paris, Unknown, France, 1847, 1849; Paris, Unknown, France, 1851, 1854; Paris, Unknown, France, 1854, 1858
+     run2: Paris, Unknown, France, Unknown, Unknown; Paris, Unknown, France, 1847, 1849; Paris, Unknown, France, Unknown, Unknown; Paris, Unknown, France, 1851, Unknown; Paris, Unknown, France, Unknown, 1858
+  Religion_Affiliation:
+     run1: Agnostic
+     run2: Skeptic
+  Scientific_Disciplines:
+     run1: Chemistry; Organic Chemistry; Physical Chemistry; Thermochemistry; Analytical Chemistry; Agricultural Chemistry; History of Chemistry; Alchemy; Pharmacology; Physiology
+     run2: Chemistry; Organic Chemistry; Physical Chemistry; Thermochemistry; Analytical Chemistry; Agricultural Chemistry; History of Chemistry; Alchemy
+  Patronage_Types:
+     run1: Government Official; Court
+     run2: Government Official; Academic
+
+=== Berthier, Pierre ===
+  Patronage_Types:
+     run1: Government Official; Scientist
+     run2: Government Official
+  Scientific_Societies_Membership:
+     run1: Académie des Sciences; Society of Agriculture of France
+     run2: Académie des Sciences
+
+=== Berti Gasparo ===
+  Religion_Affiliation:
+     run1: Unknown
+     run2: Catholic
+  Scientific_Disciplines:
+     run1: Physics; Astronomy; Mathematics; Instrumentation
+     run2: Physics; Mathematics; Astronomy
+  Means_of_Support:
+     run1: Academia; Instrumentation
+     run2: Academia
+  Instruments:
+     run1: Lead tube apparatus; Glass globe apparatus
+     run2: Barometer
+
+=== Bertrand, Gabriel ===
+  Education_Institution:
+     run1: École de Pharmacie; Muséum d'Histoire Naturelle
+     run2: École de Pharmacie
+
+=== Berzelius, Jöns Jacob ===
+  Scientific_Disciplines:
+     run1: Chemistry; Analytical Chemistry; Inorganic Chemistry; Organic Chemistry; Mineralogy; Physics; Electrochemistry
+     run2: Chemistry; Analytical Chemistry; Inorganic Chemistry; Organic Chemistry; Mineralogy; Geology
+
+=== Bessel, Friedrich Wilhelm ===
+  Scientific_Disciplines:
+     run1: Astronomy; Astrometry; Mathematics; Geodesy; Physics; Geophysics
+     run2: Astronomy; Astrometry; Mathematics; Geodesy; Geophysics
+  Means_of_Support:
+     run1: Academia; Government
+     run2: Academia; Patronage
+  Patronage_Types:
+     run1: Government Official; Scientist
+     run2: Court; Scientist
+  Instruments:
+     run1: Heliometer; Meridian Circle; Transit Instrument; Sextant
+     run2: Heliometer; Meridian Circle; Transit Instrument
+
+=== Bessey, Charles Edwin ===
+  Education_Institution:
+     run1: Michigan Agricultural College; Harvard University; Harvard University
+     run2: Michigan Agricultural College; Harvard University; University of California; Harvard University
+  Education_Locations:
+     run1: Lansing, Unknown, United States, 1866, 1869; Cambridge, Unknown, United States, 1872, 1872; Cambridge, Unknown, United States, 1875, 1875
+     run2: Lansing, Unknown, United States, 1866, 1869; Cambridge, Unknown, United States, 1872, 1872; Berkeley, Unknown, United States, 1875, 1875; Cambridge, Unknown, United States, 1875, 1875
+  Scientific_Disciplines:
+     run1: Botany; Plant Systematics; Mycology; Plant Anatomy; Plant Physiology
+     run2: Botany; Plant Systematics; Mycology; Plant Anatomy; Plant Physiology; Education
+  Means_of_Support:
+     run1: Academia; Publishing
+     run2: Academia; Schoolmastering
+
+=== Betti, Enrico ===
+  Scientific_Disciplines:
+     run1: Mathematics; Algebra; Analysis; Geometry; Physics
+     run2: Mathematics; Algebra; Analysis; Geometry
+
+=== Bexon, Gabriel-Léopold-Charles-Amé ===
+  Patronage_Types:
+     run1: Aristocrat
+     run2: Ecclesiastical Official; Scientist
+
+=== Beyrich, Heinrich Ernst ===
+  Means_of_Support:
+     run1: Academia; Government; Museum
+     run2: Academia; Government
+
+=== Bezold, Albert von ===
+  Education_Institution:
+     run1: University of Munich; University of Würzburg; Not Specified
+     run2: University of Munich; University of Würzburg; Unknown
+
+=== Bhāskara I ===
+  Scientific_Disciplines:
+     run1: Astronomy; Mathematics
+     run2: Astronomy
+
+=== Bhāskara II ===
+  Dates_Born_Certain:
+     run1: 0
+     run2: 1
+  Means_of_Support:
+     run1: Academia; Patronage
+     run2: Academia
+
+=== Bianchi, Luigi ===
+  Father_Is_Wealthy:
+     run1: 1
+     run2: -1
+  Education_Degrees:
+     run1: B.S.; Ph.D.
+     run2: B.S.
+
+=== Bichat, Marie-François-Xavier ===
+  Religion_Affiliation:
+     run1: Unknown
+     run2: Catholic
+  Patronage_Types:
+     run1: Unknown
+     run2: Academic; Scientist
+
+=== Bidder, Friedrich Heinrich ===
+  Education_Institution:
+     run1: University of Dorpat
+     run2: University of Dorpat; Not Specified
+  Education_Locations:
+     run1: Dorpat, Unknown, Russia, Unknown, 1834
+     run2: Dorpat, Unknown, Russia, Unknown, 1834; Berlin, Unknown, Germany, 1834, 1835
+  Scientific_Disciplines:
+     run1: Anatomy; Physiology; Histology; Embryology; Nerve Physiology
+     run2: Anatomy; Physiology; Histology; Embryology; Nerve Physiology; Metabolism
+
+=== Bigourdan, Camille Guillaume ===
+  Education_Institution:
+     run1: Not Specified; Paris Observatory
+     run2: Not Specified
+  Education_Locations:
+     run1: Toulouse, Unknown, France, Unknown, Unknown; Paris, Unknown, France, 1879, Unknown
+     run2: Toulouse, Unknown, France, Unknown, Unknown
+  Instruments:
+     run1: None
+     run2: Meridian Circle; Equatorial Telescope
+
+=== Billroth, Christian Albert Theodor ===
+  Education_Institution:
+     run1: Gymnasium; University of Greifswald; University of Göttingen; University of Berlin; University of Vienna
+     run2: Gymnasium; University of Greifswald; University of Göttingen; University of Berlin; Not Specified
+  Scientific_Societies_Membership:
+     run1: Academy of Sciences in Vienna; honorary member of thirty-two scientific societies
+     run2: Academy of Sciences in Vienna; Honorary member of thirty-two scientific societies
+
+=== Bird, John ===
+  Patronage_Types:
+     run1: Court; Government Official; Scientist
+     run2: Court; Government Official; Scientific Society
+
+=== Birge, Edward Asahel ===
+  Education_Locations:
+     run1: Williamstown, Unknown, United States, 1869, 1873; Cambridge, Massachusetts, United States, 1873, 1873; Cambridge, Massachusetts, United States, 1873, 1878; Leipzig, Unknown, Germany, 1880, 1881
+     run2: Williamstown, Unknown, United States, 1869, 1873; Cambridge, Unknown, United States, 1873, 1873; Cambridge, Unknown, United States, 1873, 1878; Leipzig, Unknown, Germany, 1880, 1881
+
+=== Al-Bīrūnī (or Bērūnī), Abū Rayḥān (or Abu’l-Rayḥān) Muḥammad Ibn Aḥmad ===
+  Alt_Name:
+     run1: Abū Rayḥān Muḥammad Ibn Aḥmad; Abu'l-Rayḥān; Bērūnī; Aliboron
+     run2: Abū Rayḥān Muḥammad Ibn Aḥmad; Abu'l-Rayḥān; Bērūnī; Maītre Aliboron
+  Died_Year:
+     run1: 1050
+     run2: 1048
+  Dates_Lifespan:
+     run1: 77
+     run2: 75
+  Scientific_Disciplines:
+     run1: Astronomy; Mathematics; Geography; History; Optics; Trigonometry; Geodesy; Astrology; Pharmacology; Mineralogy; Philology; Physics; Natural Philosophy
+     run2: Astronomy; Mathematics; Geography; History; Optics; Trigonometry; Geodesy; Astrology; Pharmacology; Mineralogy; Philology; Physics; Natural Philosophy; Mechanics
+
+=== Bischoff, Gottlieb Wilhelm ===
+  Means_of_Support:
+     run1: Academia; Apothecary
+     run2: Academia; Pharmacy
+
+=== Bischoff, Theodor Ludwig Wilhelm ===
+  Education_Institution:
+     run1: Gymnasium; University of Bonn; Special class; University of Heidelberg; University of Berlin
+     run2: Gymnasium Bonn; University of Bonn; University of Heidelberg
+  Education_Locations:
+     run1: Bonn, Unknown, Germany, Unknown, Unknown; Bonn, Unknown, Germany, 1826, 1829; Gotha, Unknown, Germany, Unknown, Unknown; Heidelberg, Unknown, Germany, 1830, 1832; Berlin, Unknown, Germany, 1833, 1833
+     run2: Bonn, Unknown, Germany, Unknown, 1825; Bonn, Unknown, Germany, 1826, 1829; Heidelberg, Unknown, Germany, 1830, 1832
+  Scientific_Disciplines:
+     run1: Anatomy; Comparative Anatomy; Physiology; Embryology; Anthropology; Natural Philosophy; Chemistry; Zoology; Botany
+     run2: Anatomy; Comparative Anatomy; Physiology; Embryology; Anthropology; Chemistry; Biochemistry
+
+=== Bisterfeld, Johann Heinrich ===
+  Scientific_Disciplines:
+     run1: Philosophy; Theology; Logic
+     run2: Philosophy; Theology; Logic; Metaphysics
+
+=== Black, Davidson ===
+  Education_Institution:
+     run1: University of Toronto; University of Manchester; Not Specified
+     run2: University of Toronto; University of Manchester; Central Institute of Brain Research
+  Scientific_Disciplines:
+     run1: Anatomy; Anthropology; Paleontology
+     run2: Anatomy; Anthropology; Paleontology; Natural History
+
+=== Blagden, Charles ===
+  Patronage_Types:
+     run1: Court; Scientist
+     run2: Scientist; Government Official
+
+=== Blainville, Henri Marie Ducrotay De ===
+  Father_Occupation:
+     run1: Gentry
+     run2: Aristocrat
+  Education_Locations:
+     run1: Paris, Unknown, France, 1808, 1808
+     run2: Paris, Unknown, France, Unknown, 1808
+
+=== Blair, Patrick ===
+  Scientific_Disciplines:
+     run1: Botany; Medicine; Anatomy; Biology
+     run2: Botany; Medicine; Anatomy; Natural History
+  Patronage_Types:
+     run1: Unknown
+     run2: Scientist
+
+=== Blaschke, Wilhelm Johann Eugen ===
+  Education_Institution:
+     run1: Technische Hochschule Graz; University of Vienna; University of Pisa; University of Göttingen; University of Bonn; University of Greifswald
+     run2: Technische Hochschule Graz; University of Vienna; University of Pisa; University of Göttingen; University of Bonn
+  Education_Locations:
+     run1: Graz, Unknown, Austria, Unknown, Unknown; Vienna, Unknown, Austria, Unknown, 1908; Pisa, Unknown, Italy, Unknown, Unknown; Göttingen, Unknown, Germany, Unknown, Unknown; Bonn, Unknown, Germany, Unknown, Unknown; Greifswald, Unknown, Germany, Unknown, Unknown
+     run2: Graz, Unknown, Austria, Unknown, Unknown; Vienna, Unknown, Austria, Unknown, 1908; Pisa, Unknown, Italy, Unknown, Unknown; Göttingen, Unknown, Germany, Unknown, Unknown; Bonn, Unknown, Germany, Unknown, Unknown
+
+=== Blasius of Parma ===
+  Education_Institution:
+     run1: University of Pavia; Not Specified
+     run2: University of Pavia; University of Paris
+  Education_Locations:
+     run1: Pavia, Unknown, Italy, Unknown, 1374; Paris, Unknown, France, Unknown, Unknown
+     run2: Pavia, Unknown, Italy, 1374, 1377; Paris, Unknown, France, Unknown, Unknown
+
+=== Blondel, Nicolas-François ===
+  Scientific_Disciplines:
+     run1: Engineering; Military Engineering; Mathematics; Architecture; Cartography; Mechanics
+     run2: Mathematics; Engineering; Military Engineering; Architecture; Geometry; Mechanics; Ballistics; Cartography
+  Means_of_Support:
+     run1: Government; Academia; Engineering
+     run2: Academia; Government; Military; Patronage
+
+=== Blyth, Edward ===
+  Means_of_Support:
+     run1: Apothecary; Academia; Patronage
+     run2: Apothecary; Academia; Publishing
+
+=== Boas, Franz ===
+  Scientific_Disciplines:
+     run1: Anthropology; Ethnology; Linguistics; Folklore; Physical Anthropology; Natural History; Geography
+     run2: Anthropology; Ethnology; Linguistics; Folklore; Physical Anthropology; Natural History; Art
+
+=== Bock, Jerome ===
+  Dates_Born_Certain:
+     run1: 1
+     run2: 0
+
+=== Boehme, Jacob ===
+  Scientific_Disciplines:
+     run1: Philosophy; Theology; Natural Philosophy; Alchemy
+     run2: Philosophy; Theology; Natural Philosophy
+  Patronage_Types:
+     run1: Aristocrat
+     run2: Unknown
+
+=== Boerhaave, Hermann ===
+  Religion_Affiliation_Certain:
+     run1: 0
+     run2: 1
+
+=== Boethius, Anicius Manlius Severinus ===
+  Father_Occupation:
+     run1: Government Official
+     run2: Unknown
+  Father_Is_Wealthy:
+     run1: 1
+     run2: -1
+
+=== Bohl, Piers ===
+  Scientific_Disciplines:
+     run1: Mathematics; Differential Equations; Topology; Number Theory
+     run2: Mathematics
+
+=== Bohr, Harald ===
+  Education_Institution:
+     run1: University of Copenhagen; University of Göttingen; University of Cambridge; University of Oxford
+     run2: University of Copenhagen; University of Göttingen
+  Education_Locations:
+     run1: Copenhagen, Unknown, Denmark, 1904, Unknown; Göttingen, Unknown, Germany, Unknown, Unknown; Cambridge, Unknown, England, Unknown, Unknown; Oxford, Unknown, England, Unknown, Unknown
+     run2: Copenhagen, Unknown, Denmark, Unknown, Unknown; Göttingen, Unknown, Germany, Unknown, 1910
+
+=== Boisbaudran, Paul Émile Lecoq De ===
+  Alt_Name:
+     run1: François Lecoq de Boisbaudran; Lecoq de Boisbaudran
+     run2: François; Lecoq de Boisbaudran
+
+=== Bolotov, Andrei Timofeevich ===
+  Scientific_Disciplines:
+     run1: Agronomy; Biology; Botany; Horticulture; Plant Physiology; Ecology
+     run2: Agronomy; Biology; Botany; Horticulture; Plant Physiology
+  Means_of_Support:
+     run1: Military; Agriculture; Estate Administration
+     run2: Military; Agriculture
+
+=== Bolyai, János (Johann) ===
+  Means_of_Support:
+     run1: Military; Personal Means
+     run2: Military; Academia
+
+=== Bolza Oskar ===
+  Scientific_Disciplines:
+     run1: Mathematics; Calculus of Variations; Elliptic Functions; Hyperelliptic Functions
+     run2: Mathematics; Calculus of Variations; Elliptic Functions; Hyperelliptic Functions; Integral Equations
+
+=== Bolzano, Bernard ===
+  Scientific_Disciplines:
+     run1: Mathematics; Logic; Philosophy; Natural Philosophy; Geometry
+     run2: Mathematics; Logic; Philosophy; Natural Philosophy
+
+=== Boncompagni, Baldassarre ===
+  Scientific_Disciplines:
+     run1: History of Mathematics; History of Physics; Mathematics
+     run2: Mathematics; History of Mathematics; Physics; History of Physics
+  Means_of_Support:
+     run1: Personal Means; Publishing; Patronage
+     run2: Personal Means; Publishing; Academia
+
+=== Bond, George Phillips ===
+  Instruments:
+     run1: Refractor; Daguerreotype; Wet Collodion Camera
+     run2: Refractor; Daguerreotype Camera
+
+=== Bond, William Cranch ===
+  Alt_Name:
+     run1: None
+     run2: William Cranch Bond
+  Religion_Affiliation:
+     run1: Protestant
+     run2: Christian
+  Patronage_Types:
+     run1: Academic
+     run2: Academic; Court
+  Instruments:
+     run1: Refractor; Chronometer; Chronograph; Observing Chair
+     run2: Chronometer; Refractor Telescope; Chronograph; Observing Chair
+
+=== Bonnet, Pierre-Ossian ===
+  Scientific_Societies_Membership:
+     run1: Académie des Sciences
+     run2: Académie des Sciences; Bureau des Longitudes
+
+=== Bonvicino (Also Known as Bonvoisin or Buonvicino) Costanzo Benedetto ===
+  Dates_Born_Certain:
+     run1: 1
+     run2: 0
+
+=== Bordet, Jules ===
+  Scientific_Disciplines:
+     run1: Bacteriology; Immunology
+     run2: Bacteriology; Immunology; Serology
+  Means_of_Support:
+     run1: Academia; Medicine
+     run2: Academia; Government
+  Patronage_Types:
+     run1: Government
+     run2: Government Official
+
+=== Bordeu, Théophile De ===
+  Means_of_Support:
+     run1: Medicine; Academia
+     run2: Medicine; Academia; Government
+  Patronage_Types:
+     run1: Court
+     run2: Government Official; Scientific Society
+
+=== Borel, Émile (Félix-Édouard-Justin) ===
+  Alt_Name:
+     run1: Félix-Édouard-Justin Borel
+     run2: Félix-Édouard-Justin Borel; Émile Félix-Édouard-Justin Borel
+  Education_Institution:
+     run1: Lycée; École Normale Supérieure
+     run2: Lycée; École Normale Supérieure; University of Lille
+  Education_Locations:
+     run1: Montauban, Unknown, France, 1882, Unknown; Paris, Unknown, France, 1889, 1893
+     run2: Montauban, Unknown, France, 1882, Unknown; Paris, Unknown, France, 1889, 1893; Lille, Unknown, France, 1893, 1896
+
+=== Borelli, Giovanni Alfonso ===
+  Education_Institution:
+     run1: University of Naples
+     run2: University of Naples; Not Specified
+  Education_Locations:
+     run1: Naples, Unknown, Italy, Unknown, Unknown
+     run2: Naples, Unknown, Italy, Unknown, Unknown; Rome, Unknown, Italy, Unknown, Unknown
+  Scientific_Disciplines:
+     run1: Mathematics; Astronomy; Celestial Mechanics; Physics; Mechanics; Physiology; Iatromechanics; Epidemiology; Volcanology; Natural Philosophy
+     run2: Mathematics; Astronomy; Celestial Mechanics; Physics; Mechanics; Physiology; Iatromechanics; Epidemiology; Volcanology; Optics; Natural Philosophy
+  Means_of_Support:
+     run1: Academia; Medicine
+     run2: Academia; Government
+
+=== Born, Ignaz Edler von ===
+  Alt_Name:
+     run1: Ignaz Edler von Born; Inigo Born
+     run2: Ignaz Edler von Born; Baron Inigo Born
+  Scientific_Disciplines:
+     run1: Mineralogy; Geology; Chemistry; Metallurgy
+     run2: Mineralogy; Geology; Chemistry; Engineering
+  Patronage_Types:
+     run1: Court
+     run2: Court; Government Official
+
+=== Borodin, Aleksandr Porfirevich ===
+  Father_Occupation:
+     run1: Aristocrat
+     run2: Unknown
+  Father_Is_Wealthy:
+     run1: 1
+     run2: -1
+  Education_Degrees:
+     run1: M.D.
+     run2: Ph.D.
+
+=== Borries, Bodo von ===
+  Education_Institution:
+     run1: Technische Hochschule Karlsruhe; Technische Hochschule Danzig; Technische Hochschule Munich; Technische Hochschule Berlin
+     run2: Technische Hochschule Karlsruhe; Technische Hochschule Danzig; Technische Hochschule Munich
+  Education_Locations:
+     run1: Karlsruhe, Unknown, Germany, Unknown, Unknown; Danzig, Unknown, Germany, Unknown, Unknown; Munich, Unknown, Germany, Unknown, Unknown; Berlin, Unknown, Germany, 1930, Unknown
+     run2: Karlsruhe, Unknown, Germany, Unknown, Unknown; Danzig, Unknown, Germany, Unknown, Unknown; Munich, Unknown, Germany, Unknown, Unknown
+  Means_of_Support:
+     run1: Academia; Industry
+     run2: Academia; Industry; Government
+
+=== Bortkiewicz (or Bortkewitsch), Ladislaus (or Vladislav) Josephowitsch ===
+  Father_Is_Wealthy:
+     run1: -1
+     run2: 1
+
+=== Bory De Saint-Vincent, Jean Baptiste Georges Marie ===
+  Means_of_Support:
+     run1: Military; Academia; Government
+     run2: Military; Academia; Publishing
+
+=== Bosc, Louis Augustin Guillaume ===
+  Alt_Name:
+     run1: Dantic
+     run2: Dantic; Louis Bosc d'Antic
+  Scientific_Disciplines:
+     run1: Natural History; Botany; Zoology; Entomology; Agronomy
+     run2: Natural History; Botany; Zoology; Entomology; Agronomy; Arachnology
+  Patronage_Types:
+     run1: Government Official
+     run2: Government Official; Scientist
+
+=== Bosch, Carl ===
+  Scientific_Disciplines:
+     run1: Chemistry; Chemical Engineering
+     run2: Chemistry; Chemical Engineering; Organic Chemistry
+  Instruments:
+     run1: None
+     run2: High-Pressure Furnace; Twin Tube Reactor
+
+=== Bošković, Rudjer J. ===
+  Born_Country:
+     run1: Yugoslavia
+     run2: Croatia
+  Education_Locations:
+     run1: Dubrovnik, Unknown, Yugoslavia, Unknown, Unknown; Rome, Unknown, Italy, 1725, Unknown; Rome, Unknown, Italy, Unknown, Unknown
+     run2: Dubrovnik, Unknown, Croatia, Unknown, Unknown; Rome, Unknown, Italy, 1725, Unknown; Rome, Unknown, Italy, Unknown, Unknown
+  Instruments:
+     run1: Circular Micrometer; Leveler; Micrometric Wedge; Vitrometer; Achromatic Lens
+     run2: Circular Micrometer; Leveler; Micrometric Wedge; Vitrometer; Achromatic Lens; Telescope
+  Scientific_Societies_Membership:
+     run1: Academy of Sciences, Paris; Royal Society
+     run2: Royal Society; Academy of Sciences (Paris)
+
+=== Boss, Lewis ===
+  Patronage_Types:
+     run1: Government Official; Scientific Society
+     run2: Government Official; Foundation
+  Scientific_Societies_Membership:
+     run1: Royal Astronomical Society; National Academy of Sciences; Königlich Preussischen Akademie der Wissenschaften; Imperial Academy of Sciences of St. Petersburg
+     run2: National Academy of Sciences; Königlich Preussischen Akademie der Wissenschaften; Imperial Academy of Sciences of St. Petersburg
+
+=== Bossut, Charles ===
+  Scientific_Disciplines:
+     run1: Mathematics; Mechanics; Physics; Hydrodynamics
+     run2: Mathematics; Mechanics; Physics
+  Means_of_Support:
+     run1: Academia; Church Life
+     run2: Academia
+  Patronage_Types:
+     run1: Government Official; Academic
+     run2: Government Official
+
+=== Botallo, Leonardo ===
+  Means_of_Support:
+     run1: Medicine; Military; Court
+     run2: Medicine; Military; Government
+
+=== Bothe, Walther Wilhelm Georg ===
+  Education_Locations:
+     run1: Berlin, Unknown, Germany, 1908, 1914
+     run2: Berlin, Unknown, Germany, 1908, 1912
+  Scientific_Disciplines:
+     run1: Physics; Nuclear Physics; Atomic Physics; Experimental Physics
+     run2: Physics; Nuclear Physics; Atomic Physics; Quantum Mechanics
+
+=== Bottazzi, Filippo ===
+  Scientific_Disciplines:
+     run1: Physiology; Chemistry; Biochemistry
+     run2: Physiology; Chemistry; Physical Chemistry; Biochemistry
+  Scientific_Societies_Membership:
+     run1: Reale Accademia d'Italia
+     run2: Reale Accademia d'Italia; Pontificia Accademia delle Scienze
+
+=== Böttger, Rudolph Christian ===
+  Means_of_Support:
+     run1: Academia
+     run2: Academia; Industry
+
+=== Bougainville, Louis Antoine De ===
+  Alt_Name:
+     run1: Louis-Antoine de Bougainville
+     run2: Louis Antoine de Bougainville
+
+=== Bouguer, Pierre ===
+  Scientific_Disciplines:
+     run1: Physics; Optics; Geodesy; Hydrography; Navigation; Astronomy
+     run2: Physics; Optics; Geodesy; Hydrography; Navigation; Astronomy; Atmospheric Physics
+
+=== Bouin, Pol André ===
+  Scientific_Disciplines:
+     run1: Biology; Physiology; Histology; Cytology; Endocrinology
+     run2: Biology; Histology; Physiology; Reproductive Endocrinology; Cytology
+
+=== Boussinesq, Joseph Valentin ===
+  Education_Institution:
+     run1: Seminary at Montpellier
+     run2: Small Seminary of Montpellier
+
+=== Boutroux, Pierre Léon ===
+  First_Name:
+     run1: Pierre
+     run2: Pierre Léon
+  Alt_Name:
+     run1: Pierre Léon Boutroux
+     run2: Pierre Boutroux
+  Scientific_Disciplines:
+     run1: Mathematics; History of Science; Philosophy of Science
+     run2: Mathematics; History of Mathematics; Philosophy of Science; Analysis
+
+=== Boveri, Theodor ===
+  Father_Is_Wealthy:
+     run1: 0
+     run2: -1
+  Education_Institution:
+     run1: University of Munich
+     run2: Realgymnasium; University of Munich
+  Education_Locations:
+     run1: Munich, Unknown, Germany, 1881, 1885
+     run2: Nuremberg, Unknown, Germany, 1875, 1881; Munich, Unknown, Germany, 1881, 1885
+
+=== Bowditch, Henry Pickering ===
+  Education_Institution:
+     run1: Epes S. Dixwell School; Harvard College; Lawrence Scientific School; Lawrence Scientific School; Harvard Medical School; University of Paris; University of Bonn; University of Leipzig
+     run2: Epes S. Dixwell School; Harvard College; Lawrence Scientific School; University of Paris; University of Bonn; University of Leipzig
+  Education_Locations:
+     run1: Boston, Massachusetts, United States, Unknown, Unknown; Cambridge, Massachusetts, United States, 1857, 1861; Cambridge, Massachusetts, United States, 1861, 1865; Cambridge, Massachusetts, United States, 1865, 1868; Boston, Massachusetts, United States, 1861, 1868; Paris, Unknown, France, 1868, 1869; Bonn, Unknown, Germany, 1869, 1869; Leipzig, Unknown, Germany, 1869, 1871
+     run2: Boston, Massachusetts, United States, Unknown, Unknown; Cambridge, Massachusetts, United States, 1857, 1861; Cambridge, Massachusetts, United States, 1861, 1868; Paris, Unknown, France, 1868, 1869; Bonn, Unknown, Germany, 1869, 1869; Leipzig, Unknown, Germany, 1869, 1871
+  Scientific_Societies_Membership:
+     run1: American Academy of Arts and Sciences; National Academy of Sciences
+     run2: American Academy of Arts and Sciences; National Academy of Sciences; American Physiological Society
+
+=== Bowditch, Nathaniel ===
+  Scientific_Societies_Membership:
+     run1: Royal Society
+     run2: Royal Society; American Academy of Arts and Sciences
+
+=== Bowen, Norman Levi ===
+  Alt_Name:
+     run1: Norman Levi Bowen
+     run2: Norman L. Bowen; Norman Levi Bowen
+
+=== Bowman, Isaiah ===
+  Scientific_Disciplines:
+     run1: Geography; Physiography; Geology
+     run2: Geography; Physiography; Cartography
+  Scientific_Societies_Membership:
+     run1: Association of American Geographers; International Geographical Union; American Association for the Advancement of Science
+     run2: Association of American Geographers; International Geographical Union
+
+=== Bowman, William ===
+  Instruments:
+     run1: Microscope; Lacrymal Probes; Ophthalmoscope
+     run2: Microscope; Bowman's Probes; Bowman's Tubes
+
+=== Boyle, Robert ===
+  Means_of_Support:
+     run1: Patronage; Personal Means
+     run2: Patronage; Personal Means; Academia
+
+=== Brachet, Albert ===
+  Patronage_Types:
+     run1: Government
+     run2: Government Official
+
+=== Braconnot, Henri ===
+  Education_Institution:
+     run1: École Centrale du Département du Bas-Rhin; University of Paris
+     run2: Collège de Commercy; École Centrale du Département du Bas-Rhin; Not Specified
+  Education_Locations:
+     run1: Strasbourg, Unknown, France, Unknown, 1801; Paris, Unknown, France, 1801, Unknown
+     run2: Commercy, Unknown, France, Unknown, Unknown; Strasbourg, Unknown, France, 1793, 1801; Paris, Unknown, France, 1801, Unknown
+  Scientific_Disciplines:
+     run1: Chemistry; Botany; Natural History
+     run2: Chemistry; Organic Chemistry; Botany; Natural History
+
+=== Bradley, Richard ===
+  Scientific_Disciplines:
+     run1: Botany; Plant Physiology
+     run2: Botany; Natural History
+
+=== Bragg, William Henry ===
+  Alt_Name:
+     run1: None
+     run2: W. H. Bragg
+  Scientific_Disciplines:
+     run1: Physics; Optics; Radioactivity; Crystallography
+     run2: Physics; X-ray Crystallography; Radioactivity
+  Patronage_Types:
+     run1: Government Official; Court
+     run2: Government Official; Scientific Society
+  Scientific_Societies_Membership:
+     run1: Royal Society of London; Deutsche Physikalische Gesellschaft
+     run2: Royal Society of London; Deutsche Physikalische Gesellschaft; Royal Institution
+
+=== Brahe, Tycho ===
+  Scientific_Disciplines:
+     run1: Astronomy; Observational Astronomy; Instrumentation; Mathematics; Astrology
+     run2: Astronomy; Observational Astronomy; Instrumentation; Mathematics; Alchemy; Astrology
+  Means_of_Support:
+     run1: Patronage; Academia; Astrology
+     run2: Patronage; Court; Academia
+
+=== Brandt, Johann Friedrich ===
+  Means_of_Support:
+     run1: Academia; Medicine
+     run2: Academia; Government
+  Patronage_Types:
+     run1: Government Official; Academic
+     run2: Government Official; Scientist
+
+=== Braun, Alexander Carl Heinrich ===
+  Scientific_Disciplines:
+     run1: Botany; Philosophy; Natural History
+     run2: Botany; Philosophy; Natural History; Morphology; Algology; Cell Theory
+
+=== Braun, Ferdinand ===
+  Instruments:
+     run1: Oscilloscope; Antenna
+     run2: Braun Tube; Oscilloscope; Antenna
+
+=== Brauner, Bohuslav ===
+  Scientific_Societies_Membership:
+     run1: Czech Academy of Science; Czechoslovakia's National Research Council
+     run2: Czech Academy of Science; International Committee on Chemical Elements
+
+=== Bravais, Auguste ===
+  Education_Locations:
+     run1: Paris, Unknown, France, Unknown, 1827; Paris, Unknown, France, 1828, 1829; Paris, Unknown, France, 1829, 1831; Lyons, Unknown, France, Unknown, 1837
+     run2: Paris, Unknown, France, Unknown, 1827; Paris, Unknown, France, Unknown, Unknown; Paris, Unknown, France, Unknown, Unknown; Lyons, Unknown, France, Unknown, 1837
+  Scientific_Disciplines:
+     run1: Physics; Crystallography; Astronomy; Botany; Meteorology
+     run2: Physics; Crystallography; Astronomy; Botany; Meteorology; Geography
+
+=== Bredikhin, Fedor Aleksandrovich ===
+  Education_Degrees:
+     run1: M.A.; Ph.D.
+     run2: None
+  Instruments:
+     run1: Spectroscope; Telescope
+     run2: Spectroscope; Telescope; Astronomical Instruments
+
+=== Breguet, Louis François Clément ===
+  Instruments:
+     run1: Electrical Clock; Electrical Thermometer; Induction Coil; Rotating Mirror Apparatus; Wheatstone Dial Plate; Telegraph Instrument; Electrical Time-Transmission Clock; Daniell Battery; Leclanché Battery; Arc Lamp; Gramme Dynamo
+     run2: Electric Clock; Electrical Thermometer; Induction Coil; Revolving Mirror Apparatus; Wheatstone Dial Plate; Foy-Breguet Instrument; Electrical Time-Transmission Clock; Arc Lamp; Gramme Dynamo; Metal Thermometer; Barometer; Manometer
+
+=== Brendel, Otto Rudolf Martin ===
+  Education_Institution:
+     run1: Unknown; Unknown; Unknown; Unknown; Unknown
+     run2: Not Specified; Not Specified; Not Specified; Not Specified; Not Specified
+
+=== Breschet, Gilbert ===
+  Scientific_Societies_Membership:
+     run1: Académie de Médicine; Académie des Sciences; Académie des Curieux de la Nature
+     run2: Académie de Médecine; Académie des Sciences; Académie des Curieux de la Nature
+
+=== Brewster, David ===
+  Means_of_Support:
+     run1: Academia; Publishing; Schoolmastering
+     run2: Academia; Publishing; Schoolmastering; Patronage
+
+=== Brianchon, Charles-Julien ===
+  Dates_Lifespan:
+     run1: 81
+     run2: 80
+  Patronage_Types:
+     run1: Government Official
+     run2: Unknown
+
+=== Brinkley, John ===
+  Dates_Born_Certain:
+     run1: 1
+     run2: 0
+
+=== Briot, Charles Auguste ===
+  Scientific_Disciplines:
+     run1: Mathematics; Physics; Mechanics; Thermodynamics; Optics
+     run2: Mathematics; Physics; Mechanics; Thermodynamics; Optics; Electricity
+
+=== Brisbane, Thomas ===
+  Means_of_Support:
+     run1: Military; Patronage; Personal Means
+     run2: Military; Patronage
+
+=== Brisson, Barnabé ===
+  Scientific_Disciplines:
+     run1: Mathematics; Engineering; Hydraulics
+     run2: Mathematics; Engineering; Hydraulic Engineering
+  Means_of_Support:
+     run1: Academia; Government; Engineering
+     run2: Government; Academia
+
+=== Brisson, Mathurin-Jacques ===
+  Patronage_Types:
+     run1: Scientist; Court
+     run2: Court; Aristocrat; Academic
+
+=== Broca, Pierre Paul ===
+  Scientific_Societies_Membership:
+     run1: Anatomical Society of Paris; Society of Surgery; Société d'Anthropologie de Paris; French Academy of Medicine
+     run2: Anatomical Society of Paris; Society of Surgery; Société d'Anthropologie de Paris
+
+=== Brocard, Pierre René Jean-Baptiste Henri ===
+  Means_of_Support:
+     run1: Government; Academia; Military
+     run2: Government; Academia; Meteorology
+
+=== Brodie, Benjamin Collins ===
+  Means_of_Support:
+     run1: Academia; Medicine; Government
+     run2: Academia; Medicine; Surgery
+  Scientific_Societies_Membership:
+     run1: Royal Society; Society for Promoting Knowledge of Animal Chemistry
+     run2: Royal Society; Royal College of Surgeons; Society for Promoting Knowledge of Animal Chemistry
+
+=== Brodie, Benjamin Collins, Jr. ===
+  Alt_Name:
+     run1: B. C. Brodie; Benjamin Collins Brodie, Jr.
+     run2: B. C. Brodie; Benjamin Collins Brodie Jr.
+
+=== Broglie, Louis-César-Victor-Maurice De ===
+  Instruments:
+     run1: X-ray apparatus; Rotating crystal apparatus
+     run2: X-ray apparatus; Wireless apparatus
+  Scientific_Societies_Membership:
+     run1: Académie des Sciences; Académie Française; Académie de Marine; Institut Océanographique
+     run2: Académie des Sciences; Académie Française; Académie de Marine; Institut Océanographique; Solvay Congress
+
+=== Brooks, William Keith ===
+  Education_Locations:
+     run1: Williamstown, Unknown, United States, Unknown, 1870; Penikese Island, Massachusetts, United States, 1873, 1873; Cambridge, Massachusetts, United States, 1873, 1875
+     run2: Williamstown, Unknown, United States, Unknown, 1870; Penikese Island, Massachusetts, United States, 1873, 1873; Cambridge, Massachusetts, United States, Unknown, 1875
+
+=== Brooks, William Robert ===
+  Means_of_Support:
+     run1: Academia; Patronage; Instruments
+     run2: Academia; Patronage
+  Patronage_Types:
+     run1: Foundation
+     run2: Scientist
+
+=== Broom, Robert ===
+  Scientific_Disciplines:
+     run1: Paleontology; Anatomy; Zoology; Anthropology; Embryology
+     run2: Paleontology; Anatomy; Zoology; Geology; Anthropology; Embryology
+  Means_of_Support:
+     run1: Medicine; Academia
+     run2: Medicine; Academia; Museum
+
+=== Broussais, François Joseph Victor ===
+  Means_of_Support:
+     run1: Academia; Medicine; Government; Military
+     run2: Academia; Medicine; Government
+
+=== Broussonet (or Broussonnet or Broussounet), Pierre-Auguste-Marie ===
+  Patronage_Types:
+     run1: Court; Government Official; Scientist
+     run2: Government Official; Scientist
+
+=== Brown, Robert ===
+  Patronage_Types:
+     run1: Court; Government Official; Scientist
+     run2: Court; Government Official
+
+=== Browne, Thomas ===
+  Scientific_Disciplines:
+     run1: Medicine; Natural History; Physics; Anatomy; Biology; Comparative Anatomy; Electricity; Embryology; Archaeology
+     run2: Medicine; Natural History; Physics; Anatomy; Biology; Comparative Anatomy; Electricity
+
+=== Brownrigg, William ===
+  Scientific_Disciplines:
+     run1: Chemistry; Pneumatic Chemistry; Metallurgy
+     run2: Chemistry; Physics; Medicine
+  Patronage_Types:
+     run1: Court; Aristocrat
+     run2: Aristocrat
+
+=== Bruce, James ===
+  Scientific_Disciplines:
+     run1: Geography; Exploration; Natural History
+     run2: Geography; Natural History; Astronomy; Meteorology
+  Means_of_Support:
+     run1: Government; Personal Means
+     run2: Government; Patronage; Personal Means
+  Patronage_Types:
+     run1: Unknown
+     run2: Government Official
+
+=== Brücke, Ernst Wilhelm von ===
+  Dates_Lifespan:
+     run1: 73
+     run2: 72
+  Education_Locations:
+     run1: Berlin, Unknown, Germany, 1838, Unknown
+     run2: Berlin, Unknown, Germany, 1838, 1842
+  Scientific_Disciplines:
+     run1: Physiology; Anatomy; Optics; Microscopy; Physiology of Digestion; Physiological Chemistry; Physiological Optics; Nerve and Muscle Physiology
+     run2: Physiology; Anatomy; Optics; Microscopy; Physiology of Digestion; Physiological Chemistry; Nerve and Muscle Physiology; Phonetics
+  Instruments:
+     run1: Labiograph; Microscope
+     run2: Labiograph; Ophthalmoscope
+
+=== Bruhns, Karl Christian ===
+  Scientific_Societies_Membership:
+     run1: Astronomische Gesellschaft; Kommission für Mitteleuropäische Gradmessung; Preussisches Geodätisches Institut
+     run2: Astronomische Gesellschaft
+
+=== Bruno, Giordano ===
+  Education_Institution:
+     run1: Dominican Convent; Rome; University of Toulouse; University of Paris; University of Oxford; University of Wittenberg; University of Prague; Helmstedt
+     run2: Dominican Convent; Rome; University of Toulouse; University of Paris; University of Wittenberg; University of Prague; University of Helmstedt
+  Education_Locations:
+     run1: Naples, Unknown, Italy, 1563, Unknown; Rome, Unknown, Italy, Unknown, Unknown; Toulouse, Unknown, France, 1579, 1581; Paris, Unknown, France, 1581, 1583; Oxford, Unknown, England, 1583, 1584; Wittenberg, Unknown, Germany, 1586, Unknown; Prague, Unknown, Germany, Unknown, 1588; Helmstedt, Unknown, Germany, 1588, 1591
+     run2: Naples, Unknown, Italy, 1563, Unknown; Rome, Unknown, Italy, Unknown, Unknown; Toulouse, Unknown, France, 1579, 1581; Paris, Unknown, France, 1581, 1582; Wittenberg, Unknown, Germany, 1586, Unknown; Prague, Unknown, Germany, Unknown, Unknown; Helmstedt, Unknown, Germany, Unknown, Unknown
+  Religion_Affiliation_Certain:
+     run1: 0
+     run2: 1
+  Scientific_Disciplines:
+     run1: Philosophy; Scholastic Philosophy; Occult Philosophy; Natural Philosophy; Astronomy; Cosmology; Medicine; Alchemy
+     run2: Philosophy; Scholastic Philosophy; Occult Philosophy; Natural Philosophy; Cosmology; Astronomy; Magic; Alchemy; Memory Arts
+  Patronage_Types:
+     run1: Court; Government Official; Academic
+     run2: Court; Government Official; Aristocrat
+
+=== Brunschvicg, Léon ===
+  Alt_Name:
+     run1: Leon Brunschvicg
+     run2: None
+  Scientific_Disciplines:
+     run1: Philosophy; Epistemology; Logic; Metaphysics
+     run2: Philosophy; Epistemology; Logic; Metaphysics; Mathematics
+
+=== Brytte (Also Britte, Brit, or Brute), Walter ===
+  Religion_Affiliation:
+     run1: Catholic
+     run2: Unknown
+
+=== Buch, [Christian] Leopold von ===
+  Patronage_Types:
+     run1: Government Official; Academic
+     run2: Unknown
+
+=== Buchanan, John Young ===
+  Education_Degrees:
+     run1: None
+     run2: B.S.
+
+=== Bucher, Walter Herman ===
+  Means_of_Support:
+     run1: Academia; Patronage
+     run2: Academia; Industry
+
+=== Bucherer, Alfred Heinrich ===
+  First_Name:
+     run1: Alfred Heinrich
+     run2: Alfred
+  Alt_Name:
+     run1: None
+     run2: Alfred Heinrich Bucherer
+  Scientific_Disciplines:
+     run1: Physics; Optics; Chemistry; Thermodynamics; Electromagnetism
+     run2: Physics; Thermodynamics; Physical Chemistry; Electromagnetism; Electron Theory
+
+=== Buchner, Friedrich Karl Christian Ludwig ===
+  Means_of_Support:
+     run1: Academia; Medicine; Publishing
+     run2: Academia; Medicine
+
+=== Bucholz, Christian Friedrich ===
+  Education_Locations:
+     run1: Kassel, Unknown, Germany, 1784, 1789; Rinteln, Unknown, Germany, Unknown, 1808; Erfurt, Unknown, Germany, Unknown, 1809
+     run2: Kassel, Unknown, Germany, 1784, 1789; Ochsenfurt, Unknown, Germany, 1789, 1791; Mulhouse, Unknown, France, 1791, 1794; Rinteln, Unknown, Germany, Unknown, 1808; Erfurt, Unknown, Germany, Unknown, 1809
+  Means_of_Support:
+     run1: Apothecary; Academia
+     run2: Apothecary; Academia; Publishing
+
+=== Buckland, William ===
+  Patronage_Types:
+     run1: Court; Ecclesiastical Official; Government Official
+     run2: Court; Ecclesiastical Official
+
+=== Bucquet, Jean-Baptiste Michel ===
+  Education_Institution:
+     run1: University of Paris
+     run2: Faculty of Medicine
+
+=== Budan De Boislaurent, Ferdinand François Désiré ===
+  Patronage_Types:
+     run1: Unknown
+     run2: Government Official
+  Scientific_Societies_Membership:
+     run1: Institut de France
+     run2: None
+
+=== Bulloch, William ===
+  Education_Institution:
+     run1: Aberdeen Grammar School; King's College Aberdeen; Marischal College; University of Leipzig; Pasteur Institute; University College London
+     run2: King's College Aberdeen; Marischal College; University of Leipzig; Pasteur Institute; University College London
+  Education_Degrees:
+     run1: M.D.; LL.D.
+     run2: M.D.
+  Education_Locations:
+     run1: Aberdeen, Unknown, Scotland, Unknown, 1884; Aberdeen, Unknown, Scotland, 1884, 1886; Aberdeen, Unknown, Scotland, 1886, 1890; Leipzig, Unknown, Germany, Unknown, Unknown; Paris, Unknown, France, Unknown, Unknown; London, Unknown, England, Unknown, Unknown
+     run2: Aberdeen, Unknown, Scotland, Unknown, Unknown; Aberdeen, Unknown, Scotland, Unknown, 1890; Leipzig, Unknown, Germany, Unknown, Unknown; Paris, Unknown, France, Unknown, Unknown; London, Unknown, England, Unknown, Unknown
+
+=== Bunge, Gustav von ===
+  Education_Locations:
+     run1: Dorpat, Unknown, Estonia, Unknown, 1874; Leipzig, Unknown, Germany, Unknown, 1882
+     run2: Dorpat, Unknown, Estonia, 1872, 1874; Leipzig, Unknown, Germany, Unknown, 1882
+
+=== Bunsen, Robert Wilhelm Eberhard ===
+  Scientific_Disciplines:
+     run1: Chemistry; Inorganic Chemistry; Analytical Chemistry; Physics; Geology; Spectroscopy
+     run2: Chemistry; Analytical Chemistry; Inorganic Chemistry; Spectroscopy; Geology; Petrology; Electrochemistry; Photochemistry
+
+=== Buonanni, Filippo ===
+  Alt_Name:
+     run1: Bonanni
+     run2: Bonanni; Philip Buonanni
+  Scientific_Disciplines:
+     run1: Natural History; Zoology; Botany; Numismatics; Microscopy
+     run2: Natural History; Zoology; Microscopy; Numismatics; Anatomy
+
+=== Buono, Paolo Del ===
+  Instruments:
+     run1: Water Incompressibility Demonstrator
+     run2: Water incompressibility demonstrator
+
+=== Buot, Jacques ===
+  Scientific_Societies_Membership:
+     run1: Académie des Sciences
+     run2: Académie des Sciences of Paris
+
+=== Burdenko, Nicolai Nilovich ===
+  Education_Locations:
+     run1: Penza, Unknown, Russia, 1886, 1890; Penza, Unknown, Russia, 1891, 1897; Tomsk, Unknown, Russia, 1897, 1901; Tartu, Unknown, Russia, 1901, 1906
+     run2: Penza, Unknown, Russia, 1886, 1890; Penza, Unknown, Russia, 1891, 1897; Tomsk, Unknown, Russia, 1897, 1901; Tartu, Unknown, Estonia, 1901, 1906
+
+=== Bürg, Johann Tobias ===
+  Alt_Name:
+     run1: Johann Tobias von Bürg
+     run2: None
+  Means_of_Support:
+     run1: Academia; Patronage
+     run2: Academia
+  Patronage_Types:
+     run1: Government Official; Court
+     run2: Government Official
+
+=== Burgersdijk (or Burgersdicius), Frank ===
+  Education_Institution:
+     run1: Delft Gymnasium; University of Leiden
+     run2: Latin school of Amersfoort; Delft Gymnasium; University of Leiden
+  Education_Locations:
+     run1: Delft, Unknown, Netherlands, 1606, 1610; Leiden, Unknown, Netherlands, 1610, 1614
+     run2: Amersfoort, Unknown, Netherlands, Unknown, Unknown; Delft, Unknown, Netherlands, 1606, 1610; Leiden, Unknown, Netherlands, 1610, 1614
+  Scientific_Disciplines:
+     run1: Natural Philosophy; Philosophy; Logic; Metaphysics; Ethics; Politics; Astronomy
+     run2: Natural Philosophy; Philosophy; Logic; Metaphysics; Ethics; Politics
+
+=== Burley, Walter ===
+  Scientific_Disciplines:
+     run1: Philosophy; Logic; Natural Philosophy; Metaphysics
+     run2: Logic; Natural Philosophy; Philosophy; Scholastic Philosophy
+
+=== Burnet, Thomas ===
+  Means_of_Support:
+     run1: Academia; Church Life; Government
+     run2: Academia; Church Life
+
+=== Burnham, Sherburne Wesley ===
+  Instruments:
+     run1: Filar Micrometer; Refractor Telescope
+     run2: Filar Micrometer; Telescope
+
+=== Burnside William ===
+  Scientific_Disciplines:
+     run1: Mathematics; Group Theory; Probability; Geometry; Physics
+     run2: Mathematics; Group Theory; Algebra; Geometry; Complex Analysis; Probability; Mathematical Physics
+
+=== Busk, George ===
+  Scientific_Societies_Membership:
+     run1: Royal Society; Royal College of Surgeons; Linnean Society; Geological Society; Microscopical Society; Anthropological Society; Zoological Society
+     run2: Royal Society; Royal College of Surgeons; Linnean Society; Geological Society; Microscopical Society; Anthropological Society; Zoological Society; Ethnological Society
+
+=== Butlerov, Aleksandr Mikhailovich ===
+  Alt_Name:
+     run1: Aleksandr Mikhailovich Butlerov
+     run2: Alexander Mikhailovich Butlerov; A. M. Butlerov
+  Scientific_Societies_Membership:
+     run1: Chemical Society of Paris; Russian Chemical Society; Chemistry Section of Russian Physics and Chemistry Society; Chemical Society of London; American Chemical Society; Czech Chemical Society; German Chemical Society; Russian Technical Society
+     run2: Chemical Society of Paris; Russian Chemical Society; Chemical Society of London; American Chemical Society; Czech Chemical Society; German Chemical Society; Russian Physics and Chemistry Society; Russian Technical Society
+
+=== Bütschli, Otto ===
+  Scientific_Disciplines:
+     run1: Zoology; Cytology; Protozoology; Mineralogy; Paleontology; Colloid Chemistry
+     run2: Zoology; Cytology; Protozoology; Mineralogy; Colloid Chemistry; Comparative Anatomy
+
+=== Buys Ballot, Christoph Hendrik Diederik ===
+  Dates_Lifespan:
+     run1: 73
+     run2: 72
+  Scientific_Disciplines:
+     run1: Meteorology; Physics; Chemistry; Physical Chemistry; Geology; Mineralogy
+     run2: Meteorology; Physics; Chemistry; Geology; Mineralogy
+  Patronage_Types:
+     run1: Unknown
+     run2: Government Official
