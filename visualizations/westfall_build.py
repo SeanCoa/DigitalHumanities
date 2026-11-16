@@ -21,9 +21,10 @@ import base64
 import os
 
 # ============================ CONFIG ============================
-CSV_PATH = "westfall_aug_22.csv"
-OUTPUT_HTML = "westfall.html"
-OUTPUT_DATA = "westfall_data.json"
+HERE = os.path.dirname(os.path.abspath(__file__))
+CSV_PATH = os.path.join(HERE, "westfall_database.csv")
+OUTPUT_HTML = os.path.join(HERE, "westfall_visualization.html")
+OUTPUT_DATA = os.path.join(HERE, "westfall_data.json")
 
 # ======================================================================
 # EDUCATION AS LOCATIONS
@@ -163,7 +164,7 @@ OHM_BORDER_SOURCE_LAYERS = ('land_ohm_lines',)
 
 # The maplibre-gl-dates plugin (CC0), vendored rather than loaded from a CDN: the
 # unscoped npm package was unpublished, and inlining keeps the deliverable self-contained.
-OHM_DATES_PLUGIN = "vendor/maplibre-gl-dates.js"
+OHM_DATES_PLUGIN = os.path.join(HERE, "vendor", "maplibre-gl-dates.js")
 
 def _filter_code_map():
     """Short codes for filter categories, used only to keep permalinks short.

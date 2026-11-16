@@ -35,7 +35,27 @@ import shutil
 from collections import Counter, defaultdict
 import anthropic
 
-# Controlled vocabularies live in ONE place: dsb_vocab.py. Both the new-term detector
+
+def _import_paths():
+    """Find scripts/project_paths.py from this file."""
+    cur = os.path.dirname(os.path.abspath(__file__))
+    for _ in range(4):
+        folder = os.path.join(cur, "scripts")
+        if os.path.isfile(os.path.join(folder, "project_paths.py")):
+            if folder not in sys.path:
+                sys.path.insert(0, folder)
+            import project_paths
+            return project_paths
+        parent = os.path.dirname(cur)
+        if parent == cur:
+            break
+        cur = parent
+    sys.exit("Could not find scripts/project_paths.py")
+
+
+paths = _import_paths()
+
+# Controlled vocabularies live in ONE place: scripts/vocab.py. Both the new-term detector
 # (KNOWN_VOCAB) and the validator's synonym check are derived from it, and the prompt
 # appendix is generated from it by build_prompt.py -- so a new term or mapping is a
 # one-line edit in one file.
@@ -45,7 +65,7 @@ try:
     FIELD_SYNONYM_MAPS = dsb_vocab.field_synonym_maps()
 except ImportError:      # pipeline still runs; these two checks degrade gracefully
     KNOWN_VOCAB, FIELD_SYNONYM_MAPS = {}, {}
-    print("WARNING: dsb_vocab.py not found -- new-term detection and the synonym "
+    print("WARNING: scripts/vocab.py not found -- new-term detection and the synonym "
           "check are disabled.")
 
 # ============================ CONFIG ============================
@@ -56,20 +76,20 @@ MODE = "agreement"                    # "test" (sync sample), "batch" (full run,
 TEST_LIMIT = 0                     # cap for test / agreement / verify mode.
                                   # Set to 0 to process the WHOLE input file (full volume).
 
-INPUT_CSV = "Raw Volumes/raw_vol01.csv"          # the scraped DSB file
-OUTPUT_CSV = "dsb_extracted.csv"              # 40-column result
-EVIDENCE_CSV = "dsb_evidence.csv"             # written only if EVIDENCE_MODE is on
-NEW_TERMS_REPORT = "dsb_new_vocab.txt"        # new vocabulary terms for your review
-FAILURE_LOG = "dsb_failures.txt"              # raw replies for any entry that didn't parse
+INPUT_CSV = os.path.join(paths.RAW_DIR, "raw_vol01.csv")  # the scraped DSB file
+OUTPUT_CSV = os.path.join(paths.ROOT, "dsb_extracted.csv")  # 40-column result
+EVIDENCE_CSV = os.path.join(paths.ROOT, "dsb_evidence.csv")  # written only if EVIDENCE_MODE is on
+NEW_TERMS_REPORT = os.path.join(paths.ROOT, "dsb_new_vocab.txt")  # new vocabulary terms for review
+FAILURE_LOG = os.path.join(paths.ROOT, "dsb_failures.txt")  # raw replies that didn't parse
 
 # --- Which volume is this? --------------------------------------------------
 # Everything the run produces is copied into ARCHIVE_DIR with "_volXX" appended, e.g.
 # dsb_extracted_vol01.csv -- so one volume's reports never overwrite the next one's.
-# Set it here, or override at the command line:   python dsb_batch_extract.py 3
+# Set it here, or override at the command line:   python extract.py 3
 VOLUME = 1                         # int (zero-padded to 2 digits) or a string like "01b"
-ARCHIVE_DIR = "Archive"            # created if it doesn't exist
+ARCHIVE_DIR = paths.ARCHIVE_DIR    # archive/
 ARCHIVE_PROMPT = True              # also archive the prompt used -- your method of record
-SYSTEM_PROMPT_PATH = "prompt.md"   # the spec we built
+SYSTEM_PROMPT_PATH = os.path.join(paths.PROMPT_DIR, "prompt.md")
 
 # Input columns. The scraped sheet has NO header row and columns are name/content/sources.
 INPUT_HAS_HEADER = True
@@ -91,8 +111,8 @@ AGREEMENT_BATCH = True            # in "agreement" mode: False = synchronous (fu
                                    # one entry at a time); True = submit all runs through the
                                    # Message Batches API (50% off, parallel) -- best for a
                                    # full-volume production run.
-AGREEMENT_REPORT = "dsb_agreement.txt"   # which fields disagreed across runs, for review
-VALIDATION_REPORT = "dsb_validation.txt" # per-row mechanical checks + agreement flags
+AGREEMENT_REPORT = os.path.join(paths.ROOT, "dsb_agreement.txt")  # fields that disagreed across runs
+VALIDATION_REPORT = os.path.join(paths.ROOT, "dsb_validation.txt")  # mechanical checks + agreement flags
 
 # In "verify" mode, every entry is extracted ONCE for the output row; only these volatile
 # fields get a second check, and any disagreements go to AGREEMENT_REPORT.
@@ -988,7 +1008,7 @@ def volume_tag():
 
 def archive_outputs():
     """Copy everything this run produced into ARCHIVE_DIR, renamed with the volume tag:
-    dsb_extracted.csv -> Archive/dsb_extracted_vol01.csv
+    dsb_extracted.csv -> archive/dsb_extracted_vol01.csv
 
     Copies rather than moves, so the working files stay in place for the standalone
     validator and any follow-up step. Re-running the same volume overwrites that volume's

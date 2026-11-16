@@ -25,7 +25,26 @@ import shutil
 import subprocess
 import sys
 
-HERE = os.path.dirname(os.path.abspath(__file__))
+
+def _import_paths():
+    cur = os.path.dirname(os.path.abspath(__file__))
+    for _ in range(4):
+        folder = os.path.join(cur, "scripts")
+        if os.path.isfile(os.path.join(folder, "project_paths.py")):
+            if folder not in sys.path:
+                sys.path.insert(0, folder)
+            import project_paths
+            return project_paths
+        parent = os.path.dirname(cur)
+        if parent == cur:
+            break
+        cur = parent
+    sys.exit("Could not find scripts/project_paths.py")
+
+
+paths = _import_paths()
+
+HERE = paths.SCRIPTS                                        # vocab.py lives here, even if this script is the copy
 VOCAB_PY = os.path.join(HERE, "vocab.py")                   # your vocabulary file
 MODULE = os.path.splitext(os.path.basename(VOCAB_PY))[0]    # "vocab.py" -> import vocab
 SIDECAR = os.path.join(HERE, "dsb_vocab_additions.json")
@@ -52,7 +71,7 @@ def build_block(data, stamp):
 
 def main():
     if not os.path.exists(SIDECAR):
-        sys.exit("No dsb_vocab_additions.json here — nothing to fold in.")
+        sys.exit(f"No dsb_vocab_additions.json at {SIDECAR} — nothing to fold in.")
     try:
         data = json.load(open(SIDECAR, encoding="utf-8"))
     except Exception as e:

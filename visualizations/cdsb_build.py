@@ -21,9 +21,10 @@ import base64
 import os
 
 # ============================ CONFIG ============================
-CSV_PATH = "database.csv"
-OUTPUT_HTML = "index.html"
-OUTPUT_DATA = "cdsb_data.json"
+HERE = os.path.dirname(os.path.abspath(__file__))
+CSV_PATH = os.path.join(HERE, "cdsb_database.csv")
+OUTPUT_HTML = os.path.join(HERE, "cdsb_visualization.html")
+OUTPUT_DATA = os.path.join(HERE, "cdsb_data.json")
 
 # ======================================================================
 # BASEMAP
@@ -120,7 +121,7 @@ OHM_BORDER_SOURCE_LAYERS = ('land_ohm_lines',)
 
 # The maplibre-gl-dates plugin (CC0), vendored rather than loaded from a CDN: the
 # unscoped npm package was unpublished, and inlining keeps the deliverable self-contained.
-OHM_DATES_PLUGIN = "vendor/maplibre-gl-dates.js"
+OHM_DATES_PLUGIN = os.path.join(HERE, "vendor", "maplibre-gl-dates.js")
 
 def _filter_code_map():
     """Short codes for filter categories, used only to keep permalinks short.

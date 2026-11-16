@@ -125,14 +125,31 @@ try:
 except ImportError:
     _PLEIADES_AVAILABLE = False
 
-INPUT_CSV = "westfall_geo.csv"  # your file name
-OUTPUT_CSV = "westfall_output.csv"
+def _import_paths():
+    cur = os.path.dirname(os.path.abspath(__file__))
+    for _ in range(4):
+        folder = os.path.join(cur, "scripts")
+        if os.path.isfile(os.path.join(folder, "project_paths.py")):
+            if folder not in sys.path:
+                sys.path.insert(0, folder)
+            import project_paths
+            return project_paths
+        parent = os.path.dirname(cur)
+        if parent == cur:
+            break
+        cur = parent
+    sys.exit("Could not find scripts/project_paths.py")
 
-VOLUME = "02"  # set this per run, e.g. "01", "02", "15" -- drives the Archive filenames below
-ARCHIVE_DIR = "Archive"
-REPORT_TXT = os.path.join(ARCHIVE_DIR, f"dsb_geocode_vol{VOLUME}.txt")  # full run log, saved straight into Archive
-ARCHIVE_CSV = os.path.join(ARCHIVE_DIR, f"dsb_geocoded_vol{VOLUME}.csv")  # a copy of OUTPUT_CSV also saved into Archive
-os.makedirs(ARCHIVE_DIR, exist_ok=True)
+
+paths = _import_paths()
+
+# Reviewed extract for this volume. Change VOLUME to geocode a different one.
+VOLUME = "02"  # e.g. "01", "02", "15" -- drives the archive filenames below
+ARCHIVE_DIR = paths.ARCHIVE_DIR
+INPUT_CSV = os.path.join(ARCHIVE_DIR, f"dsb_extracted_reviewed_vol{VOLUME}.csv")
+OUTPUT_CSV = os.path.join(paths.ROOT, "dsb_geocoded.csv")  # working copy; the archive copy is separate
+REPORT_TXT = os.path.join(ARCHIVE_DIR, f"dsb_geocode_vol{VOLUME}.txt")
+ARCHIVE_CSV = os.path.join(ARCHIVE_DIR, f"dsb_geocoded_vol{VOLUME}.csv")
 
 # --- CREDENTIALS ---
 GEONAMES_USERNAME = "seancoath"  # Your active GeoNames username
@@ -312,817 +329,834 @@ def get_iso2(country_name):
     return None
 
 
-# --- 0. Mirror all console output to a report file, line-by-line ---------
-# Every print() from here on (per-row progress lines AND the final
-# failed/no-consensus/disagreement report at the end) is written to both the
-# console and REPORT_TXT, in the same order, as it happens.
-class _Tee:
-    def __init__(self, *streams):
-        self.streams = streams
+def _main():
+    if not os.path.exists(INPUT_CSV):
+        sys.exit(
+            f"Input CSV not found: {INPUT_CSV}\n"
+            "Set VOLUME in scripts/geocoder.py to a volume that has "
+            "archive/dsb_extracted_reviewed_volXX.csv."
+        )
+    if os.path.exists(ARCHIVE_CSV) and "--overwrite" not in sys.argv:
+        sys.exit(
+            f"{ARCHIVE_CSV} already exists. Set VOLUME to a volume that has not been "
+            "geocoded, or pass --overwrite to replace this volume's archived geocode."
+        )
+    os.makedirs(ARCHIVE_DIR, exist_ok=True)
 
-    def write(self, data):
-        for s in self.streams:
-            s.write(data)
+    # --- 0. Mirror all console output to a report file, line-by-line ---------
+    # Every print() from here on (per-row progress lines AND the final
+    # failed/no-consensus/disagreement report at the end) is written to both the
+    # console and REPORT_TXT, in the same order, as it happens.
+    class _Tee:
+        def __init__(self, *streams):
+            self.streams = streams
 
-    def flush(self):
-        for s in self.streams:
-            s.flush()
+        def write(self, data):
+            for s in self.streams:
+                s.write(data)
 
-
-_report_file = open(REPORT_TXT, "w", encoding="utf-8", buffering=1)  # line-buffered: survives a mid-run crash
-sys.stdout = _Tee(sys.__stdout__, _report_file)
-
-# --- 1. SSL context using certifi (fixes many macOS SSL issues) ----------
-ssl_ctx = ssl.create_default_context(cafile=certifi.where())
-
-# --- 2. Load data --------------------------------------------------------
-df = pd.read_csv(INPUT_CSV)
-
-
-def is_unknown(value) -> bool:
-    return not isinstance(value, str) or value.strip().lower() == "unknown" or value.strip() == ""
-
-
-# --- 3. Init Geocoders & Cache ---------------------------------------
-geolocator = Nominatim(
-    user_agent=USER_AGENT,
-    ssl_context=ssl_ctx,
-)
-# Use geopy's RateLimiter to safely query Nominatim
-nominatim_geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1)
-
-if _PLEIADES_AVAILABLE:
-    pleiades_interface = PleiadesSearchInterface(user_agent=USER_AGENT)
-
-_cache = {}
-failed_lookups = []     # (row_num, field, query, reason) - ALL sources returned Unknown
-disagreements = []      # (row_num, field, query, note)   - sources disagreed, but a majority cluster still won
-no_consensus = []       # (row_num, field, query, note)   - NO two sources agreed at all; aggregate left "Unknown"
+        def flush(self):
+            for s in self.streams:
+                s.flush()
 
 
-def clean_place_for_historical_db(place_name):
-    """Extracts the town/city name (text before the first comma) for historical DBs."""
-    if "," in place_name:
-        return place_name.split(",")[0].strip()
-    return place_name.strip()
+    _report_file = open(REPORT_TXT, "w", encoding="utf-8", buffering=1)  # line-buffered: survives a mid-run crash
+    sys.stdout = _Tee(sys.__stdout__, _report_file)
+
+    # --- 1. SSL context using certifi (fixes many macOS SSL issues) ----------
+    ssl_ctx = ssl.create_default_context(cafile=certifi.where())
+
+    # --- 2. Load data --------------------------------------------------------
+    df = pd.read_csv(INPUT_CSV)
 
 
-# --- GEOCODER FUNCTIONS ---
-# Each returns (result, error). result is "lat, lon" or "Unknown".
-# Functions that support structured input try that first, then fall back
-# to the free-text query if the structured attempt returns nothing.
-
-def get_pleiades_coords(place_name):
-    """Query Pleiades via the official pleiades_search_api package for ancient coordinates."""
-    if not _PLEIADES_AVAILABLE:
-        return "Unknown", "pleiades_search_api not installed"
-
-    search_term = clean_place_for_historical_db(place_name)
-    try:
-        q = PleiadesQuery()
-        q.set_parameter("text", search_term)
-        results = pleiades_interface.search(q)
-        hits = results.get("hits", [])
-        if not hits:
-            return "Unknown", f"No result found for '{search_term}'"
-
-        # Pull coordinates from the first hit's full place JSON
-        place_uri = hits[0]["uri"].rstrip("/") + "/json"
-        resp = requests.get(place_uri, timeout=10)
-        if resp.status_code == 200:
-            data = resp.json()
-            repr_point = data.get("reprPoint")
-            if repr_point and len(repr_point) == 2:
-                lon, lat = repr_point
-                return f"{lat}, {lon}", None
-        return "Unknown", "No reprPoint found on matched place"
-    except Exception as e:
-        return "Unknown", f"Pleiades request error: {e}"
+    def is_unknown(value) -> bool:
+        return not isinstance(value, str) or value.strip().lower() == "unknown" or value.strip() == ""
 
 
-def _mapbox_request(params):
-    url = "https://api.mapbox.com/search/geocode/v6/forward"
-    try:
-        response = requests.get(url, params=params, timeout=10)
-        if response.status_code == 401:
-            return "Unknown", "Mapbox 401 - check MAPBOX_ACCESS_TOKEN"
-        if response.status_code == 429:
-            return "Unknown", "Mapbox 429 - rate limit exceeded"
-        if response.status_code != 200:
-            return "Unknown", f"Mapbox HTTP {response.status_code}"
+    # --- 3. Init Geocoders & Cache ---------------------------------------
+    geolocator = Nominatim(
+        user_agent=USER_AGENT,
+        ssl_context=ssl_ctx,
+    )
+    # Use geopy's RateLimiter to safely query Nominatim
+    nominatim_geocode = RateLimiter(geolocator.geocode, min_delay_seconds=1)
 
+    if _PLEIADES_AVAILABLE:
+        pleiades_interface = PleiadesSearchInterface(user_agent=USER_AGENT)
+
+    _cache = {}
+    failed_lookups = []     # (row_num, field, query, reason) - ALL sources returned Unknown
+    disagreements = []      # (row_num, field, query, note)   - sources disagreed, but a majority cluster still won
+    no_consensus = []       # (row_num, field, query, note)   - NO two sources agreed at all; aggregate left "Unknown"
+
+
+    def clean_place_for_historical_db(place_name):
+        """Extracts the town/city name (text before the first comma) for historical DBs."""
+        if "," in place_name:
+            return place_name.split(",")[0].strip()
+        return place_name.strip()
+
+
+    # --- GEOCODER FUNCTIONS ---
+    # Each returns (result, error). result is "lat, lon" or "Unknown".
+    # Functions that support structured input try that first, then fall back
+    # to the free-text query if the structured attempt returns nothing.
+
+    def get_pleiades_coords(place_name):
+        """Query Pleiades via the official pleiades_search_api package for ancient coordinates."""
+        if not _PLEIADES_AVAILABLE:
+            return "Unknown", "pleiades_search_api not installed"
+
+        search_term = clean_place_for_historical_db(place_name)
         try:
-            data = response.json()
-        except ValueError:
-            return "Unknown", "Mapbox returned non-JSON payload"
+            q = PleiadesQuery()
+            q.set_parameter("text", search_term)
+            results = pleiades_interface.search(q)
+            hits = results.get("hits", [])
+            if not hits:
+                return "Unknown", f"No result found for '{search_term}'"
 
-        features = data.get("features", [])
-        if not features:
-            return "Unknown", "No result found"
-
-        lon, lat = features[0]["geometry"]["coordinates"]
-        return f"{lat}, {lon}", None
-    except Exception as e:
-        return "Unknown", f"Mapbox request error: {e}"
-
-
-def get_mapbox_coords(city, state, iso2, fallback_query):
-    """
-    Query the Mapbox Geocoding API v6 (forward geocoding) for modern coordinates.
-    Uses structured input (place/region/country) when a city + ISO2 country code
-    are available; falls back to a free-text query otherwise or if the structured
-    attempt returns nothing.
-
-    Docs: https://docs.mapbox.com/api/search/geocoding/#forward-geocoding-with-structured-input
-    """
-    if not MAPBOX_ACCESS_TOKEN or MAPBOX_ACCESS_TOKEN == "YOUR_MAPBOX_ACCESS_TOKEN":
-        return "Unknown", "MAPBOX_ACCESS_TOKEN not set"
-
-    if city and iso2:
-        params = {"place": city, "country": iso2, "limit": 1, "access_token": MAPBOX_ACCESS_TOKEN}
-        if state:
-            params["region"] = state
-        result, err = _mapbox_request(params)
-        if result != "Unknown":
-            return result, err
-
-    # Free-text fallback (no structured components available, or structured attempt found nothing)
-    params = {"q": fallback_query, "limit": 1, "access_token": MAPBOX_ACCESS_TOKEN}
-    return _mapbox_request(params)
+            # Pull coordinates from the first hit's full place JSON
+            place_uri = hits[0]["uri"].rstrip("/") + "/json"
+            resp = requests.get(place_uri, timeout=10)
+            if resp.status_code == 200:
+                data = resp.json()
+                repr_point = data.get("reprPoint")
+                if repr_point and len(repr_point) == 2:
+                    lon, lat = repr_point
+                    return f"{lat}, {lon}", None
+            return "Unknown", "No reprPoint found on matched place"
+        except Exception as e:
+            return "Unknown", f"Pleiades request error: {e}"
 
 
-def _maptiler_request(query_text, params):
-    url = f"https://api.maptiler.com/geocoding/{quote(query_text)}.json"
-    try:
-        response = requests.get(url, params=params, timeout=10)
-        if response.status_code == 403:
-            return "Unknown", "MapTiler 403 - check MAPTILER_API_KEY"
-        if response.status_code != 200:
-            return "Unknown", f"MapTiler HTTP {response.status_code}"
-
+    def _mapbox_request(params):
+        url = "https://api.mapbox.com/search/geocode/v6/forward"
         try:
-            data = response.json()
-        except ValueError:
-            return "Unknown", "MapTiler returned non-JSON payload"
+            response = requests.get(url, params=params, timeout=10)
+            if response.status_code == 401:
+                return "Unknown", "Mapbox 401 - check MAPBOX_ACCESS_TOKEN"
+            if response.status_code == 429:
+                return "Unknown", "Mapbox 429 - rate limit exceeded"
+            if response.status_code != 200:
+                return "Unknown", f"Mapbox HTTP {response.status_code}"
 
-        features = data.get("features", [])
-        if not features:
-            return "Unknown", "No result found"
-
-        center = features[0].get("center")
-        if not center or len(center) != 2:
-            return "Unknown", "Matched feature had no center coordinates"
-
-        lon, lat = center
-        return f"{lat}, {lon}", None
-    except Exception as e:
-        return "Unknown", f"MapTiler request error: {e}"
-
-
-def get_maptiler_coords(city, iso2, fallback_query):
-    """
-    Query the MapTiler Geocoding API (forward geocoding) for modern coordinates.
-    MapTiler doesn't offer a separate city field, but its `country` param acts as
-    a strict filter, so it's used as a semi-structured query when a country code
-    is available. Falls back to an unfiltered free-text query if that returns
-    nothing (the country fence can otherwise exclude a valid but mismapped entry).
-
-    Docs: https://docs.maptiler.com/cloud/api/geocoding/
-    """
-    if not MAPTILER_API_KEY or MAPTILER_API_KEY == "YOUR_MAPTILER_API_KEY":
-        return "Unknown", "MAPTILER_API_KEY not set"
-
-    query_text = city if city else fallback_query
-
-    if iso2:
-        params = {"key": MAPTILER_API_KEY, "limit": 1, "country": iso2}
-        result, err = _maptiler_request(query_text, params)
-        if result != "Unknown":
-            return result, err
-
-    params = {"key": MAPTILER_API_KEY, "limit": 1}
-    return _maptiler_request(fallback_query, params)
-
-
-def _geonames_request(params):
-    url = "http://api.geonames.org/searchJSON"
-    try:
-        response = requests.get(url, params=params, timeout=10)
-        if response.status_code == 200:
             try:
                 data = response.json()
             except ValueError:
-                return "Unknown", "GeoNames returned non-JSON payload"
+                return "Unknown", "Mapbox returned non-JSON payload"
 
-            if 'status' in data:
-                return "Unknown", f"GeoNames API Error: {data['status'].get('message')}"
-            if 'geonames' in data and len(data['geonames']) > 0:
-                res = data['geonames'][0]
-                return f"{res['lat']}, {res['lng']}", None
-        return "Unknown", "No result found"
-    except Exception as e:
-        return "Unknown", f"GeoNames request error: {e}"
+            features = data.get("features", [])
+            if not features:
+                return "Unknown", "No result found"
 
-
-def get_geonames_coords(query_text, iso2, state):
-    """
-    Query GeoNames for standard coordinates. Adds `country` (ISO2) and
-    `adminName1` (state/region) as filters alongside the free-text `q` when
-    available; falls back to an unfiltered query if the filtered attempt
-    returns nothing.
-    """
-    base_params = {'q': query_text, 'maxRows': 1, 'username': GEONAMES_USERNAME}
-
-    if iso2:
-        params = dict(base_params)
-        params['country'] = iso2
-        if state:
-            params['adminName1'] = state
-        result, err = _geonames_request(params)
-        if result != "Unknown":
-            return result, err
-
-    return _geonames_request(base_params)
-
-
-def get_nominatim_coords(city, state, country, fallback_query):
-    """
-    Query Nominatim (OSM) for modern coordinates. Uses geopy's structured
-    query (city/state/country as separate fields) when a city is available;
-    falls back to a free-text query otherwise or if the structured attempt
-    returns nothing.
-    """
-    if city:
-        query_dict = {"city": city}
-        if state:
-            query_dict["state"] = state
-        if country:
-            query_dict["country"] = country
-        try:
-            loc = nominatim_geocode(query_dict, addressdetails=False, language="en", timeout=10)
+            lon, lat = features[0]["geometry"]["coordinates"]
+            return f"{lat}, {lon}", None
         except Exception as e:
-            return "Unknown", f"Nominatim error (structured): {e}"
+            return "Unknown", f"Mapbox request error: {e}"
+
+
+    def get_mapbox_coords(city, state, iso2, fallback_query):
+        """
+        Query the Mapbox Geocoding API v6 (forward geocoding) for modern coordinates.
+        Uses structured input (place/region/country) when a city + ISO2 country code
+        are available; falls back to a free-text query otherwise or if the structured
+        attempt returns nothing.
+
+        Docs: https://docs.mapbox.com/api/search/geocoding/#forward-geocoding-with-structured-input
+        """
+        if not MAPBOX_ACCESS_TOKEN or MAPBOX_ACCESS_TOKEN == "YOUR_MAPBOX_ACCESS_TOKEN":
+            return "Unknown", "MAPBOX_ACCESS_TOKEN not set"
+
+        if city and iso2:
+            params = {"place": city, "country": iso2, "limit": 1, "access_token": MAPBOX_ACCESS_TOKEN}
+            if state:
+                params["region"] = state
+            result, err = _mapbox_request(params)
+            if result != "Unknown":
+                return result, err
+
+        # Free-text fallback (no structured components available, or structured attempt found nothing)
+        params = {"q": fallback_query, "limit": 1, "access_token": MAPBOX_ACCESS_TOKEN}
+        return _mapbox_request(params)
+
+
+    def _maptiler_request(query_text, params):
+        url = f"https://api.maptiler.com/geocoding/{quote(query_text)}.json"
+        try:
+            response = requests.get(url, params=params, timeout=10)
+            if response.status_code == 403:
+                return "Unknown", "MapTiler 403 - check MAPTILER_API_KEY"
+            if response.status_code != 200:
+                return "Unknown", f"MapTiler HTTP {response.status_code}"
+
+            try:
+                data = response.json()
+            except ValueError:
+                return "Unknown", "MapTiler returned non-JSON payload"
+
+            features = data.get("features", [])
+            if not features:
+                return "Unknown", "No result found"
+
+            center = features[0].get("center")
+            if not center or len(center) != 2:
+                return "Unknown", "Matched feature had no center coordinates"
+
+            lon, lat = center
+            return f"{lat}, {lon}", None
+        except Exception as e:
+            return "Unknown", f"MapTiler request error: {e}"
+
+
+    def get_maptiler_coords(city, iso2, fallback_query):
+        """
+        Query the MapTiler Geocoding API (forward geocoding) for modern coordinates.
+        MapTiler doesn't offer a separate city field, but its `country` param acts as
+        a strict filter, so it's used as a semi-structured query when a country code
+        is available. Falls back to an unfiltered free-text query if that returns
+        nothing (the country fence can otherwise exclude a valid but mismapped entry).
+
+        Docs: https://docs.maptiler.com/cloud/api/geocoding/
+        """
+        if not MAPTILER_API_KEY or MAPTILER_API_KEY == "YOUR_MAPTILER_API_KEY":
+            return "Unknown", "MAPTILER_API_KEY not set"
+
+        query_text = city if city else fallback_query
+
+        if iso2:
+            params = {"key": MAPTILER_API_KEY, "limit": 1, "country": iso2}
+            result, err = _maptiler_request(query_text, params)
+            if result != "Unknown":
+                return result, err
+
+        params = {"key": MAPTILER_API_KEY, "limit": 1}
+        return _maptiler_request(fallback_query, params)
+
+
+    def _geonames_request(params):
+        url = "http://api.geonames.org/searchJSON"
+        try:
+            response = requests.get(url, params=params, timeout=10)
+            if response.status_code == 200:
+                try:
+                    data = response.json()
+                except ValueError:
+                    return "Unknown", "GeoNames returned non-JSON payload"
+
+                if 'status' in data:
+                    return "Unknown", f"GeoNames API Error: {data['status'].get('message')}"
+                if 'geonames' in data and len(data['geonames']) > 0:
+                    res = data['geonames'][0]
+                    return f"{res['lat']}, {res['lng']}", None
+            return "Unknown", "No result found"
+        except Exception as e:
+            return "Unknown", f"GeoNames request error: {e}"
+
+
+    def get_geonames_coords(query_text, iso2, state):
+        """
+        Query GeoNames for standard coordinates. Adds `country` (ISO2) and
+        `adminName1` (state/region) as filters alongside the free-text `q` when
+        available; falls back to an unfiltered query if the filtered attempt
+        returns nothing.
+        """
+        base_params = {'q': query_text, 'maxRows': 1, 'username': GEONAMES_USERNAME}
+
+        if iso2:
+            params = dict(base_params)
+            params['country'] = iso2
+            if state:
+                params['adminName1'] = state
+            result, err = _geonames_request(params)
+            if result != "Unknown":
+                return result, err
+
+        return _geonames_request(base_params)
+
+
+    def get_nominatim_coords(city, state, country, fallback_query):
+        """
+        Query Nominatim (OSM) for modern coordinates. Uses geopy's structured
+        query (city/state/country as separate fields) when a city is available;
+        falls back to a free-text query otherwise or if the structured attempt
+        returns nothing.
+        """
+        if city:
+            query_dict = {"city": city}
+            if state:
+                query_dict["state"] = state
+            if country:
+                query_dict["country"] = country
+            try:
+                loc = nominatim_geocode(query_dict, addressdetails=False, language="en", timeout=10)
+            except Exception as e:
+                return "Unknown", f"Nominatim error (structured): {e}"
+            if loc:
+                return f"{loc.latitude}, {loc.longitude}", None
+
+        try:
+            loc = nominatim_geocode(fallback_query, addressdetails=False, language="en", timeout=10)
+        except Exception as e:
+            return "Unknown", f"Nominatim error: {e}"
         if loc:
             return f"{loc.latitude}, {loc.longitude}", None
-
-    try:
-        loc = nominatim_geocode(fallback_query, addressdetails=False, language="en", timeout=10)
-    except Exception as e:
-        return "Unknown", f"Nominatim error: {e}"
-    if loc:
-        return f"{loc.latitude}, {loc.longitude}", None
-    return "Unknown", "No result found"
+        return "Unknown", "No result found"
 
 
-def get_wikidata_coords(place_name):
-    """
-    Query Wikidata via its own search + claims API (no SPARQL needed) for a
-    coordinate location (property P625). Especially useful for 1600-1900
-    places that have since been renamed, since Wikidata tracks historical
-    aliases that pure modern-place geocoders often don't.
-    """
-    try:
-        search_resp = requests.get(
-            "https://www.wikidata.org/w/api.php",
-            params={
-                "action": "wbsearchentities",
-                "search": place_name,
-                "language": "en",
-                "type": "item",
-                "format": "json",
-                "limit": 5,
-            },
-            headers={"User-Agent": USER_AGENT},
-            timeout=10,
-        )
-        search_data = search_resp.json()
-        candidates = search_data.get("search", [])
-        if not candidates:
-            return "Unknown", f"No Wikidata entity found for '{place_name}'"
+    def get_wikidata_coords(place_name):
+        """
+        Query Wikidata via its own search + claims API (no SPARQL needed) for a
+        coordinate location (property P625). Especially useful for 1600-1900
+        places that have since been renamed, since Wikidata tracks historical
+        aliases that pure modern-place geocoders often don't.
+        """
+        try:
+            search_resp = requests.get(
+                "https://www.wikidata.org/w/api.php",
+                params={
+                    "action": "wbsearchentities",
+                    "search": place_name,
+                    "language": "en",
+                    "type": "item",
+                    "format": "json",
+                    "limit": 5,
+                },
+                headers={"User-Agent": USER_AGENT},
+                timeout=10,
+            )
+            search_data = search_resp.json()
+            candidates = search_data.get("search", [])
+            if not candidates:
+                return "Unknown", f"No Wikidata entity found for '{place_name}'"
 
-        qid = candidates[0]["id"]
+            qid = candidates[0]["id"]
 
-        claims_resp = requests.get(
-            "https://www.wikidata.org/w/api.php",
-            params={
-                "action": "wbgetclaims",
-                "entity": qid,
-                "property": "P625",  # coordinate location
-                "format": "json",
-            },
-            headers={"User-Agent": USER_AGENT},
-            timeout=10,
-        )
-        claims_data = claims_resp.json()
-        claims = claims_data.get("claims", {}).get("P625", [])
-        if not claims:
-            return "Unknown", f"No coordinate data on Wikidata entity {qid}"
+            claims_resp = requests.get(
+                "https://www.wikidata.org/w/api.php",
+                params={
+                    "action": "wbgetclaims",
+                    "entity": qid,
+                    "property": "P625",  # coordinate location
+                    "format": "json",
+                },
+                headers={"User-Agent": USER_AGENT},
+                timeout=10,
+            )
+            claims_data = claims_resp.json()
+            claims = claims_data.get("claims", {}).get("P625", [])
+            if not claims:
+                return "Unknown", f"No coordinate data on Wikidata entity {qid}"
 
-        value = claims[0]["mainsnak"]["datavalue"]["value"]
-        return f"{value['latitude']}, {value['longitude']}", None
-    except Exception as e:
-        return "Unknown", f"Wikidata request error: {e}"
-
-
-def get_wikipedia_coords(place_name):
-    """
-    Query Wikipedia's MediaWiki API for the coordinates listed on the best-
-    matching article (typically the infobox {{coord}} value). Uses a single
-    generator=search request that finds the top matching page and returns its
-    coordinates in one round trip.
-    """
-    try:
-        resp = requests.get(
-            "https://en.wikipedia.org/w/api.php",
-            params={
-                "action": "query",
-                "generator": "search",
-                "gsrsearch": place_name,
-                "gsrlimit": 1,
-                "prop": "coordinates",
-                "format": "json",
-            },
-            headers={"User-Agent": USER_AGENT},
-            timeout=10,
-        )
-        data = resp.json()
-        pages = data.get("query", {}).get("pages", {})
-        if not pages:
-            return "Unknown", f"No Wikipedia article found for '{place_name}'"
-
-        page = next(iter(pages.values()))
-        coords = page.get("coordinates")
-        if not coords:
-            return "Unknown", f"Wikipedia article '{page.get('title')}' has no coordinates listed"
-
-        lat = coords[0]["lat"]
-        lon = coords[0]["lon"]
-        return f"{lat}, {lon}", None
-    except Exception as e:
-        return "Unknown", f"Wikipedia request error: {e}"
+            value = claims[0]["mainsnak"]["datavalue"]["value"]
+            return f"{value['latitude']}, {value['longitude']}", None
+        except Exception as e:
+            return "Unknown", f"Wikidata request error: {e}"
 
 
-# --- AGGREGATION ---
+    def get_wikipedia_coords(place_name):
+        """
+        Query Wikipedia's MediaWiki API for the coordinates listed on the best-
+        matching article (typically the infobox {{coord}} value). Uses a single
+        generator=search request that finds the top matching page and returns its
+        coordinates in one round trip.
+        """
+        try:
+            resp = requests.get(
+                "https://en.wikipedia.org/w/api.php",
+                params={
+                    "action": "query",
+                    "generator": "search",
+                    "gsrsearch": place_name,
+                    "gsrlimit": 1,
+                    "prop": "coordinates",
+                    "format": "json",
+                },
+                headers={"User-Agent": USER_AGENT},
+                timeout=10,
+            )
+            data = resp.json()
+            pages = data.get("query", {}).get("pages", {})
+            if not pages:
+                return "Unknown", f"No Wikipedia article found for '{place_name}'"
 
-def haversine_km(lat1, lon1, lat2, lon2):
-    """Great-circle distance between two points, in kilometers."""
-    R = 6371.0
-    dlat = radians(lat2 - lat1)
-    dlon = radians(lon2 - lon1)
-    a = sin(dlat / 2) ** 2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon / 2) ** 2
-    c = 2 * atan2(sqrt(a), sqrt(1 - a))
-    return R * c
+            page = next(iter(pages.values()))
+            coords = page.get("coordinates")
+            if not coords:
+                return "Unknown", f"Wikipedia article '{page.get('title')}' has no coordinates listed"
+
+            lat = coords[0]["lat"]
+            lon = coords[0]["lon"]
+            return f"{lat}, {lon}", None
+        except Exception as e:
+            return "Unknown", f"Wikipedia request error: {e}"
 
 
-def aggregate_coords(results):
-    """
-    Combine the per-source results into a single best coordinate.
+    # --- AGGREGATION ---
 
-    Returns (agg_lat, agg_lon, note, no_consensus).
-    - agg_lat/agg_lon are "Unknown" strings if no source returned a result,
-      OR if sources were in total disagreement (see no_consensus below).
-    - note is None unless sources disagreed (some fell outside the main
-      cluster) or there was no consensus at all.
-    - no_consensus is True when 2+ sources returned a result but NONE of
-      them were within CLUSTER_DISTANCE_KM of any other (i.e. every source
-      is its own singleton cluster). In this case we deliberately do NOT
-      pick a single source via SOURCE_PRIORITY and call it "the answer" --
-      with zero corroboration, that tie-break is as likely to select a
-      wrong/mismatched result as a correct one. Instead the aggregate is
-      left "Unknown" and the row is flagged for manual review, listing every
-      source's raw value.
-    """
-    points = {}
-    for src, val in results.items():
-        if val != "Unknown":
-            try:
-                lat_str, lon_str = val.split(", ")
-                points[src] = (float(lat_str), float(lon_str))
-            except Exception:
+    def haversine_km(lat1, lon1, lat2, lon2):
+        """Great-circle distance between two points, in kilometers."""
+        R = 6371.0
+        dlat = radians(lat2 - lat1)
+        dlon = radians(lon2 - lon1)
+        a = sin(dlat / 2) ** 2 + cos(radians(lat1)) * cos(radians(lat2)) * sin(dlon / 2) ** 2
+        c = 2 * atan2(sqrt(a), sqrt(1 - a))
+        return R * c
+
+
+    def aggregate_coords(results):
+        """
+        Combine the per-source results into a single best coordinate.
+
+        Returns (agg_lat, agg_lon, note, no_consensus).
+        - agg_lat/agg_lon are "Unknown" strings if no source returned a result,
+          OR if sources were in total disagreement (see no_consensus below).
+        - note is None unless sources disagreed (some fell outside the main
+          cluster) or there was no consensus at all.
+        - no_consensus is True when 2+ sources returned a result but NONE of
+          them were within CLUSTER_DISTANCE_KM of any other (i.e. every source
+          is its own singleton cluster). In this case we deliberately do NOT
+          pick a single source via SOURCE_PRIORITY and call it "the answer" --
+          with zero corroboration, that tie-break is as likely to select a
+          wrong/mismatched result as a correct one. Instead the aggregate is
+          left "Unknown" and the row is flagged for manual review, listing every
+          source's raw value.
+        """
+        points = {}
+        for src, val in results.items():
+            if val != "Unknown":
+                try:
+                    lat_str, lon_str = val.split(", ")
+                    points[src] = (float(lat_str), float(lon_str))
+                except Exception:
+                    continue
+
+        if not points:
+            return "Unknown", "Unknown", None, False
+
+        if len(points) == 1:
+            src, (lat, lon) = next(iter(points.items()))
+            return round(lat, 6), round(lon, 6), None, False
+
+        # Union-Find (disjoint set) clustering: two sources merge into the same
+        # cluster if they're within CLUSTER_DISTANCE_KM of EITHER a common
+        # neighbor or each other, transitively -- this is order-independent and
+        # correctly chains e.g. A-B close, B-C close (even if A-C alone would be
+        # just over the threshold), unlike a naive "compare only to the cluster's
+        # first point" approach.
+        names = list(points.keys())
+        parent = {n: n for n in names}
+
+        def find(x):
+            while parent[x] != x:
+                parent[x] = parent[parent[x]]
+                x = parent[x]
+            return x
+
+        def union(a, b):
+            ra, rb = find(a), find(b)
+            if ra != rb:
+                parent[ra] = rb
+
+        for i in range(len(names)):
+            for j in range(i + 1, len(names)):
+                a, b = names[i], names[j]
+                if haversine_km(*points[a], *points[b]) <= CLUSTER_DISTANCE_KM:
+                    union(a, b)
+
+        grouped = {}
+        for n in names:
+            grouped.setdefault(find(n), []).append(n)
+        clusters = list(grouped.values())
+
+        best_size = max(len(c) for c in clusters)
+
+        if best_size == 1:
+            # No two sources agree on anything -- do not silently trust a
+            # priority tie-break here. Flag for manual review instead.
+            raw_values = ", ".join(f"{src}=({points[src][0]}, {points[src][1]})" for src in names)
+            note = f"NO CONSENSUS: {len(points)} sources all disagreed (>{CLUSTER_DISTANCE_KM}km apart); raw values: {raw_values}"
+            return "Unknown", "Unknown", note, True
+
+        # Largest cluster wins; ties broken by which cluster contains the
+        # highest-priority source.
+        def cluster_sort_key(cluster_srcs):
+            best_rank = min(
+                (SOURCE_PRIORITY.index(s) for s in cluster_srcs if s in SOURCE_PRIORITY),
+                default=len(SOURCE_PRIORITY),
+            )
+            return (-len(cluster_srcs), best_rank)
+
+        clusters.sort(key=cluster_sort_key)
+        best = clusters[0]
+
+        avg_lat = round(sum(points[s][0] for s in best) / len(best), 6)
+        avg_lon = round(sum(points[s][1] for s in best) / len(best), 6)
+
+        note = None
+        if len(best) < len(points):
+            agreeing = ", ".join(best)
+            outlier_srcs = [s for s in names if s not in best]
+            note = f"{len(best)}/{len(points)} sources agreed ({agreeing}); outlier(s): {', '.join(outlier_srcs)}"
+
+        return avg_lat, avg_lon, note, False
+
+
+
+
+    # --- MAIN MULTI-QUERY HANDLER ---
+
+    def geocode_place_multi(query, row_num, field, city=None, state=None, country=None, skip_pleiades=False):
+        """
+        Query all sources, printing real-time Success/Fail outcomes. Tracks
+        failures/disagreements per row. city/state/country (when known) are used
+        for structured queries to the sources that support them; `query` is
+        always used as the free-text fallback and for sources without structured
+        support (Pleiades, Wikidata, Wikipedia). skip_pleiades bypasses the
+        Pleiades call entirely (see PLEIADES_MAX_YEAR above).
+        """
+        if is_unknown(query):
+            return {
+                "pleiades": "Unknown", "mapbox": "Unknown", "maptiler": "Unknown",
+                "geonames": "Unknown", "nominatim": "Unknown", "wikidata": "Unknown",
+                "wikipedia": "Unknown"
+            }
+
+        query_clean = query.strip()
+        # skip_pleiades is part of the cache key so the same place name doesn't
+        # silently reuse a Pleiades-skipped result for a row where it shouldn't be skipped
+        cache_key = f"{query_clean.lower()}|skip_pleiades={skip_pleiades}"
+
+        if cache_key in _cache:
+            results = _cache[cache_key]
+        else:
+            iso2 = get_iso2(country)
+
+            if skip_pleiades:
+                p_res, p_err = "Unknown", "Skipped (year outside Pleiades' ancient-world coverage)"
+            else:
+                p_res, p_err = get_pleiades_coords(query_clean)
+            m_res, m_err = get_mapbox_coords(city, state, iso2, query_clean)
+            mt_res, mt_err = get_maptiler_coords(city, iso2, query_clean)
+            g_res, g_err = get_geonames_coords(query_clean, iso2, state)
+            n_res, n_err = get_nominatim_coords(city, state, country, query_clean)
+            w_res, w_err = get_wikidata_coords(query_clean)
+            wp_res, wp_err = get_wikipedia_coords(query_clean)
+
+            p_status = "SKIPPED" if skip_pleiades else ("SUCCESS" if p_res != "Unknown" else "FAIL")
+            m_status = "SUCCESS" if m_res != "Unknown" else "FAIL"
+            mt_status = "SUCCESS" if mt_res != "Unknown" else "FAIL"
+            g_status = "SUCCESS" if g_res != "Unknown" else "FAIL"
+            n_status = "SUCCESS" if n_res != "Unknown" else "FAIL"
+            w_status = "SUCCESS" if w_res != "Unknown" else "FAIL"
+            wp_status = "SUCCESS" if wp_res != "Unknown" else "FAIL"
+
+            print(
+                f" Row {row_num}: '{query_clean}' | "
+                f"Pleiades: {p_status} | "
+                f"Mapbox: {m_status} | "
+                f"MapTiler: {mt_status} | "
+                f"GeoNames: {g_status} | "
+                f"Nominatim: {n_status} | "
+                f"Wikidata: {w_status} | "
+                f"Wikipedia: {wp_status}"
+            )
+
+            results = {
+                "pleiades": p_res,
+                "mapbox": m_res,
+                "maptiler": mt_res,
+                "geonames": g_res,
+                "nominatim": n_res,
+                "wikidata": w_res,
+                "wikipedia": wp_res,
+            }
+
+            _cache[cache_key] = results
+            time.sleep(1.2)  # Throttle to respect API limits
+
+        # Track per-row diagnostics regardless of whether this came from cache,
+        # so a place referenced by many rows gets reported for every row it
+        # affects, not just the first time it was looked up.
+        if all(v == "Unknown" for v in results.values()):
+            failed_lookups.append((row_num, field, query_clean, "All sources returned Unknown"))
+        else:
+            _, _, note, is_no_consensus = aggregate_coords(results)
+            if is_no_consensus:
+                no_consensus.append((row_num, field, query_clean, note))
+            elif note:
+                disagreements.append((row_num, field, query_clean, note))
+
+        return results
+
+
+    def sheet_row(i):
+        return i + 2
+
+
+    # --- 4a. Geocode Born / Died -----------------------------------------------
+    # Born_Town/Died_Town may now carry an embedded state/region, e.g.
+    # "Baltimore, Maryland" instead of just "Baltimore" -- split_city_state()
+    # (defined above) handles both that and the plain "Paris" (no region) case.
+
+    for mode in ["Born", "Died"]:
+        p_lats, p_lons = [], []
+        m_lats, m_lons = [], []
+        mt_lats, mt_lons = [], []
+        g_lats, g_lons = [], []
+        n_lats, n_lons = [], []
+        w_lats, w_lons = [], []
+        wp_lats, wp_lons = [], []
+        agg_lats, agg_lons = [], []
+
+        print(f"Starting geocoding for {mode} locations...")
+        for i, row in df.iterrows():
+            country = row.get(f"{mode}_Country")
+            town = row.get(f"{mode}_Town")
+
+            if is_unknown(town):
+                for lst in [p_lats, p_lons, m_lats, m_lons, mt_lats, mt_lons, g_lats, g_lons,
+                            n_lats, n_lons, w_lats, w_lons, wp_lats, wp_lons, agg_lats, agg_lons]:
+                    lst.append("Unknown")
                 continue
 
-    if not points:
-        return "Unknown", "Unknown", None, False
+            town_str = str(town).strip()
+            country_str = None if is_unknown(country) else str(country).strip()
 
-    if len(points) == 1:
-        src, (lat, lon) = next(iter(points.items()))
-        return round(lat, 6), round(lon, 6), None, False
+            # Split any embedded state/region out of the town field
+            parsed_city, parsed_state = split_city_state(town_str)
 
-    # Union-Find (disjoint set) clustering: two sources merge into the same
-    # cluster if they're within CLUSTER_DISTANCE_KM of EITHER a common
-    # neighbor or each other, transitively -- this is order-independent and
-    # correctly chains e.g. A-B close, B-C close (even if A-C alone would be
-    # just over the threshold), unlike a naive "compare only to the cluster's
-    # first point" approach.
-    names = list(points.keys())
-    parent = {n: n for n in names}
+            # Correct known renamed/relocated historical places before building any query
+            resolved_city, resolved_country = resolve_historical_place(parsed_city, country_str)
+            overridden = (resolved_city != parsed_city or resolved_country != country_str)
+            # A historical override replaces the place's identity entirely, so a
+            # region tied to the OLD name/country no longer applies
+            resolved_state = None if overridden else parsed_state
 
-    def find(x):
-        while parent[x] != x:
-            parent[x] = parent[parent[x]]
-            x = parent[x]
-        return x
+            query = build_free_text_query(resolved_city, resolved_state, resolved_country)
 
-    def union(a, b):
-        ra, rb = find(a), find(b)
-        if ra != rb:
-            parent[ra] = rb
+            year = parse_year(row.get(f"{mode}_Year"))
+            skip_pleiades = year is not None and year > PLEIADES_MAX_YEAR
 
-    for i in range(len(names)):
-        for j in range(i + 1, len(names)):
-            a, b = names[i], names[j]
-            if haversine_km(*points[a], *points[b]) <= CLUSTER_DISTANCE_KM:
-                union(a, b)
-
-    grouped = {}
-    for n in names:
-        grouped.setdefault(find(n), []).append(n)
-    clusters = list(grouped.values())
-
-    best_size = max(len(c) for c in clusters)
-
-    if best_size == 1:
-        # No two sources agree on anything -- do not silently trust a
-        # priority tie-break here. Flag for manual review instead.
-        raw_values = ", ".join(f"{src}=({points[src][0]}, {points[src][1]})" for src in names)
-        note = f"NO CONSENSUS: {len(points)} sources all disagreed (>{CLUSTER_DISTANCE_KM}km apart); raw values: {raw_values}"
-        return "Unknown", "Unknown", note, True
-
-    # Largest cluster wins; ties broken by which cluster contains the
-    # highest-priority source.
-    def cluster_sort_key(cluster_srcs):
-        best_rank = min(
-            (SOURCE_PRIORITY.index(s) for s in cluster_srcs if s in SOURCE_PRIORITY),
-            default=len(SOURCE_PRIORITY),
-        )
-        return (-len(cluster_srcs), best_rank)
-
-    clusters.sort(key=cluster_sort_key)
-    best = clusters[0]
-
-    avg_lat = round(sum(points[s][0] for s in best) / len(best), 6)
-    avg_lon = round(sum(points[s][1] for s in best) / len(best), 6)
-
-    note = None
-    if len(best) < len(points):
-        agreeing = ", ".join(best)
-        outlier_srcs = [s for s in names if s not in best]
-        note = f"{len(best)}/{len(points)} sources agreed ({agreeing}); outlier(s): {', '.join(outlier_srcs)}"
-
-    return avg_lat, avg_lon, note, False
+            results = geocode_place_multi(query, sheet_row(i), f"{mode}_Town",
+                                           city=resolved_city, state=resolved_state, country=resolved_country,
+                                           skip_pleiades=skip_pleiades)
 
 
+            for prefix, lat_lst, lon_lst in [
+                ("pleiades", p_lats, p_lons),
+                ("mapbox", m_lats, m_lons),
+                ("maptiler", mt_lats, mt_lons),
+                ("geonames", g_lats, g_lons),
+                ("nominatim", n_lats, n_lons),
+                ("wikidata", w_lats, w_lons),
+                ("wikipedia", wp_lats, wp_lons),
+            ]:
+                val = results[prefix]
+                if val != "Unknown":
+                    lat, lon = val.split(", ")
+                    lat_lst.append(lat)
+                    lon_lst.append(lon)
+                else:
+                    lat_lst.append("Unknown")
+                    lon_lst.append("Unknown")
+
+            agg_lat, agg_lon, _, _ = aggregate_coords(results)
+            agg_lats.append(agg_lat)
+            agg_lons.append(agg_lon)
+
+        df[f"{mode}_Pleiades_Lat"] = p_lats
+        df[f"{mode}_Pleiades_Lon"] = p_lons
+        df[f"{mode}_Mapbox_Lat"] = m_lats
+        df[f"{mode}_Mapbox_Lon"] = m_lons
+        df[f"{mode}_MapTiler_Lat"] = mt_lats
+        df[f"{mode}_MapTiler_Lon"] = mt_lons
+        df[f"{mode}_GeoNames_Lat"] = g_lats
+        df[f"{mode}_GeoNames_Lon"] = g_lons
+        df[f"{mode}_Nominatim_Lat"] = n_lats
+        df[f"{mode}_Nominatim_Lon"] = n_lons
+        df[f"{mode}_Wikidata_Lat"] = w_lats
+        df[f"{mode}_Wikidata_Lon"] = w_lons
+        df[f"{mode}_Wikipedia_Lat"] = wp_lats
+        df[f"{mode}_Wikipedia_Lon"] = wp_lons
+        df[f"{mode}_Aggregate_Latitude"] = agg_lats
+        df[f"{mode}_Aggregate_Longitude"] = agg_lons
+
+        print(f"Finished geocoding {mode} locations.\n")
 
 
-# --- MAIN MULTI-QUERY HANDLER ---
+    # --- 4b. Geocode Education_Locations ---------------------------------------
+    def parse_education_locations(value):
+        """
+        Parses a string like:
+          "CITY, REGION, COUNTRY, START_YEAR, END_YEAR; CITY, REGION, COUNTRY, START_YEAR, END_YEAR"
+        into a list of dicts: {"city":..., "state":..., "country":..., "query":...,
+        "skip_pleiades":...}.
+        REGION is always present as a field now -- literally "Unknown" when not
+        specified, same convention as every other field -- so a standard chunk
+        always has exactly 5 comma-separated parts. A handful of older/legacy
+        chunk shapes (no region field at all, e.g. "CITY, COUNTRY, YEAR, YEAR")
+        are still tolerated via the same flexible fallback used previously, in
+        case any rows haven't been migrated to the 5-field format. Known
+        renamed/relocated historical places (see HISTORICAL_PLACE_OVERRIDES) are
+        corrected to their modern city/country before the query is built.
+        """
+        if is_unknown(value):
+            return []
 
-def geocode_place_multi(query, row_num, field, city=None, state=None, country=None, skip_pleiades=False):
-    """
-    Query all sources, printing real-time Success/Fail outcomes. Tracks
-    failures/disagreements per row. city/state/country (when known) are used
-    for structured queries to the sources that support them; `query` is
-    always used as the free-text fallback and for sources without structured
-    support (Pleiades, Wikidata, Wikipedia). skip_pleiades bypasses the
-    Pleiades call entirely (see PLEIADES_MAX_YEAR above).
-    """
-    if is_unknown(query):
-        return {
-            "pleiades": "Unknown", "mapbox": "Unknown", "maptiler": "Unknown",
-            "geonames": "Unknown", "nominatim": "Unknown", "wikidata": "Unknown",
-            "wikipedia": "Unknown"
-        }
+        entries = []
+        for chunk in value.split(";"):
+            chunk = chunk.strip()
+            if not chunk:
+                continue
+            parts = [p.strip() for p in chunk.split(",")]
 
-    query_clean = query.strip()
-    # skip_pleiades is part of the cache key so the same place name doesn't
-    # silently reuse a Pleiades-skipped result for a row where it shouldn't be skipped
-    cache_key = f"{query_clean.lower()}|skip_pleiades={skip_pleiades}"
+            if len(parts) == 5:
+                # Standard current format: City, Region, Country, Start_Year, End_Year
+                city, region, country = parts[0], parts[1], parts[2]
+                years = parts[3:5]
+            elif len(parts) >= 6:
+                # More fields than expected (e.g. a region itself containing a
+                # comma) -- treat the first as city, the last two as years, and
+                # everything in between as region+country.
+                city = parts[0]
+                middle = parts[1:-2]
+                region, country = (", ".join(middle[:-1]) or None), middle[-1]
+                years = parts[-2:]
+            elif len(parts) == 4:
+                # Legacy format with no region field: City, Country, Year, Year
+                city, region, country = parts[0], None, parts[1]
+                years = parts[2:4]
+            elif len(parts) == 3:
+                city, region, country = parts[0], None, parts[1]
+                years = [parts[2]]
+            elif len(parts) == 2:
+                city, region, country = parts[0], None, parts[1]
+                years = []
+            else:
+                city, region, country = parts[0], None, None
+                years = []
 
-    if cache_key in _cache:
-        results = _cache[cache_key]
-    else:
-        iso2 = get_iso2(country)
+            if is_unknown(city):
+                continue
 
-        if skip_pleiades:
-            p_res, p_err = "Unknown", "Skipped (year outside Pleiades' ancient-world coverage)"
-        else:
-            p_res, p_err = get_pleiades_coords(query_clean)
-        m_res, m_err = get_mapbox_coords(city, state, iso2, query_clean)
-        mt_res, mt_err = get_maptiler_coords(city, iso2, query_clean)
-        g_res, g_err = get_geonames_coords(query_clean, iso2, state)
-        n_res, n_err = get_nominatim_coords(city, state, country, query_clean)
-        w_res, w_err = get_wikidata_coords(query_clean)
-        wp_res, wp_err = get_wikipedia_coords(query_clean)
+            state = None if is_unknown(region) else region
+            country = None if is_unknown(country) else country
 
-        p_status = "SKIPPED" if skip_pleiades else ("SUCCESS" if p_res != "Unknown" else "FAIL")
-        m_status = "SUCCESS" if m_res != "Unknown" else "FAIL"
-        mt_status = "SUCCESS" if mt_res != "Unknown" else "FAIL"
-        g_status = "SUCCESS" if g_res != "Unknown" else "FAIL"
-        n_status = "SUCCESS" if n_res != "Unknown" else "FAIL"
-        w_status = "SUCCESS" if w_res != "Unknown" else "FAIL"
-        wp_status = "SUCCESS" if wp_res != "Unknown" else "FAIL"
+            # Correct known renamed/relocated historical places before building the query
+            resolved_city, resolved_country = resolve_historical_place(city, country)
+            overridden = (resolved_city != city or resolved_country != country)
+            # A historical override replaces the place's identity entirely, so a
+            # region tied to the OLD name/country no longer applies
+            if overridden:
+                state = None
+            city, country = resolved_city, resolved_country
 
-        print(
-            f" Row {row_num}: '{query_clean}' | "
-            f"Pleiades: {p_status} | "
-            f"Mapbox: {m_status} | "
-            f"MapTiler: {mt_status} | "
-            f"GeoNames: {g_status} | "
-            f"Nominatim: {n_status} | "
-            f"Wikidata: {w_status} | "
-            f"Wikipedia: {wp_status}"
-        )
+            query = build_free_text_query(city, state, country)
 
-        results = {
-            "pleiades": p_res,
-            "mapbox": m_res,
-            "maptiler": mt_res,
-            "geonames": g_res,
-            "nominatim": n_res,
-            "wikidata": w_res,
-            "wikipedia": wp_res,
-        }
+            parsed_years = [y for y in (parse_year(y) for y in years) if y is not None]
+            skip_pleiades = bool(parsed_years) and min(parsed_years) > PLEIADES_MAX_YEAR
 
-        _cache[cache_key] = results
-        time.sleep(1.2)  # Throttle to respect API limits
+            entries.append({
+                "city": city, "state": state, "country": country, "query": query,
+                "skip_pleiades": skip_pleiades,
+            })
 
-    # Track per-row diagnostics regardless of whether this came from cache,
-    # so a place referenced by many rows gets reported for every row it
-    # affects, not just the first time it was looked up.
-    if all(v == "Unknown" for v in results.values()):
-        failed_lookups.append((row_num, field, query_clean, "All sources returned Unknown"))
-    else:
-        _, _, note, is_no_consensus = aggregate_coords(results)
-        if is_no_consensus:
-            no_consensus.append((row_num, field, query_clean, note))
-        elif note:
-            disagreements.append((row_num, field, query_clean, note))
-
-    return results
+        return entries
 
 
-def sheet_row(i):
-    return i + 2
+    edu_p_results, edu_m_results, edu_mt_results, edu_g_results, edu_n_results, edu_w_results, edu_wp_results = [], [], [], [], [], [], []
+    edu_agg_results = []
 
-
-# --- 4a. Geocode Born / Died -----------------------------------------------
-# Born_Town/Died_Town may now carry an embedded state/region, e.g.
-# "Baltimore, Maryland" instead of just "Baltimore" -- split_city_state()
-# (defined above) handles both that and the plain "Paris" (no region) case.
-
-for mode in ["Born", "Died"]:
-    p_lats, p_lons = [], []
-    m_lats, m_lons = [], []
-    mt_lats, mt_lons = [], []
-    g_lats, g_lons = [], []
-    n_lats, n_lons = [], []
-    w_lats, w_lons = [], []
-    wp_lats, wp_lons = [], []
-    agg_lats, agg_lons = [], []
-
-    print(f"Starting geocoding for {mode} locations...")
+    print("Starting geocoding for Education locations...")
     for i, row in df.iterrows():
-        country = row.get(f"{mode}_Country")
-        town = row.get(f"{mode}_Town")
+        raw_value = row.get("Education_Locations", None)
+        entries = parse_education_locations(raw_value)
 
-        if is_unknown(town):
-            for lst in [p_lats, p_lons, m_lats, m_lons, mt_lats, mt_lons, g_lats, g_lons,
-                        n_lats, n_lons, w_lats, w_lons, wp_lats, wp_lons, agg_lats, agg_lons]:
+        if not entries:
+            for lst in [edu_p_results, edu_m_results, edu_mt_results, edu_g_results, edu_n_results,
+                        edu_w_results, edu_wp_results, edu_agg_results]:
                 lst.append("Unknown")
             continue
 
-        town_str = str(town).strip()
-        country_str = None if is_unknown(country) else str(country).strip()
+        print(f"Row {sheet_row(i)}: processing {len(entries)} education location(s)")
 
-        # Split any embedded state/region out of the town field
-        parsed_city, parsed_state = split_city_state(town_str)
+        p_coords, m_coords, mt_coords, g_coords, n_coords, w_coords, wp_coords = [], [], [], [], [], [], []
+        agg_coords = []
+        for entry in entries:
+            res = geocode_place_multi(entry["query"], sheet_row(i), "Education_Locations",
+                                       city=entry["city"], state=entry["state"], country=entry["country"],
+                                       skip_pleiades=entry["skip_pleiades"])
+            p_coords.append(res["pleiades"])
+            m_coords.append(res["mapbox"])
+            mt_coords.append(res["maptiler"])
+            g_coords.append(res["geonames"])
+            n_coords.append(res["nominatim"])
+            w_coords.append(res["wikidata"])
+            wp_coords.append(res["wikipedia"])
 
-        # Correct known renamed/relocated historical places before building any query
-        resolved_city, resolved_country = resolve_historical_place(parsed_city, country_str)
-        overridden = (resolved_city != parsed_city or resolved_country != country_str)
-        # A historical override replaces the place's identity entirely, so a
-        # region tied to the OLD name/country no longer applies
-        resolved_state = None if overridden else parsed_state
-
-        query = build_free_text_query(resolved_city, resolved_state, resolved_country)
-
-        year = parse_year(row.get(f"{mode}_Year"))
-        skip_pleiades = year is not None and year > PLEIADES_MAX_YEAR
-
-        results = geocode_place_multi(query, sheet_row(i), f"{mode}_Town",
-                                       city=resolved_city, state=resolved_state, country=resolved_country,
-                                       skip_pleiades=skip_pleiades)
-
-
-        for prefix, lat_lst, lon_lst in [
-            ("pleiades", p_lats, p_lons),
-            ("mapbox", m_lats, m_lons),
-            ("maptiler", mt_lats, mt_lons),
-            ("geonames", g_lats, g_lons),
-            ("nominatim", n_lats, n_lons),
-            ("wikidata", w_lats, w_lons),
-            ("wikipedia", wp_lats, wp_lons),
-        ]:
-            val = results[prefix]
-            if val != "Unknown":
-                lat, lon = val.split(", ")
-                lat_lst.append(lat)
-                lon_lst.append(lon)
+            agg_lat, agg_lon, _, _ = aggregate_coords(res)
+            if agg_lat == "Unknown" or agg_lon == "Unknown":
+                agg_coords.append("Unknown")
             else:
-                lat_lst.append("Unknown")
-                lon_lst.append("Unknown")
+                agg_coords.append(f"{agg_lat}, {agg_lon}")
 
-        agg_lat, agg_lon, _, _ = aggregate_coords(results)
-        agg_lats.append(agg_lat)
-        agg_lons.append(agg_lon)
+        edu_p_results.append("; ".join(p_coords))
+        edu_m_results.append("; ".join(m_coords))
+        edu_mt_results.append("; ".join(mt_coords))
+        edu_g_results.append("; ".join(g_coords))
+        edu_n_results.append("; ".join(n_coords))
+        edu_w_results.append("; ".join(w_coords))
+        edu_wp_results.append("; ".join(wp_coords))
+        edu_agg_results.append("; ".join(agg_coords))
 
-    df[f"{mode}_Pleiades_Lat"] = p_lats
-    df[f"{mode}_Pleiades_Lon"] = p_lons
-    df[f"{mode}_Mapbox_Lat"] = m_lats
-    df[f"{mode}_Mapbox_Lon"] = m_lons
-    df[f"{mode}_MapTiler_Lat"] = mt_lats
-    df[f"{mode}_MapTiler_Lon"] = mt_lons
-    df[f"{mode}_GeoNames_Lat"] = g_lats
-    df[f"{mode}_GeoNames_Lon"] = g_lons
-    df[f"{mode}_Nominatim_Lat"] = n_lats
-    df[f"{mode}_Nominatim_Lon"] = n_lons
-    df[f"{mode}_Wikidata_Lat"] = w_lats
-    df[f"{mode}_Wikidata_Lon"] = w_lons
-    df[f"{mode}_Wikipedia_Lat"] = wp_lats
-    df[f"{mode}_Wikipedia_Lon"] = wp_lons
-    df[f"{mode}_Aggregate_Latitude"] = agg_lats
-    df[f"{mode}_Aggregate_Longitude"] = agg_lons
+    df["Education_Pleiades_Coords"] = edu_p_results
+    df["Education_Mapbox_Coords"] = edu_m_results
+    df["Education_MapTiler_Coords"] = edu_mt_results
+    df["Education_GeoNames_Coords"] = edu_g_results
+    df["Education_Nominatim_Coords"] = edu_n_results
+    df["Education_Wikidata_Coords"] = edu_w_results
+    df["Education_Wikipedia_Coords"] = edu_wp_results
+    df["Education_Aggregate_Coordinates"] = edu_agg_results
+    print("Finished geocoding Education locations.\n")
 
-    print(f"Finished geocoding {mode} locations.\n")
+    # --- 5. Save result ----------------------------------------------------------
+    df.to_csv(OUTPUT_CSV, index=False)
+    print("Saved geocoded data to", OUTPUT_CSV)
 
+    shutil.copy(OUTPUT_CSV, ARCHIVE_CSV)
+    print("Also archived a copy to", ARCHIVE_CSV)
 
-# --- 4b. Geocode Education_Locations ---------------------------------------
-def parse_education_locations(value):
-    """
-    Parses a string like:
-      "CITY, REGION, COUNTRY, START_YEAR, END_YEAR; CITY, REGION, COUNTRY, START_YEAR, END_YEAR"
-    into a list of dicts: {"city":..., "state":..., "country":..., "query":...,
-    "skip_pleiades":...}.
-    REGION is always present as a field now -- literally "Unknown" when not
-    specified, same convention as every other field -- so a standard chunk
-    always has exactly 5 comma-separated parts. A handful of older/legacy
-    chunk shapes (no region field at all, e.g. "CITY, COUNTRY, YEAR, YEAR")
-    are still tolerated via the same flexible fallback used previously, in
-    case any rows haven't been migrated to the 5-field format. Known
-    renamed/relocated historical places (see HISTORICAL_PLACE_OVERRIDES) are
-    corrected to their modern city/country before the query is built.
-    """
-    if is_unknown(value):
-        return []
+    # --- 6. Report failures, no-consensus cases, and disagreements ---------------
+    if failed_lookups:
+        print(f"\n{len(failed_lookups)} location(s) completely failed across ALL sources:")
+        for row_num, field, query, reason in failed_lookups:
+            print(f"  - Row {row_num} ({field}): '{query}'")
+    else:
+        print("\nAll locations yielded at least one valid geocode result.")
 
-    entries = []
-    for chunk in value.split(";"):
-        chunk = chunk.strip()
-        if not chunk:
-            continue
-        parts = [p.strip() for p in chunk.split(",")]
+    if no_consensus:
+        print(f"\n{len(no_consensus)} location(s) had NO CONSENSUS at all (no two sources agreed within "
+              f"{CLUSTER_DISTANCE_KM}km) — aggregate left as \"Unknown\" rather than guessing. "
+              f"These need manual review:")
+        for row_num, field, query, note in no_consensus:
+            print(f"  - Row {row_num} ({field}): '{query}' -> {note}")
+    else:
+        print("\nNo total-disagreement cases — every location had at least two sources agreeing with each other.")
 
-        if len(parts) == 5:
-            # Standard current format: City, Region, Country, Start_Year, End_Year
-            city, region, country = parts[0], parts[1], parts[2]
-            years = parts[3:5]
-        elif len(parts) >= 6:
-            # More fields than expected (e.g. a region itself containing a
-            # comma) -- treat the first as city, the last two as years, and
-            # everything in between as region+country.
-            city = parts[0]
-            middle = parts[1:-2]
-            region, country = (", ".join(middle[:-1]) or None), middle[-1]
-            years = parts[-2:]
-        elif len(parts) == 4:
-            # Legacy format with no region field: City, Country, Year, Year
-            city, region, country = parts[0], None, parts[1]
-            years = parts[2:4]
-        elif len(parts) == 3:
-            city, region, country = parts[0], None, parts[1]
-            years = [parts[2]]
-        elif len(parts) == 2:
-            city, region, country = parts[0], None, parts[1]
-            years = []
-        else:
-            city, region, country = parts[0], None, None
-            years = []
+    if disagreements:
+        print(f"\n{len(disagreements)} location(s) had partial disagreement (a majority still won; worth a spot-check):")
+        for row_num, field, query, note in disagreements:
+            print(f"  - Row {row_num} ({field}): '{query}' -> {note}")
+    else:
+        print("\nNo partial disagreements detected between sources — all sources that returned a result agreed within "
+              f"{CLUSTER_DISTANCE_KM}km of each other.")
 
-        if is_unknown(city):
-            continue
+    # --- 7. Close out the report file ---------------------------------------
+    print(f"\nFull run log (everything above) saved to {REPORT_TXT}")
+    sys.stdout = sys.__stdout__  # restore normal console output
+    _report_file.close()
 
-        state = None if is_unknown(region) else region
-        country = None if is_unknown(country) else country
-
-        # Correct known renamed/relocated historical places before building the query
-        resolved_city, resolved_country = resolve_historical_place(city, country)
-        overridden = (resolved_city != city or resolved_country != country)
-        # A historical override replaces the place's identity entirely, so a
-        # region tied to the OLD name/country no longer applies
-        if overridden:
-            state = None
-        city, country = resolved_city, resolved_country
-
-        query = build_free_text_query(city, state, country)
-
-        parsed_years = [y for y in (parse_year(y) for y in years) if y is not None]
-        skip_pleiades = bool(parsed_years) and min(parsed_years) > PLEIADES_MAX_YEAR
-
-        entries.append({
-            "city": city, "state": state, "country": country, "query": query,
-            "skip_pleiades": skip_pleiades,
-        })
-
-    return entries
-
-
-edu_p_results, edu_m_results, edu_mt_results, edu_g_results, edu_n_results, edu_w_results, edu_wp_results = [], [], [], [], [], [], []
-edu_agg_results = []
-
-print("Starting geocoding for Education locations...")
-for i, row in df.iterrows():
-    raw_value = row.get("Education_Locations", None)
-    entries = parse_education_locations(raw_value)
-
-    if not entries:
-        for lst in [edu_p_results, edu_m_results, edu_mt_results, edu_g_results, edu_n_results,
-                    edu_w_results, edu_wp_results, edu_agg_results]:
-            lst.append("Unknown")
-        continue
-
-    print(f"Row {sheet_row(i)}: processing {len(entries)} education location(s)")
-
-    p_coords, m_coords, mt_coords, g_coords, n_coords, w_coords, wp_coords = [], [], [], [], [], [], []
-    agg_coords = []
-    for entry in entries:
-        res = geocode_place_multi(entry["query"], sheet_row(i), "Education_Locations",
-                                   city=entry["city"], state=entry["state"], country=entry["country"],
-                                   skip_pleiades=entry["skip_pleiades"])
-        p_coords.append(res["pleiades"])
-        m_coords.append(res["mapbox"])
-        mt_coords.append(res["maptiler"])
-        g_coords.append(res["geonames"])
-        n_coords.append(res["nominatim"])
-        w_coords.append(res["wikidata"])
-        wp_coords.append(res["wikipedia"])
-
-        agg_lat, agg_lon, _, _ = aggregate_coords(res)
-        if agg_lat == "Unknown" or agg_lon == "Unknown":
-            agg_coords.append("Unknown")
-        else:
-            agg_coords.append(f"{agg_lat}, {agg_lon}")
-
-    edu_p_results.append("; ".join(p_coords))
-    edu_m_results.append("; ".join(m_coords))
-    edu_mt_results.append("; ".join(mt_coords))
-    edu_g_results.append("; ".join(g_coords))
-    edu_n_results.append("; ".join(n_coords))
-    edu_w_results.append("; ".join(w_coords))
-    edu_wp_results.append("; ".join(wp_coords))
-    edu_agg_results.append("; ".join(agg_coords))
-
-df["Education_Pleiades_Coords"] = edu_p_results
-df["Education_Mapbox_Coords"] = edu_m_results
-df["Education_MapTiler_Coords"] = edu_mt_results
-df["Education_GeoNames_Coords"] = edu_g_results
-df["Education_Nominatim_Coords"] = edu_n_results
-df["Education_Wikidata_Coords"] = edu_w_results
-df["Education_Wikipedia_Coords"] = edu_wp_results
-df["Education_Aggregate_Coordinates"] = edu_agg_results
-print("Finished geocoding Education locations.\n")
-
-# --- 5. Save result ----------------------------------------------------------
-df.to_csv(OUTPUT_CSV, index=False)
-print("Saved geocoded data to", OUTPUT_CSV)
-
-shutil.copy(OUTPUT_CSV, ARCHIVE_CSV)
-print("Also archived a copy to", ARCHIVE_CSV)
-
-# --- 6. Report failures, no-consensus cases, and disagreements ---------------
-if failed_lookups:
-    print(f"\n{len(failed_lookups)} location(s) completely failed across ALL sources:")
-    for row_num, field, query, reason in failed_lookups:
-        print(f"  - Row {row_num} ({field}): '{query}'")
-else:
-    print("\nAll locations yielded at least one valid geocode result.")
-
-if no_consensus:
-    print(f"\n{len(no_consensus)} location(s) had NO CONSENSUS at all (no two sources agreed within "
-          f"{CLUSTER_DISTANCE_KM}km) — aggregate left as \"Unknown\" rather than guessing. "
-          f"These need manual review:")
-    for row_num, field, query, note in no_consensus:
-        print(f"  - Row {row_num} ({field}): '{query}' -> {note}")
-else:
-    print("\nNo total-disagreement cases — every location had at least two sources agreeing with each other.")
-
-if disagreements:
-    print(f"\n{len(disagreements)} location(s) had partial disagreement (a majority still won; worth a spot-check):")
-    for row_num, field, query, note in disagreements:
-        print(f"  - Row {row_num} ({field}): '{query}' -> {note}")
-else:
-    print("\nNo partial disagreements detected between sources — all sources that returned a result agreed within "
-          f"{CLUSTER_DISTANCE_KM}km of each other.")
-
-# --- 7. Close out the report file ---------------------------------------
-print(f"\nFull run log (everything above) saved to {REPORT_TXT}")
-sys.stdout = sys.__stdout__  # restore normal console output
-_report_file.close()
+if __name__ == "__main__":
+    _main()

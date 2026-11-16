@@ -17,12 +17,34 @@ run-to-run disagreements are folded in as issues automatically, exactly as in ag
 mode. Without those columns you get the mechanical checks only.
 """
 
+import os
+import sys
+
+
+def _import_paths():
+    cur = os.path.dirname(os.path.abspath(__file__))
+    for _ in range(4):
+        folder = os.path.join(cur, "scripts")
+        if os.path.isfile(os.path.join(folder, "project_paths.py")):
+            if folder not in sys.path:
+                sys.path.insert(0, folder)
+            import project_paths
+            return project_paths
+        parent = os.path.dirname(cur)
+        if parent == cur:
+            break
+        cur = parent
+    sys.exit("Could not find scripts/project_paths.py")
+
+
+paths = _import_paths()
+
 # ============================ CONFIG ============================
 # The CSV to validate. Change this to the file you want to check, or leave it as "" to
 # fall back to extract.py's OUTPUT_CSV. A command-line argument overrides this.
-INPUT_CSV = "rafa.csv"
+INPUT_CSV = os.path.join(paths.DATABASE_DIR, "vol01_review_inprogress.csv")
 # Where to write the report. A second command-line argument overrides this.
-REPORT_PATH = "dsb_validation.txt"
+REPORT_PATH = os.path.join(paths.ROOT, "dsb_validation.txt")
 # Re-report run-to-run disagreements? Set False when validating a file you've already
 # reviewed in review_tool.html -- you resolved the disagreements there, so this run should
 # do the mechanical checks only (bad dates, out-of-range codes, unmapped synonyms,
@@ -32,8 +54,6 @@ SHOW_DISAGREEMENTS = False
 # ===============================================================
 
 import csv
-import os
-import sys
 import types
 
 # extract.py imports the anthropic SDK at module level. We only need its pure functions,

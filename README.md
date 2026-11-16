@@ -1,50 +1,138 @@
-Step 0: Set VOLUME and doc_ids in scraper.txt, and run scraper.txt
+# Dictionary of Scientific Biography catalog
 
-Step 1: Set INPUT_CSV to Raw Volumes/raw_volXX.csv, and update VOLUME to the current volume
+This project turns the *Dictionary of Scientific Biography* (DSB) into a structured prosopography of scientists and a map of where they were born, studied, and died.
 
-Step 2: Run extract.py
+Each Gale entry is scraped, extracted into a fixed schema, reviewed by hand, geocoded, and appended to a running database. The schema follows Richard S. Westfall’s *Catalog of the Scientific Community*. Westfall’s own catalog is kept here as a separate map, so the new DSB catalog can be compared with that earlier census of the scientific revolution.
 
-Step 3: Review failures_report.txt, and rerun/manually fill any failed figures
+The DSB catalog files use the `cdsb_` prefix. Westfall’s catalog uses the `westfall_` prefix.
 
-Step 4: Run export_vocab.py to produce vocab.json
+## Where the work stands
 
-Step 4: Import dsb_extracted.csv, raw_volXX.csv, dsb_validation.txt, vocab.json into review_tool.html
+The original DSB is 16 volumes plus supplements. Volumes 1–6 are scraped. Volumes 1–2 have been extracted. Volume 2 has been reviewed and geocoded. Volume 1 has coordinates filled in, and its review file is still marked in progress.
 
-Step 5: Human review with review_tool.html (upload vocab.json), make changes as necessary, export to
-        produce dsb_vocab_additions.json and extracted_reviewed.csv
+| Volume | Entries | Span | State |
+| --- | --- | --- | --- |
+| 1 | 367 | Abailard → Berg | Extracted. Review file is `databases/vol01_review_inprogress.csv`. No reviewed or geocoded copy in `archive/`. |
+| 2 | 346 | Berger → just before Cabanis | Finished through geocoding. `databases/vol02_review_finished.csv` matches `archive/dsb_geocoded_reviewed_vol02.csv`. |
+| 3 | 369 | Cabanis → Dechen | Scraped only |
+| 4 | 311 | Dedekind → Firmicus Maternus | Scraped only |
+| 5 | 359 | Fischer → Haber | Scraped only |
+| 6 | 307 | Hachette → H | Scraped only |
 
-Step 6: Save copy of extracted_reviewed.csv to Archive (dsb_extracted_reviewed_volXX.csv)
+`visualizations/cdsb_database.csv` is the map database: volumes 1 and 2 combined (712 rows). The Westfall map covers 630 people born between 1471 and 1680.
 
-Step 7: Move dsb_vocab_additions.json into PyCharm, run apply_additions.py to fold updated vocab into vocab.py
+Volume 2’s raw file includes a half-title page that is not a biography. Volume 6 has one too. The extractor logs those in the failures report.
 
-Step 8: Run build_prompt.py to fold new vocab into the prompt for next run
+## Layout
 
-Step 9: Run validate.py on extracted_reviewed.csv (SHOW_DISAGREEMENTS=FALSE), and make changes if necessary
+Scripts find these folders from the project root, so they can be run from any working directory.
 
-Step 10: Set VOLUME, and run extracted_reviewed.csv through geocoder.py
+```
+raw_volumes/     Scraped DSB text. One CSV per volume: Name, Content, Sources.
+scripts/         Pipeline code. vocab.py is the controlled vocabulary.
+prompt/          Extraction prompt. prompt_template.md plus vocab.py builds prompt.md.
+review_tools/    Browser tools for extraction review, geocode review, and spot checks.
+archive/         Frozen products of each volume, named with _volXX.
+databases/       The running catalog after review and geocoding.
+visualizations/  The two maps and the scripts that rebuild them.
+```
 
-Step 11: Human review with review_geocode.html (upload memory.json), make changes as necessary,
-         export to produce geocoded_reviewed.csv and a new memory.json for next run
+A run also drops working files in the project root (`dsb_extracted.csv`, `dsb_evidence.csv`, `dsb_agreement.txt`, `dsb_validation.txt`, `dsb_new_vocab.txt`, `dsb_failures.txt`, `dsb_geocoded.csv`). The scripts then copy the ones worth keeping into `archive/` with the volume tag. The root copies are the files you load into the review tools.
 
-Step 12: Save copy of geocoded_reviewed.csv to Archive (dsb_geocoded_reviewed_volXX.csv)
+## What one row records
 
-Step 13: Clean up geocoded_reviewed.csv, and add to the running database
+One person is one row. Closed fields use a controlled vocabulary. `Unknown` means the entry does not say. `None` means the person had none of that thing, or a notes field is empty. Multi-value fields join values with `"; "`.
 
-Step 14: Upload updated database to visualization
+The extraction writes these fields:
 
+- Name: `Last_Name`, `First_Name`, `Alt_Name`, `Gender`
+- Birth and death: country, town, year, month, day, plus `Dates_Born_Certain`, `Date_Died_Certain`, and `Dates_Lifespan`
+- Family: `Father_Occupation`, `Father_Is_Wealthy`, `Father_Notes`
+- Education: `Education_Institution`, `Education_Degrees`, `Education_Notes`, `Education_Locations` (each stop is `Institution @ City, Region, Country, Start_Year, End_Year` in the prompt, then split downstream)
+- Religion, scientific disciplines, means of support, and patronage, each with a notes column
+- `Instruments` and scientific-society memberships, each with a notes column
+- `Sources_List`, `Not_Available_and_Not_Consulted_List`, `Compiler_Details_Notes`
 
-Archive Files Explained:
-dsb_agreement_volXX.txt : by person, lists all categories that disagree between run1 and run2; shows output from run1 and run2 for comparison
-dsb_evidence_volXX.csv : in the same format as the database, lists AI agent's justification for each cell
-dsb_extracted_reviewed_volXX.csv : file produced after human review with review_tool.html but before geocoding
-dsb_extracted_volXX.csv : file produced by Claude API before human review
-dsb_failures_volXX.txt : lists any errors that occurred when running through Claude API
-dsb_geocode_volXX.txt : geocoding report from running geocoder.py
-dsb_geocoded_reviewed_volXX.csv file produced after human review with review_geocode.html, the final version with only one column per coordinate
-dsb_geocoded_volXX.csv : file produced by geocoder.py before human review (contains many coordinate columns)
-dsb_new_vocab_volXX.txt : lists all new non-canonical vocab terms that Claude API introduced
-dsb_validation_volXX.txt : comprehensive report with mechanical checks, disagreement checks, and output/evidence for both run1 and run2
-prompt_volXX.md : the prompt used by Claude API for volume XX; vocab appendices change between volumes
+Agreement mode adds `Disagreement_Count` and `Inconsistent_Fields`. Geocoding adds `Born_Latitude`, `Born_Longitude`, `Died_Latitude`, `Died_Longitude`, and `Education_Coordinates`.
 
+`scripts/vocab.py` is the only place to add a canonical term or a synonym. These fields have vocabularies there: gender, father’s occupation, religion, discipline, means of support, patronage, and degree. Some ambiguous words are deliberately left unmapped (for example chemist, minister, captain) so a person can review them instead of the validator silently rewriting them.
 
+The Westfall catalog uses the same shape, with `Technological_Involvement_Type` and `Technological_Involvement_Notes` where the DSB catalog uses instruments.
 
+## Processing a volume
+
+Set `VOLUME` in the script you are about to run, and point that script’s input at this volume’s file. Paths below are from the project root.
+
+1. **Scrape.** In `scripts/scraper.py`, set `VOLUME` and `doc_ids`, then run it. You log in to the Notre Dame Gale proxy in the browser window that opens. The CSV is written to `raw_volumes/raw_volXX.csv`. If that file already exists, the script stops. Pass `--overwrite` only when you mean to replace it. The checked-in `doc_ids` range is a 35-id test span, not a full volume.
+
+2. **Extract.** In `scripts/extract.py`, set `INPUT_CSV` and `VOLUME`. The default input is `raw_volumes/raw_vol01.csv`. Run `python scripts/extract.py`. This needs `ANTHROPIC_API_KEY`. The default mode is `agreement`: each entry is extracted twice with Claude Haiku at temperature 0, and fields that differ are flagged. Evidence for each cell is written separately. Results are copied into `archive/` as `dsb_extracted_volXX.csv`, `dsb_evidence_volXX.csv`, `dsb_agreement_volXX.txt`, `dsb_validation_volXX.txt`, `dsb_new_vocab_volXX.txt`, `dsb_failures_volXX.txt`, and `prompt_volXX.md`. A command-line volume, such as `python scripts/extract.py 3`, changes the archive tag only. The input path stays whatever `INPUT_CSV` is set to.
+
+3. **Read the failures report** (`dsb_failures.txt` in the project root) and fill or rerun any entry that did not parse.
+
+4. **Export the vocabulary** with `python scripts/export_vocab.py`. It writes `prompt/vocab.json` for the review tool.
+
+5. **Review the extraction.** Open `review_tools/review_tool.html` and load `dsb_extracted.csv`, the raw volume, `dsb_validation.txt`, and `prompt/vocab.json`. Export `extracted_reviewed.csv` and `dsb_vocab_additions.json`.
+
+6. **Archive the review** as `archive/dsb_extracted_reviewed_volXX.csv`.
+
+7. **Fold in new terms.** Put `dsb_vocab_additions.json` in `scripts/` and run `python scripts/apply_additions.py`. It edits `scripts/vocab.py`, checks that the vocabulary is still consistent, and deletes the additions file. Then run `python scripts/build_prompt.py` so `prompt/prompt.md` picks up the new terms. Do not hand-edit the generated appendix in `prompt.md`. Edit `vocab.py` or `prompt/prompt_template.md`, then rebuild.
+
+8. **Validate the reviewed file.** `python scripts/validate.py` checks `databases/vol01_review_inprogress.csv` by default. Pass another CSV, and optionally a report path, on the command line. `SHOW_DISAGREEMENTS` is `False`, so this pass checks dates, codes, synonyms, and duplicate tokens, and does not re-list disagreements you already resolved. The same checks live in `extract.py`, so the standalone report cannot drift from the extraction report.
+
+9. **Geocode.** In `scripts/geocoder.py`, set `VOLUME`. The input is `archive/dsb_extracted_reviewed_volXX.csv`. The script writes `dsb_geocoded.csv` in the project root and copies it to `archive/dsb_geocoded_volXX.csv`, with a log at `archive/dsb_geocode_volXX.txt`. If the archived geocode already exists, the script stops. Pass `--overwrite` only when you mean to replace that volume. Volume 2 is the current setting, and its archive file is already there, so a plain run will refuse.
+
+10. **Review coordinates.** Open `review_tools/review_geocode.html`, load the geocoded CSV, and upload `review_tools/geocode_memory_file.json` so earlier place decisions carry forward. Export `geocoded_reviewed.csv` and a new memory file. Keep the new memory file for the next volume.
+
+11. **Archive the reviewed geocode** as `archive/dsb_geocoded_reviewed_volXX.csv`. Clean it up and add it to `databases/`.
+
+12. **Update the map.** Add the new rows to `visualizations/cdsb_database.csv`, then run `python visualizations/cdsb_build.py`. That rewrites `cdsb_data.json` and `cdsb_visualization.html`.
+
+`review_tools/random_review.html` is a separate spot-check tool. Load a database CSV and the matching raw volume, sample rows, and mark anything that looks wrong.
+
+## Geocoding
+
+Each birth place, death place, and education stop is queried against several sources: Nominatim, GeoNames, Mapbox, MapTiler, Wikipedia, Wikidata, and Pleiades. Points that fall within 100 km of each other are treated as the same place. The largest cluster is averaged. If no two sources agree, the coordinate is left `Unknown` instead of guessing. Pleiades is skipped when the year is after 700, because its coverage is ancient and late antique.
+
+Historical names that would send a modern geocoder to the wrong country (Danzig, Christiania, and similar cases) are rewritten in `HISTORICAL_PLACE_OVERRIDES` inside `scripts/geocoder.py` before the query is built. GeoNames, Mapbox, and MapTiler credentials are set in that same file.
+
+## Maps
+
+Both dashboards are MapLibre pages on an OpenHistoricalMap basemap, with a time slider, filters, a data table, and life paths from birth through education to death. MapTiler is the fallback basemap in the build scripts.
+
+- `visualizations/cdsb_visualization.html` is the DSB catalog.
+- `visualizations/westfall_visualization.html` is Westfall’s catalog. Rebuild it with `python visualizations/westfall_build.py` after editing `westfall_database.csv`.
+
+Open the HTML file in a browser. The basemap needs a network connection. The date-filter plugin is vendored at `visualizations/vendor/maplibre-gl-dates.js` because the rebuild inlines it. `cdsb_data.json` and `westfall_data.json` are the data layers the builders write. The HTML pages already contain that data, so the JSON files are for inspection and for rebuilding.
+
+## Archive names
+
+| File | What it is |
+| --- | --- |
+| `dsb_extracted_volXX.csv` | Model output, before review |
+| `dsb_evidence_volXX.csv` | Short justification for each extracted cell |
+| `dsb_agreement_volXX.txt` | Fields where the two extraction passes disagreed, with both values |
+| `dsb_validation_volXX.txt` | Mechanical checks plus those disagreements |
+| `dsb_failures_volXX.txt` | Entries that did not return a usable row |
+| `dsb_new_vocab_volXX.txt` | Terms the model used that were not yet canonical |
+| `prompt_volXX.md` | The exact prompt used for that volume |
+| `dsb_extracted_reviewed_volXX.csv` | After human review, before geocoding |
+| `dsb_geocoded_volXX.csv` | Geocoder output, with one column per source |
+| `dsb_geocode_volXX.txt` | Geocoder log: failures, places with no consensus, and partial disagreements |
+| `dsb_geocoded_reviewed_volXX.csv` | After coordinate review. One latitude and longitude per place |
+
+`prompt/prompt.md` currently matches `archive/prompt_vol01.md`. Volume 2’s archived prompt is slightly different. Rebuilding the prompt from `vocab.py` would also change the degree list, because some former synonyms are now canonical terms. Run `build_prompt.py` when you want the live prompt to catch up, not before.
+
+## Requirements
+
+Python packages used by the pipeline:
+
+- `anthropic` for extraction
+- `pandas` for the scraper, geocoder, and map builders
+- `selenium` and `beautifulsoup4` for the scraper
+- `requests`, `certifi`, and `geopy` for geocoding
+- `pleiades_search_api` for the Pleiades source (`pip install git+https://github.com/isawnyu/pleiades_search_api.git`)
+- `pycountry` is optional. Country codes fall back to a table in the geocoder when it is missing.
+
+The review pages are standalone HTML. They need no install. The geocode review page loads Leaflet from a CDN.
+
+Set `ANTHROPIC_API_KEY` before an extraction run. Scraping and geocoding call outside services and will spend API quota. Read the failures report and the geocode log before appending a volume to `databases/`.

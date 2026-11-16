@@ -18,7 +18,27 @@ WORKFLOW: edit dsb_vocab.py, run this, and the prompt is regenerated. Never hand
 appendix in the generated file; the next build would overwrite it.
 """
 
+import os
 import sys
+
+
+def _import_paths():
+    cur = os.path.dirname(os.path.abspath(__file__))
+    for _ in range(4):
+        folder = os.path.join(cur, "scripts")
+        if os.path.isfile(os.path.join(folder, "project_paths.py")):
+            if folder not in sys.path:
+                sys.path.insert(0, folder)
+            import project_paths
+            return project_paths
+        parent = os.path.dirname(cur)
+        if parent == cur:
+            break
+        cur = parent
+    sys.exit("Could not find scripts/project_paths.py")
+
+
+paths = _import_paths()
 import vocab
 
 MARKER = "{{VOCAB_APPENDIX}}"
@@ -82,8 +102,8 @@ def render_appendix():
 
 
 def main():
-    template = sys.argv[1] if len(sys.argv) > 1 else "prompt_template.md"
-    out_path = sys.argv[2] if len(sys.argv) > 2 else "prompt.md"
+    template = sys.argv[1] if len(sys.argv) > 1 else os.path.join(paths.PROMPT_DIR, "prompt_template.md")
+    out_path = sys.argv[2] if len(sys.argv) > 2 else os.path.join(paths.PROMPT_DIR, "prompt.md")
 
     problems = vocab.self_check()
     if problems:

@@ -18,7 +18,27 @@ with synonym keys lowercased (the tool looks them up case-insensitively).
 """
 
 import json
+import os
 import sys
+
+
+def _import_paths():
+    cur = os.path.dirname(os.path.abspath(__file__))
+    for _ in range(4):
+        folder = os.path.join(cur, "scripts")
+        if os.path.isfile(os.path.join(folder, "project_paths.py")):
+            if folder not in sys.path:
+                sys.path.insert(0, folder)
+            import project_paths
+            return project_paths
+        parent = os.path.dirname(cur)
+        if parent == cur:
+            break
+        cur = parent
+    sys.exit("Could not find scripts/project_paths.py")
+
+
+paths = _import_paths()
 import vocab as dsb_vocab
 
 def build():
@@ -38,7 +58,7 @@ def main():
             print("  -", p)
         sys.exit(1)
     out = build()
-    path = sys.argv[1] if len(sys.argv) > 1 else "vocab.json"
+    path = sys.argv[1] if len(sys.argv) > 1 else os.path.join(paths.PROMPT_DIR, "vocab.json")
     with open(path, "w", encoding="utf-8") as f:
         json.dump(out, f, ensure_ascii=False, indent=2)
     print(f"wrote {path}: {len(out)} fields, "
