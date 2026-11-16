@@ -39,16 +39,18 @@ def _import_paths():
 
 
 paths = _import_paths()
+import dictionary
 import vocab
 
 MARKER = "{{VOCAB_APPENDIX}}"
 
-HEADER = """## Appendix — controlled vocabularies
+HEADER = """## Appendix — facets
 
-<!-- GENERATED from dsb_vocab.py by build_prompt.py — do not hand-edit this section.
-     Edit dsb_vocab.py and re-run `python build_prompt.py` instead. -->
+<!-- GENERATED from scripts/vocab.py and prompt/dictionary.json by build_prompt.py.
+     Do not hand-edit this section. -->
 
-These are the canonical terms. Reuse them exactly; extend only per Rule B."""
+These are the closed facets. A phrase is the entry's own word and is never taken from this list.
+A facet is `None` when no facet fits. Discipline facets are the Dictionary's field headings."""
 
 
 def render_field(field, spec):
@@ -67,22 +69,6 @@ def render_field(field, spec):
                 continue
             prefix = f"- *{label}:* " if label else "- "
             out.append(prefix + ", ".join(terms) + ".")
-
-    parents = spec.get("parents") or {}
-    if parents:
-        out.append("")
-        out.append("**Two levels.** When the entry names a specific term, write "
-                   "`Parent; Specific`, parent first. The parent is the filter; the "
-                   "specific term is what the entry names. Use the parent alone when the "
-                   "entry is no more specific. Never store a specific term without its parent.")
-        out.append("")
-        by_parent = {}
-        order = [t for group in groups.values() for t in group]
-        for specific, parent in parents.items():
-            by_parent.setdefault(parent, []).append(specific)
-        for parent in sorted(by_parent, key=lambda t: order.index(t) if t in order else 999):
-            specifics = sorted(by_parent[parent], key=lambda t: order.index(t) if t in order else 999)
-            out.append(f"- **{parent}** → {', '.join(specifics)}.")
 
     if spec["synonyms"]:
         out.append("")
@@ -108,11 +94,25 @@ def render_field(field, spec):
 
 def render_appendix():
     parts = [HEADER, ""]
+    facets = dictionary.discipline_facets()
+    parts.append("**Scientific_Disciplines_Facet:** " + ", ".join(facets) + ".")
+    parts.append("")
+    parts.append(
+        "Match a header term to this list. A header term that matches none is not given "
+        "a nearby facet. The body's words stay in `Scientific_Disciplines` and are not rewritten to these headings."
+    )
+    parts.append("")
     for field, spec in vocab.FIELDS.items():
         parts.append(render_field(field, spec))
         parts.append("")
-    for note in vocab.FREE_TEXT_NOTES.values():
-        parts.append(note)
+    if vocab.DEGREE_SPELLING:
+        parts.append("**Degree spelling.** These are two spellings of one diploma. Write the form on the left. Do not use this list to rename a different diploma.")
+        parts.append("")
+        by_target = {}
+        for variant, target in vocab.DEGREE_SPELLING.items():
+            by_target.setdefault(target, []).append(variant)
+        for target in sorted(by_target):
+            parts.append(f"- **{target}** ← {', '.join(by_target[target])}.")
         parts.append("")
     return "\n".join(parts).rstrip() + "\n"
 

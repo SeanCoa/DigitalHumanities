@@ -259,6 +259,31 @@ def split_city_state(value):
     return city, (None if is_unknown(region) else region)
 
 
+_COUNTRY_SAME = {
+    "united states": "united states", "usa": "united states", "us": "united states",
+    "united states of america": "united states",
+    "united kingdom": "united kingdom", "uk": "united kingdom", "great britain": "united kingdom",
+    "england": "united kingdom", "scotland": "united kingdom", "wales": "united kingdom",
+    "russia": "russia", "russian federation": "russia",
+    "czech republic": "czechia", "czechia": "czechia",
+}
+
+
+def countries_conflict(stored, found):
+    """True when a geocoded point lies in a different country from the one stored.
+
+    England and United Kingdom are the same place for this check. A missing
+    name on either side is not a conflict.
+    """
+    def norm(value):
+        text = " ".join(str(value or "").casefold().replace(".", " ").split())
+        return _COUNTRY_SAME.get(text, text)
+    a, b = norm(stored), norm(found)
+    if not a or not b or a in {"unknown", "none"} or b in {"unknown", "none"}:
+        return False
+    return a != b
+
+
 def build_free_text_query(city, state, country):
     """Builds a "City, State, Country" (or subset) free-text query string."""
     bits = [b for b in [state, country] if b]
@@ -386,6 +411,32 @@ def _main():
         pleiades_interface = PleiadesSearchInterface(user_agent=USER_AGENT)
 
     _cache = {}
+    _country_cache = {}
+
+    def reverse_country(lat, lon):
+        """The modern country of a coordinate, or None if the lookup fails."""
+        key = (round(float(lat), 2), round(float(lon), 2))
+        if key in _country_cache:
+            return _country_cache[key]
+        found = None
+        try:
+            loc = geolocator.reverse((key[0], key[1]), language="en", timeout=10, zoom=5)
+            if loc is not None:
+                found = (loc.raw.get("address") or {}).get("country")
+        except Exception:
+            found = None
+        _country_cache[key] = found
+        return found
+
+    def apply_country_check(agg_lat, agg_lon, stored_country):
+        if agg_lat == "Unknown" or is_unknown(stored_country):
+            return agg_lat, agg_lon, None
+        found = reverse_country(agg_lat, agg_lon)
+        if found and countries_conflict(stored_country, found):
+            return ("Unknown", "Unknown",
+                    f"COUNTRY: cluster is in {found}; stored country is {stored_country}")
+        return agg_lat, agg_lon, None
+
     failed_lookups = []     # (row_num, field, query, reason) - ALL sources returned Unknown
     disagreements = []      # (row_num, field, query, note)   - sources disagreed, but a majority cluster still won
     no_consensus = []       # (row_num, field, query, note)   - NO two sources agreed at all; aggregate left "Unknown"
@@ -963,6 +1014,10 @@ def _main():
                     lon_lst.append("Unknown")
 
             agg_lat, agg_lon, _, _ = aggregate_coords(results)
+            agg_lat, agg_lon, country_note = apply_country_check(agg_lat, agg_lon, country_str)
+            if country_note:
+                no_consensus.append((sheet_row(i), f"{mode}_Town", query, country_note))
+                print(f"  {country_note}")
             agg_lats.append(agg_lat)
             agg_lons.append(agg_lon)
 
@@ -1013,17 +1068,24 @@ def _main():
             parts = [p.strip() for p in chunk.split(",")]
 
             if len(parts) == 5:
-                # Standard current format: City, Region, Country, Start_Year, End_Year
+                # City, Region, Country, Start_Year, End_Year
                 city, region, country = parts[0], parts[1], parts[2]
                 years = parts[3:5]
-            elif len(parts) >= 6:
-                # More fields than expected (e.g. a region itself containing a
-                # comma) -- treat the first as city, the last two as years, and
-                # everything in between as region+country.
+            elif len(parts) == 6:
+                # City, Region, Country, Start_Year, End_Year, Degree
+                city, region, country = parts[0], parts[1], parts[2]
+                years = parts[3:5]
+            elif len(parts) > 6:
+                # A comma inside the region, plus the degree slot at the end.
                 city = parts[0]
-                middle = parts[1:-2]
-                region, country = (", ".join(middle[:-1]) or None), middle[-1]
-                years = parts[-2:]
+                years = parts[-3:-1]
+                middle = parts[1:-3]
+                if len(middle) >= 2:
+                    region, country = ", ".join(middle[:-1]) or None, middle[-1]
+                elif len(middle) == 1:
+                    region, country = None, middle[0]
+                else:
+                    region, country = None, None
             elif len(parts) == 4:
                 # Legacy format with no region field: City, Country, Year, Year
                 city, region, country = parts[0], None, parts[1]
@@ -1104,6 +1166,10 @@ def _main():
             wp_coords.append(res["wikipedia"])
 
             agg_lat, agg_lon, _, _ = aggregate_coords(res)
+            agg_lat, agg_lon, country_note = apply_country_check(agg_lat, agg_lon, entry["country"])
+            if country_note:
+                no_consensus.append((sheet_row(i), "Education_Locations", entry["query"], country_note))
+                print(f"  {country_note}")
             if agg_lat == "Unknown" or agg_lon == "Unknown":
                 agg_coords.append("Unknown")
             else:

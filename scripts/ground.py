@@ -58,13 +58,37 @@ _PRONOUN = {
 }
 
 
+PHRASE_FIELDS = {
+    "Alt_Name", "Born_Town", "Died_Town", "Father_Occupation",
+    "Education_Degrees", "Education_Locations", "Religion_Affiliation",
+    "Scientific_Disciplines", "Means_of_Support", "Patronage_Types",
+    "Instruments", "Scientific_Societies_Membership",
+}
+# A facet cleared when its phrase is not kept. The discipline facet is the
+# editor's header, so it is not cleared with the body's phrases.
+FACET_OF = {
+    "Father_Occupation": "Father_Occupation_Facet",
+    "Education_Degrees": "Education_Degree_Facet",
+    "Education_Locations": "Education_Institution_Facet",
+    "Religion_Affiliation": "Religion_Facet",
+    "Means_of_Support": "Means_of_Support_Facet",
+    "Patronage_Types": "Patronage_Facet",
+}
+_WEALTH = re.compile(
+    r"\b(wealthy|rich|prosperous|fortune|well[- ]to[- ]do|of means|"
+    r"poor|poverty|humble|modest means)\b", re.I)
+_MEMBER = re.compile(
+    r"\b(elected|admitted|fellow|member|membership|correspondent|"
+    r"corresponding|honorary)\b", re.I)
+
+
 def sentinel_for(field):
     """The value this field holds when the entry does not support a fact."""
     if field == "Father_Is_Wealthy":
         return "-1"
     if field.endswith("_Certain"):
         return "0"
-    if field.endswith("_Notes") or field in _NONE_FIELDS:
+    if field.endswith("_Facet") or field.endswith("_Notes") or field in _NONE_FIELDS:
         return "None"
     if field == "Disagreement_Count":
         return "0"
@@ -147,9 +171,13 @@ def _blank(row, field, issues, reason):
     row[field] = sentinel_for(field)
     issues.append(f"{field}: {reason}; left {sentinel_for(field)}")
     note = _NOTE_OF.get(field)
-    if note and not is_sentinel(note, row.get(note)):
+    if note and note in row and not is_sentinel(note, row.get(note)):
         row[note] = sentinel_for(note)
         issues.append(f"{note}: cleared because {field} was not kept")
+    facet = FACET_OF.get(field)
+    if facet and facet in row and not is_sentinel(facet, row.get(facet)):
+        row[facet] = sentinel_for(facet)
+        issues.append(f"{facet}: cleared because {field} was not kept")
 
 
 def _quote_ok(evidence, content, sources):
@@ -168,10 +196,104 @@ def _year_in_quote(year, quote):
     return True
 
 
+def _parts(value):
+    return [t.strip() for t in str(value or "").split(";")
+            if t.strip() and t.strip() not in {"None", "Unknown"}]
+
+
+def _canonical_degree(token):
+    try:
+        import vocab
+    except ImportError:
+        return token
+    return vocab.DEGREE_SPELLING.get(token.casefold(), token)
+
+
+def _token_in_entry(token, content, sources):
+    """True when this phrase, or a listed spelling of the same diploma, is in the entry."""
+    if in_text(token, content, sources):
+        return True
+    try:
+        import vocab
+    except ImportError:
+        return False
+    folded = token.casefold()
+    for variant, target in vocab.DEGREE_SPELLING.items():
+        if folded in {variant, target.casefold()} and (
+            in_text(variant, content, sources) or in_text(target, content, sources)
+        ):
+            return True
+    return False
+
+
+def _phrase_in_entry(field, value, content, sources):
+    if field == "Education_Locations":
+        return _education_ok(value, content, sources)
+    tokens = _parts(value)
+    if not tokens:
+        return False
+    return all(_token_in_entry(t, content, sources) for t in tokens)
+
+
+def settle(row, runs, content, sources):
+    """Keep one phrase when it is a span in the entry. Two different spans stay blank."""
+    for field, vals in (runs or {}).items():
+        if field not in PHRASE_FIELDS:
+            continue
+        supported = []
+        seen = set()
+        for value in vals:
+            if is_sentinel(field, value) or not _phrase_in_entry(field, value, content, sources):
+                continue
+            key = fold(value)
+            if key in seen:
+                continue
+            seen.add(key)
+            supported.append(value)
+        if len(supported) == 1:
+            row[field] = supported[0]
+        else:
+            row[field] = sentinel_for(field)
+            facet = FACET_OF.get(field)
+            if facet:
+                row[facet] = sentinel_for(facet)
+
+
+def _normalize_degrees(row):
+    tokens = _parts(row.get("Education_Degrees"))
+    if not tokens:
+        return
+    row["Education_Degrees"] = "; ".join(_canonical_degree(t) for t in tokens)
+
+
+def _fill_degree_facets(row):
+    try:
+        import vocab
+    except ImportError:
+        return
+    degrees = _parts(row.get("Education_Degrees"))
+    if not degrees:
+        return
+    current = [t.strip() for t in str(row.get("Education_Degree_Facet") or "").split(";")]
+    while len(current) < len(degrees):
+        current.append("")
+    filled = []
+    for degree, facet in zip(degrees, current):
+        stated = vocab.DEGREE_LEVEL.get(_canonical_degree(degree))
+        if stated and (not facet or facet in {"None", "Unknown"}):
+            filled.append(stated)
+        elif stated and facet and facet != stated:
+            filled.append(stated)
+        else:
+            filled.append(facet if facet else "None")
+    row["Education_Degree_Facet"] = "; ".join(filled)
+
+
 def apply(row, evidence, content, sources, heading=""):
     """Blank every fact the entry does not support. Mutates row. Returns issue strings."""
     evidence = evidence or {}
     issues = []
+    _normalize_degrees(row)
     for field in list(_GROUNDED_FIELDS):
         if field not in row or is_sentinel(field, row.get(field)):
             continue
@@ -198,7 +320,15 @@ def apply(row, evidence, content, sources, heading=""):
             author = _author_name(value)
             if author and not in_text(author, content, sources, heading):
                 _blank(row, field, issues, "the entry author is not printed in the entry")
+        elif field == "Father_Is_Wealthy" and value in {"1", "0"} and not _WEALTH.search(ev):
+            _blank(row, field, issues, "the quotation has no economic word")
+        elif field == "Scientific_Societies_Membership" and not _MEMBER.search(ev):
+            _blank(row, field, issues, "the quotation has no membership verb")
+        elif field in PHRASE_FIELDS and field not in _TOWN_FIELDS and not _phrase_in_entry(field, value, content, sources):
+            _blank(row, field, issues, "the phrase is not in the entry")
 
+    _check_facets(row, issues)
+    _fill_degree_facets(row)
     _names(row, heading, issues)
     _dates(row, issues)
     _certainty(row, evidence)
@@ -221,15 +351,65 @@ def _education_ok(value, content, sources):
     for stop in (part.strip() for part in value.split(";")):
         if not stop or stop in {"None", "Unknown"}:
             continue
-        place = stop.split("@", 1)[1] if "@" in stop else stop
+        if "@" in stop:
+            inst, place = stop.split("@", 1)
+            inst = inst.strip()
+            if inst and inst not in {"Not Specified", "Unknown", "None"} and not in_text(inst, content, sources):
+                return False
+        else:
+            place = stop
         bits = [b.strip() for b in place.split(",")]
         town = bits[0] if bits else ""
         if town and town not in {"Unknown", "None"} and not near_in_text(town, content, sources):
             return False
-        for bit in bits[3:5]:
+        years = bits[3:5] if len(bits) >= 5 else []
+        for bit in years:
             if bit.lstrip("-").isdigit() and not re.search(rf"(?<!\d){abs(int(bit))}(?!\d)", f"{content}\n{sources}"):
                 return False
+        if len(bits) >= 6:
+            degree = bits[5]
+            if degree and degree not in {"Unknown", "None"} and not _token_in_entry(degree, content, sources):
+                return False
     return True
+
+
+def _check_facets(row, issues):
+    try:
+        import vocab
+        allowed = {field: vocab.canonical_set(field) for field in vocab.FIELDS}
+    except ImportError:
+        allowed = {}
+    for field, known in allowed.items():
+        if field not in row:
+            continue
+        kept = []
+        changed = False
+        for token in (t.strip() for t in str(row.get(field) or "").split(";")):
+            if not token or token in {"None", "Unknown"}:
+                continue
+            if token not in known:
+                issues.append(f"{field}: '{token}' is not a facet; left None")
+                changed = True
+            else:
+                kept.append(token)
+        if changed:
+            row[field] = "; ".join(kept) if kept else "None"
+    try:
+        import dictionary
+        headings = set(dictionary.discipline_facets())
+    except Exception:
+        headings = set()
+    if headings and "Scientific_Disciplines_Facet" in row:
+        kept = []
+        changed = False
+        for token in _parts(row.get("Scientific_Disciplines_Facet")):
+            if token not in headings:
+                issues.append(f"Scientific_Disciplines_Facet: '{token}' is not a Dictionary field heading; left off")
+                changed = True
+            else:
+                kept.append(token)
+        if changed:
+            row["Scientific_Disciplines_Facet"] = "; ".join(kept) if kept else "None"
 
 
 def _author_name(note):
@@ -261,7 +441,7 @@ def _dates(row, issues):
     if born is None or died is None:
         return
     span = died - born
-    if born > died or span < 20 or span > 105:
+    if born > died:
         for field in ("Born_Year", "Died_Year", "Dates_Lifespan"):
             if field in row:
                 row[field] = sentinel_for(field)
@@ -269,8 +449,17 @@ def _dates(row, issues):
             if field in row:
                 row[field] = "0"
         issues.append(
-            f"Born_Year: printed years {born} and {died} imply a lifespan of {span}; "
+            f"Born_Year: printed years {born} and {died} contradict each other; "
             "both years left Unknown"
+        )
+        return
+    if span < 20 or span > 105:
+        for field in ("Dates_Born_Certain", "Date_Died_Certain"):
+            if field in row:
+                row[field] = "0"
+        issues.append(
+            f"Born_Year: printed years {born} and {died} imply a lifespan of {span}; "
+            "the years were kept and marked uncertain"
         )
 
 
@@ -317,9 +506,16 @@ def _self_test():
         "Compiler_Details_Notes": "entry by Ada Lovelace",
     }
     issues = apply(row, ev, text, "", "Gauss, Carl Friedrich")
-    assert row["Born_Year"] == "Unknown" and row["Died_Year"] == "Unknown", row
-    assert row["Dates_Lifespan"] == "Unknown"
-    assert any("lifespan" in i for i in issues)
+    assert row["Born_Year"] == "1789" and row["Died_Year"] == "1959", row
+    assert row["Dates_Lifespan"] == "170"
+    assert row["Dates_Born_Certain"] == "0"
+    assert any("uncertain" in i for i in issues)
+    contradicted = dict(row)
+    contradicted.update({"Born_Year": "1859", "Died_Year": "1789", "Dates_Lifespan": "1"})
+    bad = apply(contradicted, {"Born_Year": "born in 1859", "Died_Year": "died in 1789"},
+                "born in 1859 and died in 1789", "")
+    assert contradicted["Born_Year"] == "Unknown" and contradicted["Died_Year"] == "Unknown", contradicted
+    assert any("contradict" in i for i in bad)
     assert row["Gender"] == "Male"
     assert row["Born_Town"] == "Göttingen"
     assert row["Scientific_Disciplines"] == "Unknown"

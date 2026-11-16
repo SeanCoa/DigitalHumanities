@@ -137,10 +137,13 @@ PREFILL = "{"
 COLUMNS = ["Last_Name","First_Name","Alt_Name","Gender","Born_Country","Born_Town","Born_Year",
 "Born_Month","Born_Day","Died_Country","Died_Town","Died_Year","Died_Month","Died_Day",
 "Dates_Born_Certain","Date_Died_Certain","Dates_Lifespan","Father_Occupation",
-"Father_Is_Wealthy","Father_Notes","Education_Institution","Education_Degrees",
-"Education_Notes","Education_Locations","Religion_Affiliation","Religion_Affiliation_Certain","Religion_Notes",
-"Scientific_Disciplines","Scientific_Disciplines_Notes","Means_of_Support",
-"Means_of_Support_Notes","Patronage_Types","Patronage_Notes",
+"Father_Occupation_Facet","Father_Is_Wealthy","Father_Notes","Education_Institution",
+"Education_Institution_Facet","Education_Degrees","Education_Degree_Facet",
+"Education_Notes","Education_Locations","Religion_Affiliation","Religion_Facet",
+"Religion_Affiliation_Certain","Religion_Notes",
+"Scientific_Disciplines","Scientific_Disciplines_Facet","Scientific_Disciplines_Notes",
+"Means_of_Support","Means_of_Support_Facet","Means_of_Support_Notes",
+"Patronage_Types","Patronage_Facet","Patronage_Notes",
 "Instruments","Instruments_Notes",
 "Scientific_Societies_Membership","Scientific_Societies_Notes","Sources_List",
 "Not_Available_and_Not_Consulted_List","Compiler_Details_Notes"]
@@ -337,7 +340,7 @@ def parse_response(name, raw_text):
     evidence = data.pop("_evidence", None)
     row = {}
     for col in COLUMNS:
-        val = data.get(col, "None")               # missing key -> safe default
+        val = data.get(col, ground.sentinel_for(col))
         row[col] = "" if val is None else str(val)
     extras = set(data) - set(COLUMNS)
     err = f"unexpected keys ignored: {sorted(extras)}" if extras else None
@@ -546,24 +549,36 @@ def _field_multiset(field, value):
 def consensus_row(run_rows):
     """Build one row from several runs.
 
-    A value is kept only when one candidate has a strict majority. A tie is the
-    field's sentinel, never the first run. The disagreement list still names
-    every run's value so a reviewer can choose one."""
+    A closed value is kept only when one candidate has a strict majority. A tie
+    is the field's sentinel. A phrase is not chosen here: the candidates are
+    kept for settle(), which keeps a phrase only when it is a span in the entry.
+    Two different spans are left as the sentinel, and both stay in the report."""
     row, diffs = {}, []
+    runs = {}
     for col in COLUMNS:
-        vals = [r[col] for r in run_rows]
-        counts = Counter(vals)
-        value, top_count = counts.most_common(1)[0]
-        winners = [v for v, c in counts.items() if c == top_count]
-        row[col] = ground.sentinel_for(col) if len(winners) > 1 else value
+        vals = [r.get(col, "") for r in run_rows]
+        if col in ground.PHRASE_FIELDS:
+            row[col] = ground.sentinel_for(col)
+            runs[col] = vals
+        else:
+            counts = Counter(vals)
+            value, top_count = counts.most_common(1)[0]
+            winners = [v for v, c in counts.items() if c == top_count]
+            row[col] = ground.sentinel_for(col) if len(winners) > 1 else value
         if col in COMPARED_FIELDS and len({_field_multiset(col, v) for v in vals}) > 1:
             diffs.append((col, vals))
+    row["_phrase_runs"] = runs
     return row, diffs
 
 
-def _ground_row(row, evidence, user_msg):
+def _ground_row(row, evidence, user_msg, run_rows=None):
     """Blank facts the entry does not support. Returns the issue strings."""
     content, sources, heading = ground.split_entry(user_msg or "")
+    runs = row.pop("_phrase_runs", None)
+    if runs is None and run_rows:
+        runs = {col: [r.get(col, "") for r in run_rows] for col in ground.PHRASE_FIELDS}
+    if runs:
+        ground.settle(row, runs, content, sources)
     return ground.apply(row, evidence or {}, content, sources, heading)
 
 
@@ -612,10 +627,10 @@ def validate_row(row, disagreement_fields=()):
         if span is not None and abs(span - expected) > 1:
             issues.append(f"Dates_Lifespan ({span}) != Died_Year - Born_Year ({expected})")
     if span is not None:
-        if span < 20:
-            issues.append(f"Dates_Lifespan ({span}) is under 20 -- check the dates")
-        elif span > 105:
-            issues.append(f"Dates_Lifespan ({span}) is over 105 -- check the dates")
+        if span < 20 or span > 105:
+            issues.append(
+                f"Dates_Lifespan ({span}) is unusual. The printed years were kept; check them"
+            )
 
     # --- months and days ---
     for prefix in ("Born", "Died"):
@@ -650,13 +665,30 @@ def validate_row(row, disagreement_fields=()):
             if target and target != token:
                 issues.append(f"{field}: '{token}' should be mapped to '{target}'")
 
-    # --- specific terms must keep the parent a reader filters on ---
-    for field, parents in FIELD_PARENT_MAPS.items():
-        tokens = [t.strip() for t in (row.get(field) or "").split(";") if t.strip()]
-        for token in tokens:
-            parent = parents.get(token)
-            if parent and parent not in tokens:
-                issues.append(f"{field}: '{token}' is missing its parent '{parent}'")
+    # --- facets are closed; phrases are not ---
+    for field, known in KNOWN_VOCAB.items():
+        for token in (t.strip() for t in (row.get(field) or "").split(";")):
+            if token in _SENTINELS:
+                continue
+            if token not in known:
+                issues.append(f"{field}: '{token}' is not a facet")
+    try:
+        import dictionary as _dictionary
+        allowed = set(_dictionary.discipline_facets())
+    except Exception:
+        allowed = set()
+    if allowed:
+        for token in (t.strip() for t in (row.get("Scientific_Disciplines_Facet") or "").split(";")):
+            if token in _SENTINELS:
+                continue
+            if token not in allowed:
+                issues.append(f"Scientific_Disciplines_Facet: '{token}' is not a Dictionary field heading")
+    for token in (t.strip() for t in (row.get("Education_Degrees") or "").split(";")):
+        if token in _SENTINELS:
+            continue
+        target = dsb_vocab.DEGREE_SPELLING.get(token.lower()) if "dsb_vocab" in globals() else None
+        if target and token != target:
+            issues.append(f"Education_Degrees: '{token}' should be written {target}")
 
     # --- duplicate tokens within a multi-value cell ---
     for field in DUPLICATE_CHECK_FIELDS:

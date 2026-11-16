@@ -813,16 +813,23 @@ def _visible_specs(specs):
 
 FILTER_CATEGORIES = _visible_specs([
     ('scientific_disciplines', 'Scientific_Disciplines', 'Scientific Disciplines'),
+    ('scientific_disciplines_facet', 'Scientific_Disciplines_Facet', 'Discipline (editor)'),
     ('instruments', 'Instruments', 'Instruments'),
     ('scientific_societies_membership', 'Scientific_Societies_Membership', 'Societies'),
     ('education_institution', 'Education_Institution', 'Educational Institution'),
     ('education_degrees', 'Education_Degrees', 'Degrees'),
     ('means_of_support', 'Means_of_Support', 'Means of Support'),
-    ('patronage_types', 'Patronage_Types', 'Patronage Types'),
+    ('means_of_support_facet', 'Means_of_Support_Facet', 'Means facet'),
+    ('patronage_types', 'Patronage_Types', 'Patronage'),
+    ('patronage_facet', 'Patronage_Facet', 'Patronage facet'),
     ('gender', 'Gender', 'Gender'),
     ('religion_affiliation', 'Religion_Affiliation', 'Religion'),
+    ('religion_facet', 'Religion_Facet', 'Religion facet'),
     ('father_is_wealthy', 'Father_Is_Wealthy', 'Family Wealth'),
     ('father_occupation', 'Father_Occupation', 'Father Occupation'),
+    ('father_occupation_facet', 'Father_Occupation_Facet', 'Father facet'),
+    ('education_institution_facet', 'Education_Institution_Facet', 'School type'),
+    ('education_degree_facet', 'Education_Degree_Facet', 'Degree level'),
     ('born_country', 'Born_Country', 'Born Country'),
     ('died_country', 'Died_Country', 'Died Country'),
 ])
@@ -1161,7 +1168,7 @@ def build_education_stops(coords_raw, locs_raw, insts_raw):
     return stops
 
 
-def _inst_key(name, lat, lon):
+def _inst_key(name, lat, lon, town=""):
     """Group education stops by INSTITUTION, not by coordinate. One geocode routinely
     covers many distinct schools -- 18 share the Paris city-centre point -- so keying
     on coordinates alone would merge them into a single meaningless dot.
@@ -1172,8 +1179,11 @@ def _inst_key(name, lat, lon):
     institutions. Keying them by name instead would collapse ~100 cities worldwide
     into one dot, since they all share the string "Not Specified"."""
     n = ' '.join((name or '').split()).strip().lower()
+    t = ' '.join((town or '').split()).strip().lower()
     if n and n != NOT_SPECIFIED:
-        return 'name:' + n
+        if t and t != 'unknown':
+            return 'name:' + n + '|town:' + t
+        return 'name:' + n + '|at:%.3f,%.3f' % (lat, lon)
     return 'unspec:%.5f,%.5f' % (lat, lon)
 
 
@@ -1195,7 +1205,7 @@ def build_education_registry(stop_lists):
     names_for = defaultdict(Counter)       # key -> Counter[original spelling]
     for stops in stop_lists:
         for st in stops:
-            k = _inst_key(st.get('inst'), st['lat'], st['lon'])
+            k = _inst_key(st.get('inst'), st['lat'], st['lon'], st.get('town'))
             coords_for[k][(st['lat'], st['lon'])] += 1
             nm = (st.get('inst') or '').strip()
             if nm:
@@ -1245,7 +1255,10 @@ def build_data_layer(csv_path):
                 "The map is built only from a review export."
             )
     else:
-        print("-> this catalog has no Verification column; it predates the review gate")
+        raise SystemExit(
+            "This catalog has no Verification column. "
+            "The map is built only from a reviewed export of the new scheme."
+        )
 
     for c in ['Born_Latitude', 'Born_Longitude', 'Died_Latitude', 'Died_Longitude']:
         df[c] = pd.to_numeric(df[c], errors='coerce')
@@ -1292,7 +1305,7 @@ def build_data_layer(csv_path):
         items = set()
         for entry in dataframe[col].dropna().astype(str):
             if entry.lower() != 'nan' and entry.strip():
-                for sub in entry.replace(';', ',').split(','):
+                for sub in entry.split(';'):
                     sc = sub.strip()
                     if sc and sc.lower() not in ('nan', 'none', 'unknown'):
                         items.add(sc)
@@ -1412,7 +1425,7 @@ def build_data_layer(csv_path):
     def _attach_registry(stops):
         out = []
         for st in stops:
-            k = _inst_key(st.get('inst'), st['lat'], st['lon'])
+            k = _inst_key(st.get('inst'), st['lat'], st['lon'], st.get('town'))
             reg = edu_registry.get(k)
             st = dict(st)
             st['key'] = k
@@ -3105,7 +3118,7 @@ __FMT_YEAR__
   function matchMode(){ var m = document.querySelector('input[name="query-match-mode"]:checked'); return m ? m.value : 'and'; }
 
   function personHasFilter(p, f){
-    var tokens = String(p[f.category] || '').toLowerCase().split(/[,;]/).map(function(s){ return s.trim(); });
+    var tokens = String(p[f.category] || '').toLowerCase().split(';').map(function(s){ return s.trim(); });
     return tokens.indexOf(f.value) !== -1;
   }
 

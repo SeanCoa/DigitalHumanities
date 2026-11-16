@@ -1,0 +1,1362 @@
+{
+  "discipline_facets": [
+    "Astronomy",
+    "Chemistry",
+    "Earth Sciences",
+    "Life Sciences",
+    "Mathematics",
+    "History, Philosophy, Dissemination of Knowledge",
+    "Physics",
+    "Technology, Engineering"
+  ],
+  "societies": [
+    {
+      "name": "Academia Caesarea Leopoldina Carolina Naturae Curiosorum"
+    },
+    {
+      "name": "Academia Leopoldina Naturae Curiosorum"
+    },
+    {
+      "name": "Academia Naturae Curiosorum Sacra"
+    },
+    {
+      "name": "Academia Operosorum"
+    },
+    {
+      "name": "Academia Parisiensis"
+    },
+    {
+      "name": "Academia Secretorum Naturae"
+    },
+    {
+      "name": "Académie Bourdelot"
+    },
+    {
+      "name": "Académie de Calvin"
+    },
+    {
+      "name": "Académie de Genève"
+    },
+    {
+      "name": "Académie de Médecine, Paris"
+    },
+    {
+      "name": "Académie des Sciences, Paris"
+    },
+    {
+      "name": "Académie des Sciences, Belles-Lettres et Arts (Rouen)"
+    },
+    {
+      "name": "Académie des Sciences et Beaux-Arts des États-Unis"
+    },
+    {
+      "name": "Académie Française"
+    },
+    {
+      "name": "Académie Internationale d’Histoire des Sciences"
+    },
+    {
+      "name": "Acadé Montmor"
+    },
+    {
+      "name": "Académie Royale (Paris)"
+    },
+    {
+      "name": "Académie Royale de l’Architecture (Paris)"
+    },
+    {
+      "name": "Académie Royale de Peinture et de Sculpture (Paris)"
+    },
+    {
+      "name": "Académie Royale des Sciences, des Letters et des Beaux-Arts de Belgique"
+    },
+    {
+      "name": "Académie Royale des Sciences et des Belles Lettres de Berlin"
+    },
+    {
+      "name": "Academy of Natural Sciences"
+    },
+    {
+      "name": "Academy of Sciences, Turin"
+    },
+    {
+      "name": "Academy of Sciences, (USSR)"
+    },
+    {
+      "name": "Accademia Cosmografica degli Argonauti"
+    },
+    {
+      "name": "Accademia degli Inquieti"
+    },
+    {
+      "name": "Accademia degli Investiganti"
+    },
+    {
+      "name": "Accademia degli Oziosi"
+    },
+    {
+      "name": "Accademia dei Fisiocritici"
+    },
+    {
+      "name": "Accademia dei Lincei"
+    },
+    {
+      "name": "Accademia dei Percossi"
+    },
+    {
+      "name": "Accademia dei Segreti"
+    },
+    {
+      "name": "Accademia del Cimento"
+    },
+    {
+      "name": "Accademia della Crusca"
+    },
+    {
+      "name": "Accademia della Fucina"
+    },
+    {
+      "name": "Accademia della Traccia"
+    },
+    {
+      "name": "Accademia dell’Esperienza"
+    },
+    {
+      "name": "Accademia delle Scienze dell’Istituto di Bologna"
+    },
+    {
+      "name": "Accademia d’Italia"
+    },
+    {
+      "name": "Accademia Fisica-matematica"
+    },
+    {
+      "name": "Accademia Reale (Rome)"
+    },
+    {
+      "name": "Accademia Scientifica-Litteraria (Milan)"
+    },
+    {
+      "name": "Aerial Experimental Association"
+    },
+    {
+      "name": "African Association"
+    },
+    {
+      "name": "Agriculture Society of Edinburgh"
+    },
+    {
+      "name": "Akademi Internasional de Lingu Universal"
+    },
+    {
+      "name": "Akademie der Wissenschaften (Berlin)"
+    },
+    {
+      "name": "Akademiia nauk (USSR)"
+    },
+    {
+      "name": "Allgemeine Elektrizitäts-Gesellschaft"
+    },
+    {
+      "name": "All-Union Association of Scientists and Technicians"
+    },
+    {
+      "name": "Altomare, Academy of"
+    },
+    {
+      "name": "American Academy of Arts and Sciences"
+    },
+    {
+      "name": "American Association for Cancer Research"
+    },
+    {
+      "name": "American Association for the Advancement of Science"
+    },
+    {
+      "name": "American Association of Anatomists"
+    },
+    {
+      "name": "American Association of Economic Entomologists"
+    },
+    {
+      "name": "American Association of Geologists"
+    },
+    {
+      "name": "American Association of Neurological Surgeons"
+    },
+    {
+      "name": "American Association of Pathologists and Bacteriologists"
+    },
+    {
+      "name": "American Association of Physical Anthropologists"
+    },
+    {
+      "name": "American Association of University Professors"
+    },
+    {
+      "name": "American Association of University Women"
+    },
+    {
+      "name": "American Association of Variable Star Observers"
+    },
+    {
+      "name": "American Astronomical Society"
+    },
+    {
+      "name": "American Breeders Association"
+    },
+    {
+      "name": "American Cancer Society"
+    },
+    {
+      "name": "American Chemical Society"
+    },
+    {
+      "name": "American Crystallographic Association"
+    },
+    {
+      "name": "American Epidemiological Society"
+    },
+    {
+      "name": "American Ethnological Society"
+    },
+    {
+      "name": "American Genetic Association"
+    },
+    {
+      "name": "American Geographical Society"
+    },
+    {
+      "name": "American Geological Society"
+    },
+    {
+      "name": "American Mathematical Society"
+    },
+    {
+      "name": "American Medical Association"
+    },
+    {
+      "name": "American Meteorological Society"
+    },
+    {
+      "name": "American Metrological Society"
+    },
+    {
+      "name": "American Ornithologists’Union"
+    },
+    {
+      "name": "American Philosophical Society"
+    },
+    {
+      "name": "American Photographic Society"
+    },
+    {
+      "name": "American Physical Society"
+    },
+    {
+      "name": "American Physiological Society"
+    },
+    {
+      "name": "American Phytopathological Society"
+    },
+    {
+      "name": "American Psychoanalytic Association"
+    },
+    {
+      "name": "American Psychological Association"
+    },
+    {
+      "name": "American Public Health Association"
+    },
+    {
+      "name": "American Society for Horticultural Science"
+    },
+    {
+      "name": "American Society for Pharmacology and Experimental Therapeutics"
+    },
+    {
+      "name": "American Society of Agronomy"
+    },
+    {
+      "name": "American Society of Biological Chemists"
+    },
+    {
+      "name": "American Society of Mammalogists"
+    },
+    {
+      "name": "American Society of Mechanical Engineers"
+    },
+    {
+      "name": "American Society of Naturalists"
+    },
+    {
+      "name": "American Society of Zoologists"
+    },
+    {
+      "name": "American-Soviet Medical Society"
+    },
+    {
+      "name": "American Union Academy of Literature, Science and Art"
+    },
+    {
+      "name": "Analytical Society (Cambridge Univ.)"
+    },
+    {
+      "name": "Anatomical Society of Great Britain and Ireland"
+    },
+    {
+      "name": "Anthropological Society of London"
+    },
+    {
+      "name": "Antiquaries, Society of"
+    },
+    {
+      "name": "Apothecaries, Society of"
+    },
+    {
+      "name": "Arcueil, Sociéité d’"
+    },
+    {
+      "name": "Aristotelian Society for the Systematic Study of Philosophy"
+    },
+    {
+      "name": "Askesian Society"
+    },
+    {
+      "name": "Association for Medical Instruction"
+    },
+    {
+      "name": "Association Française pour l’Avancement des Sciences"
+    },
+    {
+      "name": "Association Internationale de Botanistes"
+    },
+    {
+      "name": "Association Internationale de Géodésie"
+    },
+    {
+      "name": "Association of American Geographers"
+    },
+    {
+      "name": "Association of American Geologists"
+    },
+    {
+      "name": "Association of German Mathematicians"
+    },
+    {
+      "name": "Association Polytechnique"
+    },
+    {
+      "name": "Astronomical Society of Berlin"
+    },
+    {
+      "name": "Astronomical Society of London"
+    },
+    {
+      "name": "Astronomical society of the Atlantic"
+    },
+    {
+      "name": "Astronomical society of the Pacific"
+    },
+    {
+      "name": "Astronomische Gesellschaft"
+    },
+    {
+      "name": "Athénée Médical"
+    },
+    {
+      "name": "Aurelian Society"
+    },
+    {
+      "name": "Australian Academy of Science"
+    },
+    {
+      "name": "Austrian Academy of Sciences"
+    },
+    {
+      "name": "Bansha (Association of Foreign Learning)"
+    },
+    {
+      "name": "Batavian Club"
+    },
+    {
+      "name": "Bath Philosophical Society"
+    },
+    {
+      "name": "Bayerische Akademie der Wissenschaften"
+    },
+    {
+      "name": "Berlin Academy"
+    },
+    {
+      "name": "Berlin Geographical Society"
+    },
+    {
+      "name": "Berlin Medical Scoiety"
+    },
+    {
+      "name": "Biological Society of Washington(D.C)"
+    },
+    {
+      "name": "Bohemian Scientific Society (Prague)"
+    },
+    {
+      "name": "Botanical Exchange Club"
+    },
+    {
+      "name": "Botanical Society of America"
+    },
+    {
+      "name": "Botanical Society of Edinburgh"
+    },
+    {
+      "name": "British Association (for the Advancement of Science)"
+    },
+    {
+      "name": "British Astronomical Association"
+    },
+    {
+      "name": "British Medical Association"
+    },
+    {
+      "name": "British Meteorological Society"
+    },
+    {
+      "name": "British Mineralogical Society"
+    },
+    {
+      "name": "British Ornithologists’Club"
+    },
+    {
+      "name": "British Physiological Society"
+    },
+    {
+      "name": "British Science Guild"
+    },
+    {
+      "name": "California Academy of Sciences"
+    },
+    {
+      "name": "California Botanical Society"
+    },
+    {
+      "name": "Cambridge Antiquarian Society"
+    },
+    {
+      "name": "Cambridge Philosophical Society"
+    },
+    {
+      "name": "Canterbur Philosophical and Literary Institution"
+    },
+    {
+      "name": "Cape Philosophical Society"
+    },
+    {
+      "name": "Chapter Coffee House society"
+    },
+    {
+      "name": "Chemical Institute of Canada"
+    },
+    {
+      "name": "Chemical Society, London"
+    },
+    {
+      "name": "Chemical-Physical Society (Vienna)"
+    },
+    {
+      "name": "Chicago, Academy of Sciences"
+    },
+    {
+      "name": "Cimento, Accademia del"
+    },
+    {
+      "name": "Circolo Matematico di Palermo"
+    },
+    {
+      "name": "City Philosophical Society (London)"
+    },
+    {
+      "name": "Collegium Curiosum sive Experimentale"
+    },
+    {
+      "name": "Colorado Scientific Society"
+    },
+    {
+      "name": "Copenhagen Academy"
+    },
+    {
+      "name": "Cracow Academy of Sciences"
+    },
+    {
+      "name": "Crusca, Accademia della"
+    },
+    {
+      "name": "Derby Philosophical Society"
+    },
+    {
+      "name": "Deutsche Botanische Gesellschaft"
+    },
+    {
+      "name": "Deutsche Chemische Gesellschaft"
+    },
+    {
+      "name": "Deutsche Elektrochemishe Gesellschaft"
+    },
+    {
+      "name": "Deutsche Geologische Gesellschaft, Berlin"
+    },
+    {
+      "name": "Deutsche Gesellschaft für Metallkunde"
+    },
+    {
+      "name": "Deutsche Gesellschaft zur Bekämpfung der Geschtlechtskrankheiten"
+    },
+    {
+      "name": "Deutsche Mathematiker-Vereinigung"
+    },
+    {
+      "name": "Deutsche Physikalische Gesellschaft, Berlin"
+    },
+    {
+      "name": "Dijon Academy"
+    },
+    {
+      "name": "Dublin Philosophical Society"
+    },
+    {
+      "name": "Edinburgh Botanical Club"
+    },
+    {
+      "name": "Edinburgh Mathematical Society"
+    },
+    {
+      "name": "Edinburgh Philosophical Society"
+    },
+    {
+      "name": "Egypt Exploration Society"
+    },
+    {
+      "name": "Entomological Society (Cambridge, Eng.)"
+    },
+    {
+      "name": "Entomological Society (of London)"
+    },
+    {
+      "name": "Epidemiological Society"
+    },
+    {
+      "name": "Esperienza, Accademia dell’"
+    },
+    {
+      "name": "Fachgemeinschaft der deutschen Hochschullehrer der Physik"
+    },
+    {
+      "name": "Florence, Academy of"
+    },
+    {
+      "name": "Fraternitas Medicorum"
+    },
+    {
+      "name": "Free Association for Microbiology"
+    },
+    {
+      "name": "French Astronomical Society"
+    },
+    {
+      "name": "Fucina, Accademia della"
+    },
+    {
+      "name": "Galvanic Society"
+    },
+    {
+      "name": "Genetical Society (Gr. Brit.)"
+    },
+    {
+      "name": "Genetics Society of America"
+    },
+    {
+      "name": "Gentleman’s Society of Spalding"
+    },
+    {
+      "name": "Geograficheskoe obshchestvo (USSR)"
+    },
+    {
+      "name": "Geographical Society of Finland"
+    },
+    {
+      "name": "Geological Institute, Berlin"
+    },
+    {
+      "name": "Geological Society of America"
+    },
+    {
+      "name": "Geological Society of London"
+    },
+    {
+      "name": "German Anthropological Society"
+    },
+    {
+      "name": "German Botanical Society"
+    },
+    {
+      "name": "German Geological Society, Berlin"
+    },
+    {
+      "name": "German Metallographic Society"
+    },
+    {
+      "name": "German Research Association"
+    },
+    {
+      "name": "German Society for Electron Microscopy"
+    },
+    {
+      "name": "German Society for Technical Röntgenology"
+    },
+    {
+      "name": "German Society for the History of Medicine and Science"
+    },
+    {
+      "name": "Gesellschaft Deutscher Naturforscher und Aerzte"
+    },
+    {
+      "name": "Haarlem Academy"
+    },
+    {
+      "name": "Hakluyt Society"
+    },
+    {
+      "name": "Harvey Cushing Society"
+    },
+    {
+      "name": "Helmholtz-Gesellschaft"
+    },
+    {
+      "name": "History of Science Society (Cambridge, Mass.)"
+    },
+    {
+      "name": "Horticultural Society of London"
+    },
+    {
+      "name": "Hungarian Academy of Sciences"
+    },
+    {
+      "name": "Indian Academy of Sciences"
+    },
+    {
+      "name": "Indian Association for the Cultivation of Science"
+    },
+    {
+      "name": "Inquieti, Accademia degli"
+    },
+    {
+      "name": "Institut de France"
+    },
+    {
+      "name": "Institut International d’Embryologie"
+    },
+    {
+      "name": "Institut National des Sciences et des Arts, Paris"
+    },
+    {
+      "name": "Institute of Chemistry"
+    },
+    {
+      "name": "Institution of Electrical Engineers (G.B.)"
+    },
+    {
+      "name": "Institution of Engineers"
+    },
+    {
+      "name": "International Academy for the History of Science"
+    },
+    {
+      "name": "International Association of Academies"
+    },
+    {
+      "name": "International Association of Chemical Societies"
+    },
+    {
+      "name": "International Association of Seismology"
+    },
+    {
+      "name": "International Association of Seismology and Physics of the Earth’s Interior"
+    },
+    {
+      "name": "International Astronomical Society"
+    },
+    {
+      "name": "International Federation of Electron Microscope Societies"
+    },
+    {
+      "name": "International Geodesic Association"
+    },
+    {
+      "name": "International Psychoanalytic Association"
+    },
+    {
+      "name": "International Working Men’s Association"
+    },
+    {
+      "name": "Investiganti, Accademia degli"
+    },
+    {
+      "name": "\"Invisible College\""
+    },
+    {
+      "name": "Ionian Academy"
+    },
+    {
+      "name": "Italian Anatomical Society"
+    },
+    {
+      "name": "Italian Geological Society"
+    },
+    {
+      "name": "Italian Mathematical Union"
+    },
+    {
+      "name": "Italian Society of the History of Medicine"
+    },
+    {
+      "name": "Japanese Association for the Advancement of Science"
+    },
+    {
+      "name": "Kaiser Wilhelm Gesellschaft zur Föderung der Wissenschaftn"
+    },
+    {
+      "name": "Kolloid Gesellscaft"
+    },
+    {
+      "name": "Lazzaroni"
+    },
+    {
+      "name": "Lebedev Physics Society, Moscow"
+    },
+    {
+      "name": "Leopoldina"
+    },
+    {
+      "name": "Lichfield Botanical Society"
+    },
+    {
+      "name": "Lincei, Accademia dei"
+    },
+    {
+      "name": "Lincoln (England), Mechanics Institution"
+    },
+    {
+      "name": "Linnean Society of London"
+    },
+    {
+      "name": "London Geological Society"
+    },
+    {
+      "name": "London Mathematical Society"
+    },
+    {
+      "name": "Lunar Society (Birmingham)"
+    },
+    {
+      "name": "Lycée des Arts (Paris)"
+    },
+    {
+      "name": "Lyceum Medicum Londinense"
+    },
+    {
+      "name": "Magnetischer Verein"
+    },
+    {
+      "name": "Magyar Tudomanyos Akademia, Budapest"
+    },
+    {
+      "name": "Manchester Literary and Philosophical Society (England)"
+    },
+    {
+      "name": "Marine Biological Association (U.K.)"
+    },
+    {
+      "name": "Mathematical and Physical Society (Hungary)"
+    },
+    {
+      "name": "Mathematical Association of America"
+    },
+    {
+      "name": "Mathematical Society (Berlin)"
+    },
+    {
+      "name": "Mathematischer Verein (Berlin)"
+    },
+    {
+      "name": "Max Planck Gesellscaft zur Förderung der Wissenschaften"
+    },
+    {
+      "name": "Medical Research Society (London)"
+    },
+    {
+      "name": "Melun, Agricultural Society"
+    },
+    {
+      "name": "Metaphysical Club (Cambridge)"
+    },
+    {
+      "name": "Metaphysical Society (London)"
+    },
+    {
+      "name": "Mineralogical Society (St. Petersburg)"
+    },
+    {
+      "name": "Minnesota Academy of Sciences"
+    },
+    {
+      "name": "Moscow Mathematical Society"
+    },
+    {
+      "name": "Moscow Physics Society"
+    },
+    {
+      "name": "Moskovsko fizicheskoe obshchestvoe imeni I.I. Lebedeva"
+    },
+    {
+      "name": "Moskovskoe mathemticheskoe obshechestvo"
+    },
+    {
+      "name": "National Academy of Science (U.S)"
+    },
+    {
+      "name": "National Geographic Society (Washington)"
+    },
+    {
+      "name": "National Society for Medical Research (U.S.)"
+    },
+    {
+      "name": "Natural History Society of Edinburgh"
+    },
+    {
+      "name": "Natural Science Society (Switzerland)"
+    },
+    {
+      "name": "Nederlandsche Vereeniging voor Koeltechniek"
+    },
+    {
+      "name": "Netherlands Botanical Society"
+    },
+    {
+      "name": "Netherlands Society of Sciences (Haarlem)"
+    },
+    {
+      "name": "New York Academy of Medicine"
+    },
+    {
+      "name": "New York Academy of Sciences"
+    },
+    {
+      "name": "New York Mathematical Society"
+    },
+    {
+      "name": "New York Pathological Society"
+    },
+    {
+      "name": "Newcastle Chemical Society"
+    },
+    {
+      "name": "Notgemeinschaft der deutschen Wissenschaften"
+    },
+    {
+      "name": "Nuremberg, Cosmographical Society"
+    },
+    {
+      "name": "Oxford Philosophical Society"
+    },
+    {
+      "name": "Paläontologische Gesellscahaft (Berlin)"
+    },
+    {
+      "name": "Paleontological Society (U.S)"
+    },
+    {
+      "name": "Paris Chemical Society"
+    },
+    {
+      "name": "Petrologists’Club of Washington"
+    },
+    {
+      "name": "Pharmazeutischer Verein (Baiern)"
+    },
+    {
+      "name": "Philosophical and literary Society (Liverpool)"
+    },
+    {
+      "name": "Philosophical Society (London)"
+    },
+    {
+      "name": "Philosophical Society of Edinburgh"
+    },
+    {
+      "name": "Philosophical Society of Glasgow"
+    },
+    {
+      "name": "Philosophical Society of Washington (D.C.)"
+    },
+    {
+      "name": "Philosophy of Sciences Association"
+    },
+    {
+      "name": "Physical Society of London"
+    },
+    {
+      "name": "Physikalisch-Medizinische Gesellschaft, Würzburg"
+    },
+    {
+      "name": "Physikalische Gesellschaft (Berlin)"
+    },
+    {
+      "name": "Physikalische-technishe Reichsanstalt"
+    },
+    {
+      "name": "Physikalischer Verein (Frankfurt am Main)"
+    },
+    {
+      "name": "Physiological Society (London)"
+    },
+    {
+      "name": "Polish Astronautical Society"
+    },
+    {
+      "name": "Polish Physical Society"
+    },
+    {
+      "name": "Private College of Ameterdam"
+    },
+    {
+      "name": "Prussian Academy"
+    },
+    {
+      "name": "Prussian Geodetic Institute"
+    },
+    {
+      "name": "Ray Society"
+    },
+    {
+      "name": "Real Sociedad Económica Vascongada de Amigos del País"
+    },
+    {
+      "name": "Réunion des Sciences"
+    },
+    {
+      "name": "Rosati"
+    },
+    {
+      "name": "Rouen, Academy of Sciences"
+    },
+    {
+      "name": "Royal Academy of Brussels"
+    },
+    {
+      "name": "Royal Agricultural Society of England"
+    },
+    {
+      "name": "Royal Astronomical Society (London)"
+    },
+    {
+      "name": "Royal Astronomical Society of New Zealand"
+    },
+    {
+      "name": "Royal Danish Academy of Sciences"
+    },
+    {
+      "name": "Royal Dublin Sciences"
+    },
+    {
+      "name": "Royal Geographical Society (London)"
+    },
+    {
+      "name": "Royal Horticultural Society (England)"
+    },
+    {
+      "name": "Royal Institution of Great Britain, London"
+    },
+    {
+      "name": "Royal Institution of the Netherlands"
+    },
+    {
+      "name": "Royal Irish Academy"
+    },
+    {
+      "name": "Royal Medical Society (Edinburgh)"
+    },
+    {
+      "name": "Royal Meteorological Society (Gr. Brit.)"
+    },
+    {
+      "name": "Royal Microscopical Society (London)"
+    },
+    {
+      "name": "Royal Scottish Geographical Society"
+    },
+    {
+      "name": "Royal Scottish Society of Arts"
+    },
+    {
+      "name": "Royal Society of Arts (England)"
+    },
+    {
+      "name": "Royal Society of Canada"
+    },
+    {
+      "name": "Royal Society of Edinburgh"
+    },
+    {
+      "name": "Royal Society of London"
+    },
+    {
+      "name": "Royal Society of New South Wales"
+    },
+    {
+      "name": "Royal Society of Sciences (Madrid)"
+    },
+    {
+      "name": "Royal Society of Tropical Medicine (London)"
+    },
+    {
+      "name": "Russian Academy of Sciences"
+    },
+    {
+      "name": "Russian Astronomical Society"
+    },
+    {
+      "name": "Russian Chemical Society"
+    },
+    {
+      "name": "Russian Entomological Society"
+    },
+    {
+      "name": "Russian Geographical Society"
+    },
+    {
+      "name": "Russian Physics and Chemistry Society"
+    },
+    {
+      "name": "Russian Physiological Society"
+    },
+    {
+      "name": "Russkoe fizicheskoe i khimicheskoe obshchestvo"
+    },
+    {
+      "name": "St. Petersburg, Imperial Academy of Science"
+    },
+    {
+      "name": "Save-the-Redwoods League"
+    },
+    {
+      "name": "Schlesische Gesellschaft für Vaterländische Kultur"
+    },
+    {
+      "name": "Schweizerische Mineralogische und Petrographische Gesellschaft"
+    },
+    {
+      "name": "Seismological Society of America"
+    },
+    {
+      "name": "Seismological Society of Japan"
+    },
+    {
+      "name": "Select Society (Edinburgh)"
+    },
+    {
+      "name": "Senckenbergische Naturforschende Gesellschaft (Frankfurt am Main)"
+    },
+    {
+      "name": "Siera Club"
+    },
+    {
+      "name": "Smeatonian Society"
+    },
+    {
+      "name": "Sociedad de Amigos del País"
+    },
+    {
+      "name": "Sociedad Económica de Amigos del País"
+    },
+    {
+      "name": "Società Botanica Fiorentina"
+    },
+    {
+      "name": "Società degli Spettroscopisit Italiani"
+    },
+    {
+      "name": "Società dei Quaranta"
+    },
+    {
+      "name": "Sociatà Filotecnica"
+    },
+    {
+      "name": "Sociatà Intaliana delle Scienze"
+    },
+    {
+      "name": "Societas Ereunetica"
+    },
+    {
+      "name": "Societas Meteorlogica Palatina"
+    },
+    {
+      "name": "Societas Spinozana"
+    },
+    {
+      "name": "Société Alfred Binet"
+    },
+    {
+      "name": "Sociéteé Anatomique (Paris)"
+    },
+    {
+      "name": "Sociéteé Botanique de France (Paris)"
+    },
+    {
+      "name": "Sociéteé Chimique de France (Paris)"
+    },
+    {
+      "name": "Sociéteé d’Acclimatation, Paris"
+    },
+    {
+      "name": "Société d’Agriculture de Paris"
+    },
+    {
+      "name": "Société d’Anthropologie (Paris)"
+    },
+    {
+      "name": "Société d’Arucueil"
+    },
+    {
+      "name": "Société d’Emulation et d’Agriculture de l’Ain"
+    },
+    {
+      "name": "Société d’Émulation pour les Sciences Pharmaceutiques"
+    },
+    {
+      "name": "Société d’Encouragement pour l’Industrie Nationale"
+    },
+    {
+      "name": "Société d’Histoire Naturalle de Paris"
+    },
+    {
+      "name": "Société de Biologie"
+    },
+    {
+      "name": "Société de Lecture"
+    },
+    {
+      "name": "Société de l’Harmonie Universelle"
+    },
+    {
+      "name": "Société de Micrographie"
+    },
+    {
+      "name": "Société de Pathologie Exotique"
+    },
+    {
+      "name": "Société de Pathologie Végétale et d’Entomologie Agricole de France"
+    },
+    {
+      "name": "Société de Physique (Zurich)"
+    },
+    {
+      "name": "Société de Physique et d’Histoire Naturalle de Genève"
+    },
+    {
+      "name": "Société de Recherches et de Perfectionnements Industries"
+    },
+    {
+      "name": "Société des Amis des Sciences (Paris)"
+    },
+    {
+      "name": "Société des Arts (Paris)"
+    },
+    {
+      "name": "Société des Ingénierus du Vide"
+    },
+    {
+      "name": "Société Entomologique de France (Paris)"
+    },
+    {
+      "name": "Société Ethnologique de Paris"
+    },
+    {
+      "name": "Société Française de Physiologie Végétale"
+    },
+    {
+      "name": "Société Géologique de France"
+    },
+    {
+      "name": "Société Géologique Suisse"
+    },
+    {
+      "name": "Société Helvétique des Sciences Naturelles"
+    },
+    {
+      "name": "Société Linnéenne (Paris)"
+    },
+    {
+      "name": "Société Mathématique de France"
+    },
+    {
+      "name": "Société Médicale d’Émulation (Paris)"
+    },
+    {
+      "name": "Société Positiviste (Paris)"
+    },
+    {
+      "name": "Société Royale de Médecine (Paris)"
+    },
+    {
+      "name": "Société Royale des Sciences de Montpellier"
+    },
+    {
+      "name": "Society for Experimental Biology and Medicine (U.S.)"
+    },
+    {
+      "name": "Society for Mathematics (Hungary)"
+    },
+    {
+      "name": "Society for Natural Sciences (Hungary)"
+    },
+    {
+      "name": "Society for Philosophical Experiments and Conversations"
+    },
+    {
+      "name": "Society for Promoting Useful Knowledge"
+    },
+    {
+      "name": "Society for Psychical Research (G.B)"
+    },
+    {
+      "name": "Society for the Diffusion of Useful Knowledge"
+    },
+    {
+      "name": "Society for the Encouragement of Arts, Manufactures and Commerce (England)"
+    },
+    {
+      "name": "Society for the Improvement of Medical Knowledge (Edinburgh)"
+    },
+    {
+      "name": "Society for the Promotion of the Natural Sciences in the Netherlands Indies"
+    },
+    {
+      "name": "Society for the Propagation of Christian Knowledge"
+    },
+    {
+      "name": "Society of American Bacteriologists"
+    },
+    {
+      "name": "Society of Chemical Industry (London)"
+    },
+    {
+      "name": "Society of Civil Engineers (Gr. Brit)"
+    },
+    {
+      "name": "Society of Dermatology and Syphilography"
+    },
+    {
+      "name": "Society of German Scientists and Physicians"
+    },
+    {
+      "name": "Society of Glass Technology"
+    },
+    {
+      "name": "Society of Polish Mathematicians"
+    },
+    {
+      "name": "Society of Telegraphic Engineers and Electricians"
+    },
+    {
+      "name": "Soviet Academy of Sciences"
+    },
+    {
+      "name": "Sozietät der Wissenschaften"
+    },
+    {
+      "name": "Statistical Society of London"
+    },
+    {
+      "name": "Surgeons, Royal College of"
+    },
+    {
+      "name": "Swedish Academy of Sciences"
+    },
+    {
+      "name": "Swedish Seed Association"
+    },
+    {
+      "name": "Swiss Mathematical Society"
+    },
+    {
+      "name": "Temple Coffee House Botany Club"
+    },
+    {
+      "name": "Természettudományi Társulat"
+    },
+    {
+      "name": "Teyler’s Society"
+    },
+    {
+      "name": "Towarzystwo Przyjaciól Nauk"
+    },
+    {
+      "name": "Traccia, Accademia della"
+    },
+    {
+      "name": "Ukrainian S.S.R. Academy of Sciences"
+    },
+    {
+      "name": "Union Mondiale des Académies"
+    },
+    {
+      "name": "Union of Biological Sciences"
+    },
+    {
+      "name": "Universal Brotherhood of Friends of Truth"
+    },
+    {
+      "name": "Vereeniging tot Bevordering van de Opleiding tot Instrumentmaker"
+    },
+    {
+      "name": "Verein Deutscher Ingenieure"
+    },
+    {
+      "name": "Verein für Landwirtschaft"
+    },
+    {
+      "name": "Vereinigte Astronomische Gesellschaft"
+    },
+    {
+      "name": "Victoria Institute of London"
+    },
+    {
+      "name": "Virginia, Mineralogical Society"
+    },
+    {
+      "name": "Vsesoiuznoe entomologicheskoe obshchestvo"
+    },
+    {
+      "name": "Warsaw Scientific Society"
+    },
+    {
+      "name": "Washington Academy of Sciences"
+    },
+    {
+      "name": "Washington Philosophical Society"
+    },
+    {
+      "name": "Wernerian Natural History Society"
+    },
+    {
+      "name": "Worshipful Society of Apothecaries"
+    },
+    {
+      "name": "Yorkshire Philosophical Society"
+    },
+    {
+      "name": "Zoological Society of London"
+    }
+  ],
+  "accepted": []
+}

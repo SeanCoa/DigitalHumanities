@@ -282,10 +282,10 @@
 "use strict";
 const COLUMNS=["Last_Name","First_Name","Alt_Name","Gender","Born_Country","Born_Town","Born_Year",
 "Born_Month","Born_Day","Died_Country","Died_Town","Died_Year","Died_Month","Died_Day",
-"Dates_Born_Certain","Date_Died_Certain","Dates_Lifespan","Father_Occupation","Father_Is_Wealthy",
-"Father_Notes","Education_Institution","Education_Degrees","Education_Notes","Education_Locations",
-"Religion_Affiliation","Religion_Affiliation_Certain","Religion_Notes","Scientific_Disciplines",
-"Scientific_Disciplines_Notes","Means_of_Support","Means_of_Support_Notes","Patronage_Types",
+"Dates_Born_Certain","Date_Died_Certain","Dates_Lifespan","Father_Occupation","Father_Occupation_Facet","Father_Is_Wealthy",
+"Father_Notes","Education_Institution","Education_Institution_Facet","Education_Degrees","Education_Degree_Facet","Education_Notes","Education_Locations",
+"Religion_Affiliation","Religion_Facet","Religion_Affiliation_Certain","Religion_Notes","Scientific_Disciplines","Scientific_Disciplines_Facet",
+"Scientific_Disciplines_Notes","Means_of_Support","Means_of_Support_Facet","Means_of_Support_Notes","Patronage_Types","Patronage_Facet",
 "Patronage_Notes","Instruments","Instruments_Notes","Scientific_Societies_Membership",
 "Scientific_Societies_Notes","Sources_List","Not_Available_and_Not_Consulted_List","Compiler_Details_Notes",
 "Disagreement_Count","Inconsistent_Fields"];
@@ -1090,6 +1090,7 @@ function download(name,text,type){
 function sentinelFor(field){
   if(field==="Father_Is_Wealthy")return "-1";
   if(/_Certain$/.test(field))return "0";
+  if(/_Facet$/.test(field))return "None";
   if(/_Notes$/.test(field)||["Alt_Name","Education_Institution","Education_Degrees","Education_Locations","Instruments","Scientific_Societies_Membership","Sources_List","Not_Available_and_Not_Consulted_List","Compiler_Details_Notes","Inconsistent_Fields"].includes(field))return "None";
   if(field==="Disagreement_Count")return "0";
   return "Unknown";
