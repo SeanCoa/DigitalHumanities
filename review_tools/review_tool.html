@@ -1,0 +1,1140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DSB Review Console</title>
+<style>
+  :root{
+    --bg:#e7eae6; --panel:#fbfcfb; --panel-2:#f3f5f2;
+    --ink:#1b211e; --muted:#5e6a64; --faint:#8a938e; --line:#d3d8d2;
+    --run1:#0f766e; --run1-fill:#c3e9e2; --run1-edge:#7fcdc2;
+    --run2:#9a5406; --run2-fill:#fbe3bf; --run2-edge:#eec185;
+    --custom:#5b21b6; --custom-fill:#e6dbfa;
+    --flag:#a52020; --flag-fill:#f6dede; --good:#166534; --good-fill:#d6ead9;
+    --sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --serif:Georgia,"Iowan Old Style",Cambria,"Times New Roman",serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Code",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%}
+  body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.5}
+  button{font-family:inherit;font-size:inherit;cursor:pointer}
+  a{color:var(--run1)}
+
+  /* ---- header / loader ---- */
+  header{position:sticky;top:0;z-index:20;background:var(--panel);border-bottom:1px solid var(--line);
+    padding:10px 18px;display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center}
+  .brand{font-weight:700;letter-spacing:.02em}
+  .brand small{display:block;font-weight:400;color:var(--faint);font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+  .loaders{display:flex;gap:14px;flex-wrap:wrap;align-items:center;flex:1}
+  .filepick{display:flex;flex-direction:column;gap:2px}
+  .filepick label{font-size:11px;color:var(--muted);font-weight:600}
+  .filepick .name{font-size:11px;color:var(--faint);font-family:var(--mono);max-width:190px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  input[type=file]{font-size:12px;max-width:200px}
+  .chk{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--muted)}
+
+  .banner{padding:8px 18px;font-size:13px;background:var(--flag-fill);color:var(--flag);border-bottom:1px solid var(--line)}
+  .banner.ok{background:var(--good-fill);color:var(--good)}
+
+  /* ---- toolbar ---- */
+  .toolbar{position:sticky;top:53px;z-index:19;background:var(--panel-2);border-bottom:1px solid var(--line);
+    padding:8px 18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .toolbar button{border:1px solid var(--line);background:var(--panel);border-radius:7px;padding:6px 11px;color:var(--ink)}
+  .toolbar button:hover{border-color:var(--faint)}
+  .toolbar button.primary{background:var(--ink);color:#fff;border-color:var(--ink)}
+  .toolbar .spacer{flex:1}
+  .progress{font-size:12.5px;color:var(--muted)}
+  .progress b{color:var(--ink)}
+  .jump{width:64px;border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-family:var(--mono)}
+  .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle}
+  .dot.flag{background:var(--flag)} .dot.good{background:var(--good)} .dot.done{background:var(--custom)}
+
+  .filtersel{border:1px solid var(--line);border-radius:6px;padding:5px 7px;font-family:var(--mono);font-size:12px;background:var(--panel);color:var(--ink)}
+  .filtersel.on{border-color:var(--run1);box-shadow:0 0 0 2px var(--run1-fill)}
+  .trackwrap{position:relative}
+  .trackpop{position:absolute;top:34px;left:0;z-index:30;background:var(--panel);border:1px solid var(--line);
+    border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.16);padding:8px;min-width:260px;display:none}
+  .trackpop.open{display:block}
+  .trackpop .hd{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--faint);font-weight:700;padding:4px 8px 8px}
+  .trackrow{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:6px 8px;border-radius:7px;cursor:pointer;font-size:13px}
+  .trackrow:hover{background:var(--panel-2)}
+  .trackrow.active{background:var(--run1-fill)}
+  .trackrow .fname{font-family:var(--mono);font-size:12px}
+  .trackrow .cnt{font-weight:700;font-variant-numeric:tabular-nums}
+  .trackrow.zero{opacity:.5}
+  .trackrow.zero .cnt{color:var(--good)}
+  .trackpop .allrow{border-top:1px solid var(--line);margin-top:4px;padding-top:8px}
+
+  /* ---- main ---- */
+  main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0;height:calc(100vh - 102px)}
+  @media(max-width:860px){main{grid-template-columns:1fr;height:auto}}
+  .col{overflow-y:auto;padding:20px 22px}
+  .col.source{border-right:1px solid var(--line);background:var(--panel)}
+  .col.decide{background:var(--panel-2)}
+
+  .eyebrow{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--faint);font-weight:700;margin:0 0 4px}
+  .figname{font-family:var(--serif);font-size:23px;line-height:1.2;margin:0 0 2px}
+  .rawmeta{font-size:12px;color:var(--muted);margin-bottom:14px;font-family:var(--mono)}
+  .rawmeta.warn{color:var(--flag)}
+
+  .entry{font-family:var(--serif);font-size:15.5px;line-height:1.62;white-space:pre-wrap;word-wrap:break-word;color:#20272400}
+  .entry{color:#242b28}
+  .sources{margin-top:16px;padding-top:12px;border-top:1px dashed var(--line);font-family:var(--serif);
+    font-size:13px;color:var(--muted);white-space:pre-wrap}
+  .sources h4{font-family:var(--sans);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin:0 0 6px}
+
+  mark{padding:0 2px;border-radius:3px;font-style:normal}
+  mark.hl-a{background:var(--run1-fill);box-shadow:inset 0 -2px 0 var(--run1-edge)}
+  mark.hl-b{background:var(--run2-fill);box-shadow:inset 0 -2px 0 var(--run2-edge)}
+
+  /* ---- decision cards ---- */
+  .field{background:var(--panel);border:1px solid var(--line);border-radius:11px;padding:14px 15px;margin-bottom:14px}
+  .field.active{border-color:var(--run1-edge);box-shadow:0 0 0 3px rgba(15,118,110,.12)}
+  .field h3{margin:0 0 3px;font-size:14px;font-family:var(--mono);letter-spacing:-.01em}
+  .issueline{font-size:12.5px;color:var(--flag);margin:2px 0 10px;display:flex;gap:7px;align-items:baseline}
+  .issueline::before{content:"▲";font-size:9px}
+
+  .opt{display:block;width:100%;text-align:left;border:1px solid var(--line);background:var(--panel);
+    border-radius:9px;padding:9px 11px;margin-bottom:8px;transition:border-color .1s}
+  .opt:hover{border-color:var(--faint)}
+  .opt.sel{border-color:var(--ink);box-shadow:inset 3px 0 0 var(--ink)}
+  .opt .top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:3px}
+  .opt .tag{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase}
+  .opt.run-a .tag{color:var(--run1)} .opt.run-b .tag{color:var(--run2)}
+  .opt .val{font-family:var(--mono);font-size:13px;line-height:1.45;word-break:break-word;white-space:pre-wrap}
+  .opt .ev{font-size:12px;color:var(--muted);font-style:italic;margin-top:4px}
+  .opt .ev::before{content:"“"} .opt .ev::after{content:"”"}
+  .badge{font-size:10.5px;font-weight:600;padding:2px 7px;border-radius:20px;white-space:nowrap}
+  .badge.found{background:var(--good-fill);color:var(--good)}
+  .badge.miss{background:var(--panel-2);color:var(--faint);border:1px solid var(--line)}
+
+  .customwrap{display:flex;gap:7px;align-items:stretch;margin-top:2px}
+  .customwrap input{flex:1;border:1px solid var(--line);border-radius:9px;padding:9px 11px;font-family:var(--mono);font-size:13px}
+  .customwrap input:focus{outline:none;border-color:var(--custom);box-shadow:0 0 0 3px var(--custom-fill)}
+  .customwrap.sel input{border-color:var(--custom);box-shadow:inset 3px 0 0 var(--custom)}
+  .customwrap .lab{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--custom);align-self:center}
+
+  .resolved{font-size:12px;color:var(--good);margin-top:8px;display:none}
+  .field.done .resolved{display:block}
+  .field.done{border-color:var(--good-fill)}
+
+  /* token-diff builder */
+  .tdiff{margin:2px 0 10px;padding:10px;border:1px dashed var(--line);border-radius:9px;background:var(--panel-2)}
+  .tdiff .lab{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+  .chip{display:inline-block;font-family:var(--mono);font-size:12.5px;padding:4px 9px;margin:0 6px 6px 0;border-radius:16px;
+    border:1px solid var(--line);background:var(--panel);cursor:pointer;user-select:none}
+  .chip.on{border-color:var(--ink)}
+  .chip.off{opacity:.4;text-decoration:line-through}
+  .chip.shared.on{background:#eef1ee}
+  .chip.a.on{background:var(--run1-fill);border-color:var(--run1-edge)}
+  .chip.b.on{background:var(--run2-fill);border-color:var(--run2-edge)}
+  .tdiff .assembled{font-family:var(--mono);font-size:12.5px;margin-top:6px;color:var(--ink)}
+  .tdiff .use{margin-top:8px;border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:8px;padding:5px 10px;font-size:12px}
+
+  /* inline validation */
+  .vfeed{margin-top:6px;font-size:12px;line-height:1.7}
+  .vtok{display:inline-flex;align-items:center;gap:4px;font-family:var(--mono);padding:1px 6px;border-radius:5px;margin:0 5px 4px 0}
+  .vtok.ok{background:var(--good-fill);color:var(--good)}
+  .vtok.unknown{background:var(--run2-fill);color:var(--run2)}
+  .vtok.synonym{background:var(--custom-fill);color:var(--custom);cursor:pointer}
+  .vtok.synonym:hover{outline:1px solid var(--custom)}
+
+  /* bulk bar */
+  .field.edu{border-color:var(--run1-edge)}
+  .edu .lab{font-size:10.5px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin:8px 0 6px}
+  .stop{display:flex;gap:6px;align-items:center;margin-bottom:6px}
+  .stop .num{font-family:var(--mono,monospace);font-size:11px;color:var(--faint);width:20px;text-align:right}
+  .stop input{border:1px solid var(--line);border-radius:7px;padding:6px 8px;font-family:var(--mono,monospace);font-size:12px}
+  .stop .inst{flex:2;min-width:0} .stop .at{color:var(--faint)} .stop .loc{flex:3;min-width:0}
+  .stop .rm{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:3px 8px;color:var(--flag);cursor:pointer;font-size:13px}
+  .stop .rm:hover{background:var(--flag-fill)}
+  .edu .addstop{border:1px dashed var(--line);background:var(--panel);border-radius:7px;padding:5px 10px;font-size:12px;color:var(--muted);cursor:pointer;margin-top:2px}
+  .edu .count{font-size:12px;margin-top:8px;color:var(--good);font-weight:600}
+  .edu .seed{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:11.5px;color:var(--muted);margin:8px 0}
+  .edu .seed button{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:3px 8px;font-size:11.5px;cursor:pointer}
+  .edu .seed button.a{color:var(--run1)} .edu .seed button.b{color:var(--run2)}
+  .edu .apply{margin-top:8px;border:1px solid var(--ink);background:var(--ink);color:#fff;border-radius:8px;padding:6px 12px;font-size:12.5px;cursor:pointer}
+  .bulk{margin-top:9px;padding:9px 11px;border-radius:9px;background:#eef4f3;border:1px solid var(--run1-edge);font-size:12.5px}
+  .bulk b{font-variant-numeric:tabular-nums}
+  .bulk .btns{margin-top:7px;display:flex;gap:7px;flex-wrap:wrap}
+  .bulk button{border:1px solid var(--run1);background:var(--panel);color:var(--run1);border-radius:7px;padding:5px 10px;font-size:12px}
+  .bulk button:hover{background:var(--run1-fill)}
+  .bulk .done{color:var(--good);font-weight:600}
+
+  /* source search */
+  .searchbar{display:flex;gap:7px;align-items:center;margin:0 0 12px}
+  .searchbar input{flex:1;border:1px solid var(--line);border-radius:8px;padding:7px 10px;font-size:13px;font-family:var(--mono)}
+  .searchbar input:focus{outline:none;border-color:var(--run1);box-shadow:0 0 0 3px var(--run1-fill)}
+  .searchbar .nav{display:flex;gap:4px;align-items:center;font-size:12px;color:var(--muted);white-space:nowrap}
+  .searchbar .nav button{border:1px solid var(--line);background:var(--panel);border-radius:6px;padding:4px 8px;color:var(--ink)}
+  mark.hl-s{background:#fff1a8;box-shadow:inset 0 -2px 0 #e8c531}
+  mark.hl-s.cur{background:#ffd84d;box-shadow:inset 0 -2px 0 #c99700}
+
+  .resolver{margin-top:7px;padding:8px 10px;border:1px solid var(--custom-fill);border-left:3px solid var(--custom);
+    border-radius:8px;background:#faf7ff;font-size:12.5px}
+  .resolver .tok{font-family:var(--mono);font-weight:700;color:var(--custom)}
+  .resolver .row2{margin-top:6px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+  .resolver button{border:1px solid var(--custom);background:var(--panel);color:var(--custom);border-radius:7px;padding:4px 9px;font-size:12px}
+  .resolver button:hover{background:var(--custom-fill)}
+  .resolver select{border:1px solid var(--line);border-radius:6px;padding:4px 6px;font-size:12px;font-family:var(--mono);max-width:190px}
+  .resolver .added{color:var(--good);font-weight:600}
+
+  .goodstate{text-align:center;color:var(--muted);padding:40px 10px;font-size:15px}
+  .goodstate .big{font-size:34px;color:var(--good);margin-bottom:8px}
+
+  .empty{max-width:560px;margin:60px auto;color:var(--muted);text-align:center}
+  .empty h2{font-family:var(--serif);color:var(--ink)}
+  .empty ol{text-align:left;display:inline-block;line-height:1.9}
+  kbd{font-family:var(--mono);font-size:11px;background:var(--panel);border:1px solid var(--line);
+    border-bottom-width:2px;border-radius:4px;padding:1px 5px}
+  .hint{font-size:12px;color:var(--faint);margin-top:14px}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand">DSB Review<small>source-beside-decision console</small></div>
+  <div class="loaders">
+    <div class="filepick">
+      <label>Extracted CSV</label>
+      <input type="file" id="f-extracted" accept=".csv">
+      <span class="name" id="n-extracted"></span>
+    </div>
+    <div class="filepick">
+      <label>Validation report</label>
+      <input type="file" id="f-report" accept=".txt">
+      <span class="name" id="n-report"></span>
+    </div>
+    <div class="filepick">
+      <label>Raw DSB CSV</label>
+      <input type="file" id="f-raw" accept=".csv">
+      <span class="name" id="n-raw"></span>
+    </div>
+    <label class="chk"><input type="checkbox" id="raw-header" checked> raw file has a header row</label>
+    <div class="filepick">
+      <label>Vocab JSON (optional)</label>
+      <input type="file" id="f-vocab" accept=".json">
+      <span class="name" id="n-vocab">built-in snapshot</span>
+    </div>
+  </div>
+</header>
+
+<div id="banner" class="banner" style="display:none"></div>
+
+<div class="toolbar" id="toolbar" style="display:none">
+  <button id="prev">← Prev</button>
+  <button id="next">Next →</button>
+  <button id="nextflag" class="primary">Next unresolved</button>
+  <label style="font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px">field
+    <select id="filterField" class="filtersel"><option value="">All fields</option></select>
+  </label>
+  <div class="trackwrap">
+    <button id="trackbtn">Remaining <b id="trackcount">0</b> ▾</button>
+    <div class="trackpop" id="trackpop"></div>
+  </div>
+  <span class="progress" id="progress"></span>
+  <span style="font-size:12px;color:var(--muted)">go to <input class="jump" id="jump" type="number" min="1"></span>
+  <div class="spacer"></div>
+  <button id="save">Save progress</button>
+  <input type="file" id="loadsession" accept=".json" style="display:none">
+  <button id="loadbtn">Load progress</button>
+  <button id="logbtn">Decision log <b id="logcount">0</b></button>
+  <button id="vocabbtn" title="download the new terms/synonyms you added">Vocab additions <b id="vocabcount">0</b></button>
+  <button id="linkbtn" title="Chrome/Edge: auto-write additions to a file" style="display:none">⛓ Auto-save: off</button>
+  <button id="download" class="primary">Download corrected CSV</button>
+</div>
+
+<main id="main" style="display:none">
+  <section class="col source">
+    <p class="eyebrow">Source entry</p>
+    <h1 class="figname" id="rawname"></h1>
+    <div class="rawmeta" id="rawmeta"></div>
+    <div class="searchbar">
+      <input id="srch" type="text" placeholder="search this entry…">
+      <span class="nav"><span id="srchcount"></span>
+        <button id="srchprev" title="previous (Shift+Enter)">▲</button>
+        <button id="srchnext" title="next (Enter)">▼</button></span>
+    </div>
+    <div class="entry" id="entry"></div>
+    <div class="sources" id="sources" style="display:none"></div>
+  </section>
+  <section class="col decide">
+    <p class="eyebrow">Extracted figure <span id="rowpos"></span></p>
+    <h1 class="figname" id="extname"></h1>
+    <div class="rawmeta">consensus row · <span id="dcount"></span></div>
+    <div id="fields"></div>
+  </section>
+</main>
+
+<div class="empty" id="empty">
+  <h2>Load your three files to begin</h2>
+  <p>Everything runs in your browser. Nothing is uploaded anywhere.</p>
+  <ol>
+    <li><b>Extracted CSV</b> — the consensus rows (<code>extracted.csv</code>)</li>
+    <li><b>Validation report</b> — <code>validation_report.txt</code> from the same run</li>
+    <li><b>Raw DSB CSV</b> — the source entries (<code>raw_vol.csv</code>), aligned by row</li>
+  </ol>
+  <p class="hint">Rows are matched by position: extracted row <i>N</i> ↔ raw entry <i>N</i>.
+  Keys: <kbd>←</kbd>/<kbd>→</kbd> move · <kbd>f</kbd> next flagged · <kbd>1</kbd>/<kbd>2</kbd> pick a run · <kbd>r</kbd> mark reviewed.</p>
+</div>
+
+<script>
+"use strict";
+const COLUMNS=["Last_Name","First_Name","Alt_Name","Gender","Born_Country","Born_Town","Born_Year",
+"Born_Month","Born_Day","Died_Country","Died_Town","Died_Year","Died_Month","Died_Day",
+"Dates_Born_Certain","Date_Died_Certain","Dates_Lifespan","Father_Occupation","Father_Is_Wealthy",
+"Father_Notes","Education_Institution","Education_Degrees","Education_Notes","Education_Locations",
+"Religion_Affiliation","Religion_Affiliation_Certain","Religion_Notes","Scientific_Disciplines",
+"Scientific_Disciplines_Notes","Means_of_Support","Means_of_Support_Notes","Patronage_Types",
+"Patronage_Notes","Instruments","Instruments_Notes","Scientific_Societies_Membership",
+"Scientific_Societies_Notes","Sources_List","Not_Available_and_Not_Consulted_List","Compiler_Details_Notes",
+"Disagreement_Count","Inconsistent_Fields"];
+const COLSET=new Set(COLUMNS);
+const STOP=new Set(["the","of","and","for","de","du","la","le","el","al","von","van","der","den",
+  "university","college","school","academy","institute","royal","society","unknown","none","not",
+  "specified","saint","san","new","upon","sur","am","bei"]);
+
+/* ---------- embedded vocabulary (FALLBACK snapshot from dsb_vocab.py) ----------
+   Default when no vocab.json is loaded. Run export_vocab.py and load vocab.json via the
+   "Vocab JSON" picker to override this at runtime. */
+let VOCAB={"Gender":{"canon":["Female","Male","Unknown"],"syn":{}},"Father_Occupation":{"canon":["Academic","Architect","Aristocrat","Artisan","Artist","Banker","Cleric","Cobbler","Drug Merchant","Engineer","Estate Administrator","Fishmonger","Gentry","Government Official","Innkeeper","Laborer","Landowner","Lawyer","Magistrate","Man Of Letters","Manufacturer","Mason","Merchant","Miner","Musician","Peasant/Small Farmer","Pharmacist","Physician","Publisher","Sailor","Schoolmaster","Scientist","Scribe","Servant","Soldier","Unknown","Weaver"],"syn":{"nobleman":"Aristocrat","noble":"Aristocrat","lord":"Aristocrat","baron":"Aristocrat","count":"Aristocrat","earl":"Aristocrat","marquis":"Aristocrat","titled noble":"Aristocrat","squire":"Gentry","esquire":"Gentry","gentleman":"Gentry","landed gentry":"Gentry","minor nobility":"Gentry","landholder":"Landowner","estate owner":"Landowner","plantation owner":"Landowner","planter":"Landowner","estate manager":"Estate Administrator","steward":"Estate Administrator","bailiff":"Estate Administrator","land agent":"Estate Administrator","factor":"Estate Administrator","civil servant":"Government Official","official":"Government Official","bureaucrat":"Government Official","state administrator":"Government Official","diplomat":"Government Official","ambassador":"Government Official","consul":"Government Official","councillor":"Government Official","tax officer":"Government Official","revenue officer":"Government Official","customs officer":"Government Official","town clerk":"Government Official","judge":"Magistrate","justice of the peace":"Magistrate","alderman":"Magistrate","sheriff":"Magistrate","military officer":"Soldier","army officer":"Soldier","naval officer":"Soldier","general":"Soldier","colonel":"Soldier","cavalry officer":"Soldier","mercenary":"Soldier","clergyman":"Cleric","priest":"Cleric","pastor":"Cleric","vicar":"Cleric","rector":"Cleric","parson":"Cleric","curate":"Cleric","deacon":"Cleric","chaplain":"Cleric","canon":"Cleric","bishop":"Cleric","monk":"Cleric","friar":"Cleric","abbot":"Cleric","rabbi":"Cleric","imam":"Cleric","mullah":"Cleric","surgeon":"Physician","medical practitioner":"Physician","apothecary":"Pharmacist","druggist":"Pharmacist","attorney":"Lawyer","advocate":"Lawyer","barrister":"Lawyer","solicitor":"Lawyer","notary":"Lawyer","jurist":"Lawyer","counselor":"Lawyer","procurator":"Lawyer","professor":"Academic","university lecturer":"Academic","scholar":"Academic","don":"Academic","teacher":"Schoolmaster","schoolteacher":"Schoolmaster","tutor":"Schoolmaster","preceptor":"Schoolmaster","headmaster":"Schoolmaster","instructor":"Schoolmaster","naturalist":"Scientist","mathematician":"Scientist","astronomer":"Scientist","natural philosopher":"Scientist","civil engineer":"Engineer","mechanical engineer":"Engineer","surveyor":"Engineer","master builder":"Architect","trader":"Merchant","dealer":"Merchant","businessman":"Merchant","tradesman":"Merchant","importer":"Merchant","exporter":"Merchant","draper":"Merchant","financier":"Banker","moneylender":"Banker","money-changer":"Banker","bill broker":"Banker","industrialist":"Manufacturer","factory owner":"Manufacturer","mill owner":"Manufacturer","ironmaster":"Manufacturer","printer":"Publisher","bookseller":"Publisher","editor":"Publisher","typographer":"Publisher","tavern keeper":"Innkeeper","publican":"Innkeeper","alehouse keeper":"Innkeeper","hotelier":"Innkeeper","craftsman":"Artisan","blacksmith":"Artisan","smith":"Artisan","carpenter":"Artisan","joiner":"Artisan","cabinetmaker":"Artisan","goldsmith":"Artisan","silversmith":"Artisan","jeweller":"Artisan","watchmaker":"Artisan","clockmaker":"Artisan","locksmith":"Artisan","tailor":"Artisan","baker":"Artisan","brewer":"Artisan","distiller":"Artisan","tanner":"Artisan","currier":"Artisan","butcher":"Artisan","potter":"Artisan","glassmaker":"Artisan","cutler":"Artisan","saddler":"Artisan","cooper":"Artisan","dyer":"Artisan","shoemaker":"Cobbler","cordwainer":"Cobbler","bootmaker":"Cobbler","cloth weaver":"Weaver","clothier":"Weaver","stonemason":"Mason","bricklayer":"Mason","copyist":"Scribe","amanuensis":"Scribe","composer":"Musician","organist":"Musician","choirmaster":"Musician","cantor":"Musician","kapellmeister":"Musician","instrumentalist":"Musician","painter":"Artist","sculptor":"Artist","actor":"Artist","performer":"Artist","writer":"Man Of Letters","author":"Man Of Letters","poet":"Man Of Letters","journalist":"Man Of Letters","historian":"Man Of Letters","farmer":"Peasant/Small Farmer","peasant":"Peasant/Small Farmer","husbandman":"Peasant/Small Farmer","cottager":"Peasant/Small Farmer","smallholder":"Peasant/Small Farmer","crofter":"Peasant/Small Farmer","labourer":"Laborer","workman":"Laborer","day laborer":"Laborer","domestic servant":"Servant","valet":"Servant","footman":"Servant","mariner":"Sailor","seaman":"Sailor","sea captain":"Sailor","fisherman":"Sailor","fish dealer":"Fishmonger","fish seller":"Fishmonger","collier":"Miner"}},"Religion_Affiliation":{"canon":["Agnostic","Anabaptist","Anglican","Atheist","Baptist","Buddhist","Calvinist","Catholic","Confucian","Congregationalist","Coptic","Deist","Greek Orthodox","Heterodox","Hindu","Jewish","Lutheran","Moravian","Muslim","Nestorian","Orthodox","Presbyterian","Protestant","Puritan","Quaker","Russian Orthodox","Sect","Taoist","Unitarian","Unknown","Wesleyan","Zoroastrian"],"syn":{"roman catholic":"Catholic","papist":"Catholic","nonconformist":"Protestant","dissenter":"Protestant","evangelical lutheran":"Lutheran","augsburg confession":"Lutheran","huguenot":"Calvinist","dutch reformed":"Calvinist","reformed church":"Calvinist","church of england":"Anglican","episcopalian":"Anglican","church of scotland":"Presbyterian","kirk":"Presbyterian","methodist":"Wesleyan","society of friends":"Quaker","socinian":"Unitarian","mennonite":"Anabaptist","bohemian brethren":"Moravian","herrnhuter":"Moravian","eastern orthodox":"Orthodox","church of the east":"Nestorian","assyrian christian":"Nestorian","east-syriac christian":"Nestorian","egyptian christian":"Coptic","hebrew":"Jewish","israelite":"Jewish","judaic":"Jewish","islamic":"Muslim","mohammedan":"Muslim","sunni":"Muslim","shia":"Muslim","shiite":"Muslim","sufi":"Muslim","parsi":"Zoroastrian","natural religion":"Deist","latitudinarian":"Heterodox"}},"Scientific_Disciplines":{"canon":["Alchemy","Anatomy","Anthropology","Astrology","Astronomy","Botany","Cartography","Chemical Technology","Chemistry","Demography","Electricity","Embryology","Engineering","Entomology","Geography","Geology","Geometry","History","Hydraulics","Iatrochemistry","Instrumentation","Magnetism","Mathematics","Mechanics","Medicine","Metallurgy","Meteorology","Microscopy","Military Engineering","Mineralogy","Music","Natural History","Natural Philosophy","Navigation","Oceanography","Optics","Paleontology","Pharmacology","Philosophy","Physics","Physiology","Psychology","Scientific Communication","Scientific Organization","Surgery","Theology","Watchmaking","Zoology"],"syn":{}},"Means_of_Support":{"canon":["Academia","Agriculture","Apothecary","Art","Artisan","Astrology","Calendars","Church Life","Engineering","Estate Administration","Government","Industry","Instruments","Law","Medicine","Merchant","Military","Miscellaneous","Museum","Musician","Patronage","Personal Means","Publishing","Sailing","Schoolmastering","Scientific Society","Unknown"],"syn":{"professorship":"Academia","chair":"Academia","university teaching":"Academia","college teaching":"Academia","lectureship":"Academia","research post":"Academia","academic fellowship":"Academia","school teaching":"Schoolmastering","running a school":"Schoolmastering","private tutoring":"Schoolmastering","chemical society":"Scientific Society","society office":"Scientific Society","academy office":"Scientific Society","secretaryship":"Scientific Society","curatorship":"Museum","keeper of a collection":"Museum","museum post":"Museum","curator":"Museum","medical practice":"Medicine","hospital appointment":"Medicine","nursing":"Medicine","pharmacy":"Apothecary","dispensing":"Apothecary","legal practice":"Law","advocacy":"Law","notarial work":"Law","engineering practice":"Engineering","surveying":"Engineering","ecclesiastical living":"Church Life","benefice":"Church Life","prebend":"Church Life","canonry":"Church Life","monastic support":"Church Life","parish income":"Church Life","holy orders":"Church Life","civil service":"Government","state office":"Government","municipal office":"Government","public appointment":"Government","diplomacy":"Government","tax office":"Government","revenue office":"Government","army pay":"Military","naval pay":"Military","officer's commission":"Military","military engineering":"Military","private wealth":"Personal Means","inherited wealth":"Personal Means","family money":"Personal Means","independent means":"Personal Means","rentier income":"Personal Means","private fortune":"Personal Means","managing an estate":"Estate Administration","stewardship":"Estate Administration","land agency":"Estate Administration","farming":"Agriculture","husbandry":"Agriculture","viticulture":"Agriculture","plantation":"Agriculture","planter":"Agriculture","trade":"Merchant","commerce":"Merchant","family business":"Merchant","banking":"Merchant","finance":"Merchant","importing":"Merchant","exporting":"Merchant","drapery business":"Merchant","industrial employment":"Industry","manufacturing":"Industry","consulting":"Industry","mining":"Industry","factory management":"Industry","works management":"Industry","engineering consultancy":"Industry","instrument-making":"Instruments","instrument making":"Instruments","painting":"Art","sculpture":"Art","artistic commissions":"Art","illustration":"Art","music post":"Musician","organist post":"Musician","court musician":"Musician","composing":"Musician","performing":"Musician","craft trade":"Artisan","writing":"Publishing","authorship":"Publishing","journalism":"Publishing","editing":"Publishing","bookselling":"Publishing","printing":"Publishing","calendar-making":"Calendars","almanac-making":"Calendars","computus":"Calendars","astrological practice":"Astrology","seafaring":"Sailing","navigation":"Sailing","pilotage":"Sailing"}},"Patronage_Types":{"canon":["Academic","Aristocrat","City Magistrate","Court","Ecclesiastical Official","Foundation","Gentry","Government Official","Merchant","None","Physician","Scientific Society","Scientist","Unknown"],"syn":{"king":"Court","queen":"Court","emperor":"Court","empress":"Court","prince":"Court","princess":"Court","sultan":"Court","emir":"Court","caliph":"Court","shah":"Court","tsar":"Court","czar":"Court","grand duke":"Court","elector":"Court","khedive":"Court","royal patron":"Court","monarch":"Court","nobleman":"Aristocrat","lord":"Aristocrat","baron":"Aristocrat","count":"Aristocrat","earl":"Aristocrat","marquis":"Aristocrat","landed magnate":"Aristocrat","squire":"Gentry","gentleman":"Gentry","bishop":"Ecclesiastical Official","archbishop":"Ecclesiastical Official","cardinal":"Ecclesiastical Official","abbot":"Ecclesiastical Official","prelate":"Ecclesiastical Official","dean":"Ecclesiastical Official","canon":"Ecclesiastical Official","secretary of state":"Government Official","councillor":"Government Official","governor":"Government Official","minister of state":"Government Official","ministry":"Government Official","bureau":"Government Official","mayor":"City Magistrate","alderman":"City Magistrate","burgomaster":"City Magistrate","town council":"City Magistrate","professor":"Academic","university":"Academic","college":"Academic","faculty":"Academic","mentor":"Academic","banker":"Merchant","industrialist":"Merchant","businessman":"Merchant","financier":"Merchant","learned society":"Scientific Society","royal society":"Scientific Society","endowment":"Foundation","trust":"Foundation","research fund":"Foundation"}},"Education_Degrees":{"canon":["B.A.","B.D.","B.S.","B.Th.","C.M.","D.D.","D.Sc.","L.D.","LL.B.","LL.D.","Litt.D.","M.A.","M.B.","M.D.","M.S.","None","P.D.","Ph.B.","Ph.D."],"syn":{"a.b.":"B.A.","a.m.":"M.A.","sc.b.":"B.S.","b.sc.":"B.S.","sc.m.":"M.S.","m.sc.":"M.S.","sc.d.":"D.Sc.","d.s.":"D.Sc.","d.litt.":"Litt.D.","ph.m.":"M.A.","d.c.l.":"LL.D.","j.d.":"LL.D.","j.u.d.":"LL.D.","th.d.":"D.D.","d.th.":"D.D.","s.t.d.":"D.D.","ch.b.":"M.B.","ch.m.":"C.M.","l.s.a.":"M.B.","l.r.c.p.":"M.B.","m.r.c.s.":"M.B.","dr. med.":"M.D.","dr. phil.":"Ph.D.","dr. rer. nat.":"Ph.D.","dr.-ing.":"Ph.D.","dr. jur.":"LL.D.","diplom":"M.S.","diplom-ingenieur":"M.S.","docteur ès sciences":"D.Sc.","docteur en médecine":"M.D.","doctorat ès lettres":"Litt.D.","licence":"B.S.","licencié ès sciences":"B.S.","licencié ès lettres":"B.A.","laurea":"M.A.","laurea in medicina":"M.D.","doctoratus":"Ph.D."}}};
+const MULTIVALUE=new Set(["Scientific_Disciplines","Means_of_Support","Patronage_Types",
+  "Education_Degrees","Alt_Name","Scientific_Societies_Membership","Instruments",
+  "Education_Institution","Education_Locations","Religion_Affiliation"]);
+const MONTHS=new Set(["January","February","March","April","May","June","July","August",
+  "September","October","November","December"]);
+const CODED={Gender:["Male","Female","Unknown"],Father_Is_Wealthy:["1","0","-1"],
+  Dates_Born_Certain:["0","1"],Date_Died_Certain:["0","1"],Religion_Affiliation_Certain:["0","1"]};
+
+/* ---------- CSV ---------- */
+function parseCSV(text){
+  text=text.replace(/\r\n/g,"\n").replace(/\r/g,"\n");
+  const rows=[];let row=[],f="",q=false,i=0;
+  while(i<text.length){const c=text[i];
+    if(q){ if(c==='"'){ if(text[i+1]==='"'){f+='"';i+=2;continue;} q=false;i++;continue;} f+=c;i++;continue; }
+    if(c==='"'){q=true;i++;continue;}
+    if(c===','){row.push(f);f="";i++;continue;}
+    if(c==="\n"){row.push(f);rows.push(row);row=[];f="";i++;continue;}
+    f+=c;i++;
+  }
+  if(f.length||row.length){row.push(f);rows.push(row);}
+  return rows.filter(r=>!(r.length===1&&r[0]===""));
+}
+function csvCell(v){v=(v==null?"":String(v));return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v;}
+
+/* ---------- report ---------- */
+function parseReport(text){
+  const lines=text.replace(/\r/g,"").split("\n");
+  const entries=[];let cur=null,dis=null;
+  const push=()=>{if(cur)entries.push(cur);};
+  for(const ln of lines){
+    const mRow=ln.match(/^Row\s+\d+\s+\[(.*?)\]:\s*(GOOD|\d+\s+issue)/);
+    if(mRow){push();cur={name:mRow[1],clean:/GOOD/.test(mRow[2]),fieldsMap:new Map(),order:[]};dis=null;continue;}
+    if(/^---\s*summary/.test(ln)){push();cur=null;continue;}
+    if(!cur)continue;
+    let m;
+    if((m=ln.match(/^\s{4}-\s+DISAGREEMENT\s+(\S+)/))){
+      const field=m[1];const fo=getField(cur,field);fo.kind="disagreement";dis=fo;continue;
+    }
+    if((m=ln.match(/^\s{8}run(\d+):\s?(.*)$/))){
+      if(dis){dis.options.push({run:+m[1],value:m[2],evidence:null});}continue;
+    }
+    if((m=ln.match(/^\s{12}evidence:\s?(.*)$/))){
+      if(dis&&dis.options.length){dis.options[dis.options.length-1].evidence=m[1];}continue;
+    }
+    if((m=ln.match(/^\s{4}-\s+(.*)$/))){
+      const text=m[1];const field=fieldOfIssue(text);const fo=getField(cur,field||"(row)");
+      fo.issues.push(text);
+      const syn=text.match(/should be mapped to '(.+?)'/);if(syn)fo.suggested=syn[1];
+      dis=null;continue;
+    }
+  }
+  return entries;
+}
+function getField(cur,name){
+  if(!cur.fieldsMap.has(name)){cur.fieldsMap.set(name,{field:name,kind:"mechanical",options:[],issues:[],suggested:null});cur.order.push(name);}
+  return cur.fieldsMap.get(name);
+}
+function fieldOfIssue(text){
+  const m=text.match(/^([A-Za-z_]+)[\s:(]/);
+  if(m&&COLSET.has(m[1]))return m[1];
+  return null;
+}
+
+/* ---------- distinctive-term highlighting ---------- */
+function tokenize(v){
+  return (v||"").toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(w=>w.length>=3&&!STOP.has(w));
+}
+function distinctiveByOption(options){
+  const tokSets=options.map(o=>new Set(tokenize(o.value)));
+  return options.map((o,idx)=>{
+    const others=new Set();tokSets.forEach((s,j)=>{if(j!==idx)s.forEach(t=>others.add(t));});
+    return [...tokSets[idx]].filter(t=>!others.has(t));
+  });
+}
+function escapeHTML(s){return s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));}
+function escapeRE(s){return s.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");}
+function highlight(raw,options){
+  const html=escapeHTML(raw);
+  if(!options||!options.length)return html;
+  const dis=distinctiveByOption(options);
+  const map=new Map();               // term -> class
+  dis.forEach((terms,idx)=>{const cls=idx===0?"hl-a":"hl-b";terms.forEach(t=>{if(!map.has(t))map.set(t,cls);});});
+  const terms=[...map.keys()].sort((a,b)=>b.length-a.length);
+  if(!terms.length)return html;
+  const re=new RegExp("(?<![\\p{L}\\p{N}])("+terms.map(escapeRE).join("|")+")(?![\\p{L}\\p{N}])","giu");
+  return html.replace(re,(mm)=>{const cls=map.get(mm.toLowerCase())||"hl-a";return '<mark class="'+cls+'">'+mm+"</mark>";});
+}
+function optionInSource(term_list,raw){
+  const low=raw.toLowerCase();
+  return term_list.some(t=>low.includes(t));
+}
+
+/* ---------- state ---------- */
+const S={ext:null,extIdx:{},report:null,raw:null,rawHeader:true,
+  edits:{}, reviewed:new Set(), cur:0, n:0, activeField:null, filter:"",
+  log:[], disGroups:new Map(), search:"", searchHits:[], searchAt:0, origConsensus:{},
+  vocabChanges:{}, vocabHandle:null};
+
+function colIndex(name){return S.extIdx[name];}
+function cellValue(rowIdx,field){
+  if(S.edits[rowIdx]&&field in S.edits[rowIdx])return S.edits[rowIdx][field];
+  const ci=colIndex(field);const r=S.ext.rows[rowIdx];
+  return (ci==null||!r)?"":(r[ci]||"");
+}
+function origValue(rowIdx,field){          // consensus value before any edit
+  const ci=colIndex(field);const r=S.ext.rows[rowIdx];
+  return (ci==null||!r)?"":(r[ci]||"");
+}
+function splitMulti(v){return (v||"").split(";").map(s=>s.trim()).filter(s=>s&&s!=="None");}
+
+/* Every edit goes through here so the decision log stays complete. */
+function applyChoice(rowIdx,field,value,source,bulk){
+  (S.edits[rowIdx]=S.edits[rowIdx]||{})[field]=value;
+  const e=S.report&&S.report[rowIdx];
+  const fo=e&&e.fieldsMap.get(field);
+  const opts=fo?fo.options:[];
+  const raw=S.raw&&S.raw[rowIdx]?S.raw[rowIdx].content:"";
+  S.log.push({
+    ts:new Date().toISOString(),
+    row:rowIdx+1,
+    last:cellValue(rowIdx,"Last_Name"),
+    first:cellValue(rowIdx,"First_Name"),
+    field:field,
+    chosen:value,
+    source:source,
+    original:origValue(rowIdx,field),
+    run1:opts[0]?opts[0].value:"",
+    run2:opts[1]?opts[1].value:"",
+    in_source:raw?valueInSource(value,raw):"",
+    bulk_id:bulk?bulk.id:"",
+    bulk_size:bulk?bulk.size:""
+  });
+  document.getElementById("logcount").textContent=S.log.length;
+}
+function setCell(rowIdx,field,val){applyChoice(rowIdx,field,val,"custom",null);}
+function valueInSource(value,raw){
+  const low=raw.toLowerCase();
+  const toks=(value||"").toLowerCase().split(/[^\p{L}\p{N}]+/u).filter(w=>w.length>=3&&!STOP.has(w));
+  if(!toks.length)return "";
+  return toks.some(t=>low.includes(t));
+}
+
+function ready(){return S.ext&&S.n>0;}
+
+/* ---------- loading ---------- */
+function tryAssemble(){
+  const b=document.getElementById("banner");
+  if(!S.ext){return;}
+  const counts=[S.ext.rows.length];
+  if(S.report)counts.push(S.report.length);
+  if(S.raw)counts.push(S.raw.length);
+  S.n=S.ext.rows.length;
+  const allEqual=counts.every(c=>c===counts[0]);
+  b.style.display="block";
+  if(!S.report||!S.raw){
+    b.className="banner";
+    b.textContent="Loaded extracted ("+S.ext.rows.length+" rows). "+
+      (!S.report?"Validation report not loaded — no flags will show. ":"")+
+      (!S.raw?"Raw CSV not loaded — no source text will show.":"");
+  } else if(!allEqual){
+    b.className="banner";
+    b.textContent="Row counts differ — extracted "+S.ext.rows.length+", report "+S.report.length+
+      ", raw "+S.raw.length+". Aligning by position up to the shortest; check the raw name matches on each row.";
+    S.n=Math.min(...counts);
+  } else {
+    b.className="banner ok";
+    b.textContent="Aligned: "+S.n+" rows across all three files.";
+    setTimeout(()=>{b.style.display="none";},2500);
+  }
+  document.getElementById("toolbar").style.display="flex";
+  document.getElementById("main").style.display="grid";
+  document.getElementById("empty").style.display="none";
+  document.getElementById("jump").max=S.n;
+  buildGroups();
+  populateFilter();
+  goto(firstFlagged());
+}
+function groupKey(field,options){
+  return field+"\u241F"+options.map(o=>o.value).slice().sort().join("\u241F");
+}
+function buildGroups(){          // identical disagreements -> [row indices], for bulk apply
+  S.disGroups=new Map();
+  if(!S.report)return;
+  for(let i=0;i<S.n;i++){const e=S.report[i];if(!e||e.clean)continue;
+    for(const f of e.order){const fo=e.fieldsMap.get(f);
+      if(fo.kind==="disagreement"&&fo.options.length>=2){
+        const k=groupKey(f,fo.options);
+        if(!S.disGroups.has(k))S.disGroups.set(k,[]);
+        S.disGroups.get(k).push(i);
+      }}}
+}
+function firstFlagged(){
+  for(let i=0;i<S.n;i++){if(matchesFilter(i))return i;}
+  if(S.report){for(let i=0;i<S.n;i++){if(S.report[i]&&!S.report[i].clean)return i;}}
+  return 0;
+}
+/* ---- filter + tracker helpers ---- */
+function fieldEdited(i,field){return !!(S.edits[i]&&(field in S.edits[i]));}
+function rowHasField(i,field){const e=S.report&&S.report[i];return !!(e&&e.fieldsMap.has(field));}
+function matchesFilter(i){         // rows the current filter navigates among
+  const e=S.report&&S.report[i];if(!e||e.clean)return false;
+  return S.filter?rowHasField(i,S.filter):true;
+}
+function unresolvedAt(i){          // does row i still have an unresolved issue under the filter?
+  const e=S.report&&S.report[i];if(!e||e.clean)return false;
+  if(S.filter)return rowHasField(i,S.filter)&&!fieldEdited(i,S.filter);
+  return e.order.some(f=>!fieldEdited(i,f));
+}
+function unresolvedByField(){      // {field: count of rows with that field still unedited}
+  const counts={};
+  if(S.report)for(let i=0;i<S.n;i++){const e=S.report[i];if(!e||e.clean)continue;
+    for(const f of e.order)if(!fieldEdited(i,f))counts[f]=(counts[f]||0)+1;}
+  return counts;
+}
+function allFlaggedFields(){       // every field name that appears flagged anywhere, sorted
+  const set=new Set();
+  if(S.report)for(let i=0;i<S.n;i++){const e=S.report[i];if(!e||e.clean)continue;e.order.forEach(f=>set.add(f));}
+  return [...set].sort();
+}
+function populateFilter(){
+  const sel=document.getElementById("filterField");
+  const fields=allFlaggedFields();
+  sel.innerHTML='<option value="">All fields</option>'+
+    fields.map(f=>'<option value="'+f+'">'+f+'</option>').join("");
+  sel.value=S.filter;
+}
+function refreshFilterCounts(){
+  const counts=unresolvedByField();
+  const sel=document.getElementById("filterField");
+  [...sel.options].forEach(o=>{
+    if(!o.value){o.textContent="All fields";return;}
+    o.textContent=o.value+" ("+(counts[o.value]||0)+")";
+  });
+  sel.classList.toggle("on",!!S.filter);
+}
+function loadFile(file,kind){
+  const rd=new FileReader();
+  rd.onload=()=>{
+    const t=rd.result;
+    if(kind==="ext"){
+      const rows=parseCSV(t);const header=rows[0]||[];
+      S.extIdx={};header.forEach((h,i)=>{S.extIdx[h.trim()]=i;});
+      S.ext={header:header.map(h=>h.trim()),rows:rows.slice(1)};
+      document.getElementById("n-extracted").textContent=file.name;
+    }else if(kind==="report"){
+      S.report=parseReport(t);
+      document.getElementById("n-report").textContent=file.name;
+    }else if(kind==="raw"){
+      const rows=parseCSV(t);
+      S.rawHeader=document.getElementById("raw-header").checked;
+      const data=S.rawHeader?rows.slice(1):rows;
+      S.raw=data.map(r=>({name:(r[0]||"").trim(),
+        content:(r[1]||"").replace(/\\n/g,"\n").trim(),
+        sources:(r[2]||"").replace(/\\n/g,"\n").trim()}));
+      document.getElementById("n-raw").textContent=file.name;
+    }
+    tryAssemble();
+  };
+  rd.readAsText(file);
+}
+document.getElementById("f-extracted").onchange=e=>e.target.files[0]&&loadFile(e.target.files[0],"ext");
+document.getElementById("f-report").onchange=e=>e.target.files[0]&&loadFile(e.target.files[0],"report");
+document.getElementById("f-raw").onchange=e=>e.target.files[0]&&loadFile(e.target.files[0],"raw");
+/* Option A: load a fresh vocab.json (from export_vocab.py) to override the built-in
+   snapshot. Syn keys lowercased defensively. No file loaded -> snapshot stays in force. */
+document.getElementById("f-vocab").onchange=e=>{
+  const file=e.target.files[0];if(!file)return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const parsed=JSON.parse(rd.result);
+      if(!parsed||typeof parsed!=="object"||Array.isArray(parsed))throw new Error("expected an object of fields");
+      VOCAB=Object.fromEntries(Object.entries(parsed).map(([f,v])=>[f,{
+        canon:Array.isArray(v.canon)?v.canon:[],
+        syn:Object.fromEntries(Object.entries(v.syn||{}).map(([k,val])=>[String(k).toLowerCase(),val]))
+      }]));
+      const nf=Object.keys(VOCAB).length,nc=Object.values(VOCAB).reduce((a,v)=>a+v.canon.length,0);
+      document.getElementById("n-vocab").textContent=file.name+" — "+nf+" fields, "+nc+" terms";
+      if(ready())render();
+    }catch(err){alert("Could not read that vocab.json: "+err.message);}
+  };
+  rd.readAsText(file);
+};
+
+/* ---------- render ---------- */
+function currentFields(){
+  if(!S.report||!S.report[S.cur])return [];
+  const e=S.report[S.cur];
+  let names=e.order;
+  if(S.filter)names=names.filter(n=>n===S.filter);
+  return names.map(n=>e.fieldsMap.get(n));
+}
+function render(){
+  const i=S.cur;
+  const extName=(cellValue(i,"Last_Name")||"?")+", "+(cellValue(i,"First_Name")||"?");
+  document.getElementById("extname").textContent=extName;
+  document.getElementById("rowpos").textContent="· row "+(i+1)+" of "+S.n;
+  document.getElementById("dcount").textContent="Inconsistent: "+(cellValue(i,"Inconsistent_Fields")||"None");
+
+  // source panel
+  const raw=S.raw?S.raw[i]:null;
+  document.getElementById("rawname").textContent=raw?raw.name:"(no raw file loaded)";
+  const meta=document.getElementById("rawmeta");
+  if(raw){
+    const mismatch=raw.name && extName!=="?, ?" &&
+      !raw.name.toLowerCase().includes((cellValue(i,"Last_Name")||"").toLowerCase().slice(0,4));
+    meta.className="rawmeta"+(mismatch?" warn":"");
+    meta.textContent=mismatch?("⚠ raw heading is \""+raw.name+"\" — verify alignment"):("raw entry "+(i+1));
+  } else {meta.textContent="";}
+
+  // fields
+  const fieldsEl=document.getElementById("fields");
+  fieldsEl.innerHTML="";
+  const fields=currentFields();
+  const clean=!S.report||!S.report[i]||S.report[i].clean;
+  if(clean){
+    fieldsEl.innerHTML='<div class="goodstate"><div class="big">✓</div>No issues flagged for this row.<br>'
+      +'<span style="font-size:13px">Nothing to resolve — move on when ready.</span></div>';
+  } else if(S.filter && !fields.length){
+    fieldsEl.innerHTML='<div class="goodstate"><div class="big" style="color:var(--faint)">—</div>'
+      +'No <b>'+escapeHTML(S.filter)+'</b> issue on this row.<br>'
+      +'<span style="font-size:13px">Other fields are flagged here; clear the filter to see them.</span></div>';
+  }
+  S.activeField=null;
+  const EDU=new Set(["Education_Institution","Education_Locations"]);
+  const eduFlagged=fields.filter(f=>EDU.has(f.field));
+  const others=fields.filter(f=>!EDU.has(f.field));
+  others.forEach((fo,fi)=>{
+    if(fi===0&&fo.kind==="disagreement")S.activeField=fo.field;
+    fieldsEl.appendChild(renderField(i,fo));
+  });
+  if(eduFlagged.length)fieldsEl.appendChild(renderEduEditor(i,eduFlagged));
+  paintSource();
+  updateProgress();
+}
+/* One editor for both education columns, edited as paired stops so the two lists can never
+   fall out of alignment — the same guarantee the extraction pipeline gives. */
+function renderEduEditor(rowIdx,eduFlagged){
+  const el=document.createElement("div");
+  el.className="field edu";el.dataset.field="Education_Institution";
+  const flaggedNames=eduFlagged.map(f=>f.field).join(" & ");
+  const fmap=S.report[rowIdx].fieldsMap;
+  const optsInst=(fmap.get("Education_Institution")||{}).options||[];
+  const optsLoc=(fmap.get("Education_Locations")||{}).options||[];
+
+  const insts=splitMulti(cellValue(rowIdx,"Education_Institution"));
+  const locs=splitMulti(cellValue(rowIdx,"Education_Locations"));
+  const n=Math.max(insts.length,locs.length);
+  const stops=[];for(let k=0;k<n;k++)stops.push({inst:insts[k]||"Not Specified",loc:locs[k]||"Unknown"});
+
+  let html="<h3>Education (linked)</h3>"
+    +'<div class="issueline">flagged: '+escapeHTML(flaggedNames)+" — edit as stops so both columns stay aligned</div>";
+  const seedBtns=(opts,side,cls)=>opts.map((o,ix)=>'<button class="'+cls+'" data-side="'+side+'" data-ix="'+ix+'">'+side+' ← Run '+o.run+"</button>").join("");
+  if(optsInst.length||optsLoc.length){
+    html+='<div class="seed">seed a column from a run: '
+      +seedBtns(optsInst,"institutions","a")+seedBtns(optsLoc,"locations","b")+"</div>";
+  }
+  html+='<div class="lab">institution @ city, region, country, start, end</div><div class="stops"></div>';
+  html+='<button class="addstop">＋ add stop</button>';
+  html+='<div class="count"></div>';
+  html+='<button class="apply">Apply to both columns</button>';
+  html+='<div class="resolved" style="display:block">Institution and Location will each get the same number of entries.</div>';
+  el.innerHTML=html;
+
+  const stopsEl=el.querySelector(".stops");
+  const countEl=el.querySelector(".count");
+  function drawStop(s){
+    const row=document.createElement("div");row.className="stop";
+    row.innerHTML='<span class="num"></span>'
+      +'<input class="inst" placeholder="institution" value="'+escapeHTML(s.inst)+'">'
+      +'<span class="at">@</span>'
+      +'<input class="loc" placeholder="city, region, country, start, end" value="'+escapeHTML(s.loc)+'">'
+      +'<button class="rm" title="remove stop">✕</button>';
+    row.querySelector(".rm").addEventListener("click",ev=>{ev.stopPropagation();row.remove();renumber();});
+    return row;
+  }
+  function renumber(){[...stopsEl.querySelectorAll(".stop")].forEach((r,ix)=>{r.querySelector(".num").textContent=ix+1;});
+    countEl.textContent=stopsEl.querySelectorAll(".stop").length+" stop(s) → both columns aligned";}
+  function readStops(){return [...stopsEl.querySelectorAll(".stop")].map(r=>({
+    inst:r.querySelector(".inst").value.trim()||"Not Specified",
+    loc:r.querySelector(".loc").value.trim()||"Unknown"}));}
+  stops.forEach(s=>stopsEl.appendChild(drawStop(s)));renumber();
+
+  el.querySelector(".addstop").addEventListener("click",ev=>{ev.stopPropagation();
+    stopsEl.appendChild(drawStop({inst:"Not Specified",loc:"Unknown"}));renumber();});
+
+  el.querySelectorAll(".seed button").forEach(b=>{
+    b.addEventListener("click",ev=>{ev.stopPropagation();
+      const side=b.dataset.side, ix=+b.dataset.ix;
+      const vals=splitMulti((side==="institutions"?optsInst:optsLoc)[ix].value);
+      let rows=[...stopsEl.querySelectorAll(".stop")];
+      while(rows.length<vals.length){const r=drawStop({inst:"Not Specified",loc:"Unknown"});stopsEl.appendChild(r);rows.push(r);}
+      while(rows.length>vals.length){rows.pop().remove();}
+      [...stopsEl.querySelectorAll(".stop")].forEach((r,k)=>{
+        r.querySelector(side==="institutions"?".inst":".loc").value=vals[k]||"";});
+      renumber();});
+  });
+
+  el.querySelector(".apply").addEventListener("click",ev=>{ev.stopPropagation();
+    const st=readStops();
+    const instVal=st.length?st.map(s=>s.inst).join("; "):"None";
+    const locVal=st.length?st.map(s=>s.loc).join("; "):"None";
+    applyChoice(rowIdx,"Education_Institution",instVal,"edu-linked",null);
+    applyChoice(rowIdx,"Education_Locations",locVal,"edu-linked",null);
+    render();
+  });
+  return el;
+}
+function renderField(rowIdx,fo){
+  const el=document.createElement("div");
+  el.className="field";el.dataset.field=fo.field;
+  const cur=cellValue(rowIdx,fo.field);
+  const edited=S.edits[rowIdx]&&(fo.field in S.edits[rowIdx]);
+  const raw=S.raw?S.raw[rowIdx].content:"";
+  const distinct=fo.options.length?distinctiveByOption(fo.options):[];
+
+  let html="<h3>"+escapeHTML(fo.field)+"</h3>";
+  fo.issues.forEach(t=>{html+='<div class="issueline">'+escapeHTML(t)+"</div>";});
+
+  // whole-cell run options
+  fo.options.forEach((o,idx)=>{
+    const cls=idx===0?"run-a hl-a":"run-b hl-b";
+    const sel=(cur===o.value)?" sel":"";
+    const inSrc=distinct[idx]&&distinct[idx].length?optionInSource(distinct[idx],raw):null;
+    const badge=inSrc===null?"":(inSrc?'<span class="badge found">in source</span>':'<span class="badge miss">not found</span>');
+    html+='<button class="opt '+cls+sel+'" data-val="'+encodeURIComponent(o.value)+'" data-src="run'+o.run+'">'
+      +'<div class="top"><span class="tag">Run '+o.run+'</span>'+badge+"</div>"
+      +'<div class="val">'+escapeHTML(o.value||"(empty)")+"</div>"
+      +(o.evidence?'<div class="ev">'+escapeHTML(o.evidence)+"</div>":"")+"</button>";
+  });
+
+  // token-diff builder (multi-value fields with two options)
+  const tdiff=(MULTIVALUE.has(fo.field)&&fo.options.length===2)?tokenDiff(fo.options[0].value,fo.options[1].value):null;
+  const showTdiff=tdiff&&(tdiff.only1.length||tdiff.only2.length);
+  if(showTdiff){
+    html+='<div class="tdiff"><div class="lab">build from parts — click to include / exclude</div><div class="chips">';
+    tdiff.shared.forEach(t=>{html+=chip(t,"shared",true);});
+    tdiff.only1.forEach(t=>{html+=chip(t,"a",true);});
+    tdiff.only2.forEach(t=>{html+=chip(t,"b",false);});
+    html+='</div><div class="assembled"></div><button class="use">Use this ↑</button></div>';
+  }
+
+  // custom + inline validation
+  const isCustom=edited && !fo.options.some(o=>o.value===cur);
+  const customVal=isCustom?cur:(fo.suggested||"");
+  html+='<div class="customwrap'+(isCustom?" sel":"")+'"><span class="lab">Custom</span>'
+    +'<input type="text" list="dl-'+fo.field+'" placeholder="type a corrected value…" value="'+escapeHTML(customVal)+'"></div>';
+  html+='<div class="vfeed"></div>';
+  html+='<div class="resolvers"></div>';
+  html+=datalistFor(fo.field);
+
+  // bulk bar
+  const bulk=bulkGroupFor(rowIdx,fo);
+  if(bulk){
+    html+='<div class="bulk" data-key="'+escapeHTML(bulk.key)+'">'
+      +'<b>'+bulk.others+'</b> other row'+(bulk.others===1?"":"s")+' share this exact disagreement'
+      +' <span style="color:var(--muted)">('+escapeHTML(fo.options.map(o=>o.value).join("  vs  "))+')</span>'
+      +'<div class="btns">'
+      +'<button data-v="'+encodeURIComponent(fo.options[0].value)+'" data-s="bulk:run1">All → Run 1</button>'
+      +'<button data-v="'+encodeURIComponent(fo.options[1].value)+'" data-s="bulk:run2">All → Run 2</button>'
+      +(edited?'<button data-v="'+encodeURIComponent(cur)+'" data-s="bulk:current">All → current ('+escapeHTML(trim(cur,24))+')</button>':'')
+      +'</div></div>';
+  }
+
+  html+='<div class="resolved">✓ set to: <b>'+escapeHTML(cur)+"</b></div>";
+  el.innerHTML=html;
+  if(edited)el.classList.add("done");
+
+  // --- wiring ---
+  el.addEventListener("click",()=>setActive(fo.field));
+  el.querySelectorAll(".opt").forEach(b=>{
+    b.addEventListener("click",ev=>{ev.stopPropagation();setActive(fo.field);
+      applyChoice(rowIdx,fo.field,decodeURIComponent(b.dataset.val),b.dataset.src,null);render();});
+  });
+
+  // token chips
+  if(showTdiff){
+    const chipsEl=el.querySelector(".chips");
+    const assembledEl=el.querySelector(".assembled");
+    const recompute=()=>{
+      const picked=[...chipsEl.querySelectorAll(".chip.on")].map(c=>decodeURIComponent(c.dataset.tok));
+      assembledEl.textContent=picked.join("; ")||"(empty)";
+      return picked.join("; ");
+    };
+    chipsEl.querySelectorAll(".chip").forEach(c=>{
+      c.addEventListener("click",ev=>{ev.stopPropagation();
+        c.classList.toggle("on");c.classList.toggle("off");recompute();});
+    });
+    recompute();
+    el.querySelector(".use").addEventListener("click",ev=>{ev.stopPropagation();
+      setActive(fo.field);applyChoice(rowIdx,fo.field,recompute(),"tokens",null);render();});
+  }
+
+  // custom input + live validation
+  const inp=el.querySelector(".customwrap input");
+  const vfeed=el.querySelector(".vfeed");
+  const resEl=el.querySelector(".resolvers");
+  const runValidate=()=>{
+    vfeed.innerHTML=validationHTML(fo.field,inp.value);
+    vfeed.querySelectorAll(".vtok.synonym").forEach(s=>{
+      s.addEventListener("click",()=>{ // click a synonym chip to replace it in the box
+        const parts=splitMulti(inp.value);const idx=parts.findIndex(p=>p.toLowerCase()===s.dataset.tok.toLowerCase());
+        if(idx>=0){parts[idx]=s.dataset.canon;inp.value=parts.join("; ");
+          applyChoice(rowIdx,fo.field,inp.value,"custom",null);runValidate();markCustom(el,inp.value);}
+      });});
+    // unknown-term resolvers: add as canonical, or map to an existing term (updates the vocab)
+    if(resEl){
+      resEl.innerHTML=resolverHTML(fo.field,inp.value);
+      resEl.querySelectorAll(".resolver").forEach(r=>{
+        const tok=decodeURIComponent(r.dataset.tok);
+        const addBtn=r.querySelector('[data-act="add"]');
+        if(addBtn)addBtn.addEventListener("click",ev=>{ev.stopPropagation();
+          recordCanon(fo.field,tok);runValidate();});
+        const sel=r.querySelector('[data-act="map"]');
+        if(sel)sel.addEventListener("change",ev=>{ev.stopPropagation();
+          if(!sel.value)return;
+          recordSyn(fo.field,tok,sel.value);
+          const parts=splitMulti(inp.value);const idx=parts.findIndex(p=>p.toLowerCase()===tok.toLowerCase());
+          if(idx>=0){parts[idx]=sel.value;inp.value=parts.join("; ");
+            applyChoice(rowIdx,fo.field,inp.value,"map-synonym",null);}
+          markCustom(el,inp.value);runValidate();});
+      });
+    }
+  };
+  inp.addEventListener("focus",()=>setActive(fo.field));
+  inp.addEventListener("input",()=>{applyChoice(rowIdx,fo.field,inp.value,"custom",null);
+    markCustom(el,inp.value);runValidate();});
+  runValidate();
+
+  // bulk buttons
+  const bulkEl=el.querySelector(".bulk");
+  if(bulkEl){bulkEl.querySelectorAll("button").forEach(b=>{
+    b.addEventListener("click",ev=>{ev.stopPropagation();
+      doBulk(bulk.key,decodeURIComponent(b.dataset.v),b.dataset.s);});
+  });}
+  return el;
+}
+function chip(tok,kind,on){
+  return '<span class="chip '+kind+(on?" on":" off")+'" data-tok="'+encodeURIComponent(tok).replace(/'/g,"%27")
+    .replace(/"/g,"&quot;")+'">'+escapeHTML(tok)+"</span>";}
+function trim(s,n){return s&&s.length>n?s.slice(0,n)+"…":s;}
+function markCustom(el,val){el.classList.add("done");
+  el.querySelector(".resolved").innerHTML="✓ set to: <b>"+escapeHTML(val)+"</b>";
+  el.querySelectorAll(".opt").forEach(o=>o.classList.remove("sel"));
+  el.querySelector(".customwrap").classList.add("sel");}
+
+function tokenDiff(a,b){
+  const A=splitMulti(a),B=splitMulti(b);const Bl=B.map(x=>x.toLowerCase()),Al=A.map(x=>x.toLowerCase());
+  return {shared:A.filter(x=>Bl.includes(x.toLowerCase())),
+          only1:A.filter(x=>!Bl.includes(x.toLowerCase())),
+          only2:B.filter(x=>!Al.includes(x.toLowerCase()))};
+}
+function datalistFor(field){
+  const V=VOCAB[field];if(!V)return "";
+  return '<datalist id="dl-'+field+'">'+V.canon.map(c=>'<option value="'+escapeHTML(c)+'">').join("")+"</datalist>";
+}
+function validationHTML(field,value){
+  const V=VOCAB[field];
+  const toks=splitMulti(value);
+  if(!toks.length)return "";
+  if(V){
+    const canonLower=new Map(V.canon.map(c=>[c.toLowerCase(),c]));
+    return toks.map(t=>{const l=t.toLowerCase();
+      if(canonLower.has(l))return '<span class="vtok ok">✓ '+escapeHTML(t)+"</span>";
+      if(V.syn[l])return '<span class="vtok synonym" data-tok="'+escapeHTML(t)+'" data-canon="'+escapeHTML(V.syn[l])+'">↳ '+escapeHTML(t)+" → "+escapeHTML(V.syn[l])+"</span>";
+      return '<span class="vtok unknown">? '+escapeHTML(t)+" (new term)</span>";
+    }).join("");
+  }
+  if(field==="Born_Month"||field==="Died_Month"){
+    const t=value.trim();if(t==="Unknown"||MONTHS.has(t))return '<span class="vtok ok">✓ valid month</span>';
+    return '<span class="vtok unknown">? not a full English month name</span>';
+  }
+  if(CODED[field]){const t=value.trim();
+    return CODED[field].includes(t)?'<span class="vtok ok">✓ valid</span>'
+      :'<span class="vtok unknown">? must be one of: '+CODED[field].join(", ")+"</span>";}
+  return "";
+}
+function unknownTokens(field,value){
+  const V=VOCAB[field];if(!V)return [];
+  const canonLower=new Set(V.canon.map(c=>c.toLowerCase()));
+  return splitMulti(value).filter(t=>{const l=t.toLowerCase();return !canonLower.has(l)&&!V.syn[l];});
+}
+function resolverHTML(field,value){
+  const unk=unknownTokens(field,value);if(!unk.length)return "";
+  const V=VOCAB[field];
+  const opts='<option value="">map to…</option>'+V.canon.map(c=>'<option value="'+escapeHTML(c)+'">'+escapeHTML(c)+"</option>").join("");
+  return unk.map(t=>'<div class="resolver" data-tok="'+encodeURIComponent(t)+'">'
+    +'<span class="tok">“'+escapeHTML(t)+'”</span> is not in the '+escapeHTML(field)+' vocabulary.'
+    +'<div class="row2"><button data-act="add">＋ Add as canonical term</button>'
+    +'<span>or</span><select data-act="map">'+opts+'</select></div></div>').join("");
+}
+function vocabChangeCount(){let n=0;for(const f in S.vocabChanges){const c=S.vocabChanges[f];
+  n+=(c.canon?c.canon.length:0)+(c.syn?Object.keys(c.syn).length:0);}return n;}
+function recordCanon(field,term){
+  if(!VOCAB[field].canon.some(c=>c.toLowerCase()===term.toLowerCase())){VOCAB[field].canon.push(term);VOCAB[field].canon.sort();}
+  const c=(S.vocabChanges[field]=S.vocabChanges[field]||{canon:[],syn:{}});
+  if(!c.canon.includes(term))c.canon.push(term);
+  persistVocab();
+}
+function recordSyn(field,token,canonical){
+  VOCAB[field].syn[token.toLowerCase()]=canonical;
+  const c=(S.vocabChanges[field]=S.vocabChanges[field]||{canon:[],syn:{}});
+  c.syn[token]=canonical;
+  persistVocab();
+}
+function vocabAdditionsJSON(){
+  const out={};
+  for(const f in S.vocabChanges){const c=S.vocabChanges[f];const o={};
+    if(c.canon&&c.canon.length)o.canon=c.canon;
+    if(c.syn&&Object.keys(c.syn).length)o.syn=c.syn;
+    if(Object.keys(o).length)out[f]=o;}
+  return JSON.stringify(out,null,2);
+}
+async function persistVocab(){
+  document.getElementById("vocabcount").textContent=vocabChangeCount();
+  if(S.vocabHandle){try{const w=await S.vocabHandle.createWritable();await w.write(vocabAdditionsJSON());await w.close();}
+    catch(e){console.warn("auto-save failed",e);}}
+}
+function bulkGroupFor(rowIdx,fo){
+  if(fo.kind!=="disagreement"||fo.options.length<2)return null;
+  const key=groupKey(fo.field,fo.options);
+  const group=S.disGroups.get(key)||[];
+  if(group.length<2)return null;
+  return {key,others:group.length-1,size:group.length};
+}
+function doBulk(key,value,source){
+  const group=S.disGroups.get(key)||[];
+  const bulk={id:"bulk-"+Date.now(),size:group.length};
+  const field=key.split("\u241F")[0];
+  group.forEach(i=>applyChoice(i,field,value,source,bulk));
+  render();
+}
+function setActive(field){
+  S.activeField=field;
+  document.querySelectorAll(".field").forEach(f=>f.classList.toggle("active",f.dataset.field===field));
+  paintSource();
+}
+function paintSource(){
+  const entry=document.getElementById("entry");
+  const raw=S.raw?S.raw[S.cur]:null;
+  if(!raw){entry.textContent="(no raw file loaded)";document.getElementById("sources").style.display="none";return;}
+  let options=null;
+  const fields=currentFields();
+  const fo=fields.find(f=>f.field===S.activeField&&f.options.length);
+  if(fo)options=fo.options;
+
+  const text=raw.content;
+  // ranges from the active field's distinctive option terms
+  let ranges=[];
+  if(options){
+    const dis=distinctiveByOption(options);const map=new Map();
+    dis.forEach((terms,idx)=>{const cls=idx===0?"hl-a":"hl-b";terms.forEach(t=>{if(!map.has(t))map.set(t,cls);});});
+    ranges=ranges.concat(termRanges(text,[...map.keys()],t=>map.get(t.toLowerCase())));
+  }
+  // ranges from the search box (these win on overlap)
+  const searchRanges=S.search?termRanges(text,[S.search],()=>"hl-s",true):[];
+  S.searchHits=searchRanges.map((r,i)=>i);
+  ranges=ranges.filter(r=>!searchRanges.some(s=>r.start<s.end&&s.start<r.end)).concat(
+    searchRanges.map((r,i)=>({...r,idx:i})));
+
+  entry.innerHTML=buildMarks(text,ranges);
+  const nHits=searchRanges.length;
+  let countTxt="";
+  if(S.search)countTxt=nHits?((S.searchAt+1)+"/"+nHits):"0/0";
+  document.getElementById("srchcount").textContent=countTxt;
+  const marks=entry.querySelectorAll("mark.hl-s");
+  marks.forEach((m,i)=>{if(i===S.searchAt)m.classList.add("cur");});
+  if(marks.length&&marks[S.searchAt])marks[S.searchAt].scrollIntoView({block:"center",behavior:"smooth"});
+
+  const src=document.getElementById("sources");
+  if(raw.sources){src.style.display="block";src.innerHTML="<h4>Sources</h4>"+escapeHTML(raw.sources);}
+  else src.style.display="none";
+}
+function termRanges(text,terms,clsOf,literal){
+  const t=terms.filter(x=>x&&x.length>=(literal?1:2));if(!t.length)return [];
+  const pat=t.map(escapeRE).sort((a,b)=>b.length-a.length).join("|");
+  const bound=literal?"":"(?<![\\p{L}\\p{N}])";const boundE=literal?"":"(?![\\p{L}\\p{N}])";
+  let re;try{re=new RegExp(bound+"("+pat+")"+boundE,"giu");}catch(e){return [];}
+  const out=[];let m;while((m=re.exec(text))){out.push({start:m.index,end:m.index+m[0].length,cls:clsOf(m[0])});
+    if(m.index===re.lastIndex)re.lastIndex++;}
+  return out;
+}
+function buildMarks(text,ranges){
+  ranges=ranges.slice().sort((a,b)=>a.start-b.start||b.end-a.end);
+  let out="",pos=0;
+  for(const r of ranges){
+    if(r.start<pos)continue;                       // skip overlaps already covered
+    out+=escapeHTML(text.slice(pos,r.start));
+    out+='<mark class="'+r.cls+'">'+escapeHTML(text.slice(r.start,r.end))+"</mark>";
+    pos=r.end;
+  }
+  out+=escapeHTML(text.slice(pos));
+  return out;
+}
+function runSearch(q){S.search=q.trim();S.searchAt=0;paintSource();}
+function stepSearch(dir){
+  const n=document.querySelectorAll("#entry mark.hl-s").length;if(!n)return;
+  S.searchAt=(S.searchAt+dir+n)%n;paintSource();
+}
+function updateProgress(){
+  const counts=unresolvedByField();
+  const totalUnresolved=Object.values(counts).reduce((a,b)=>a+b,0);
+  let flagged=0;
+  if(S.report)for(let i=0;i<S.n;i++)if(S.report[i]&&!S.report[i].clean)flagged++;
+  const state=S.report&&S.report[S.cur]&&!S.report[S.cur].clean?'<span class="dot flag"></span>flagged':'<span class="dot good"></span>clean';
+  const scope=S.filter?(" · <b>"+(counts[S.filter]||0)+"</b> "+S.filter+" left"):"";
+  document.getElementById("progress").innerHTML=
+    "row <b>"+(S.cur+1)+"</b>/"+S.n+" · "+state+" · <b>"+flagged+"</b> flagged rows"+scope;
+  document.getElementById("trackcount").textContent=S.filter?(counts[S.filter]||0):totalUnresolved;
+  refreshFilterCounts();
+  renderTracker(counts);
+}
+function renderTracker(counts){
+  const pop=document.getElementById("trackpop");
+  const fields=allFlaggedFields().sort((a,b)=>(counts[b]||0)-(counts[a]||0)||a.localeCompare(b));
+  let html='<div class="hd">Unresolved issues by field</div>';
+  fields.forEach(f=>{
+    const c=counts[f]||0;
+    html+='<div class="trackrow'+(c===0?" zero":"")+(S.filter===f?" active":"")+'" data-f="'+f+'">'
+      +'<span class="fname">'+escapeHTML(f)+'</span><span class="cnt">'+(c===0?"✓":c)+"</span></div>";
+  });
+  html+='<div class="trackrow allrow'+(S.filter===""?" active":"")+'" data-f=""><span class="fname">All fields</span>'
+    +'<span class="cnt">'+Object.values(counts).reduce((a,b)=>a+b,0)+"</span></div>";
+  pop.innerHTML=html;
+  pop.querySelectorAll(".trackrow").forEach(r=>{
+    r.addEventListener("click",()=>{setFilter(r.dataset.f);pop.classList.remove("open");});
+  });
+}
+
+/* ---------- navigation ---------- */
+function goto(i){S.cur=Math.max(0,Math.min(S.n-1,i));document.getElementById("jump").value=S.cur+1;render();
+  document.querySelector("main").scrollTop=0;
+  document.querySelectorAll(".col").forEach(c=>c.scrollTop=0);}
+function nextFlagged(){   // next row that still has an unresolved issue under the active filter
+  for(let d=1;d<=S.n;d++){const i=(S.cur+d)%S.n;if(unresolvedAt(i)){goto(i);return;}}
+  // nothing unresolved under the filter -> fall back to any row matching the filter
+  for(let d=1;d<=S.n;d++){const i=(S.cur+d)%S.n;if(matchesFilter(i)){goto(i);return;}}
+}
+function stepRow(dir){    // prev/next move within the filtered set (all rows when no filter)
+  if(!S.filter){goto(S.cur+dir);return;}
+  const list=[];for(let i=0;i<S.n;i++)if(matchesFilter(i))list.push(i);
+  if(!list.length)return;
+  if(dir>0){const nx=list.find(i=>i>S.cur);goto(nx!=null?nx:list[0]);}
+  else{const pr=[...list].reverse().find(i=>i<S.cur);goto(pr!=null?pr:list[list.length-1]);}
+}
+function setFilter(field){
+  S.filter=field||"";
+  document.getElementById("filterField").value=S.filter;
+  // jump to the first row that matches the new filter (prefer an unresolved one)
+  let target=-1;
+  for(let i=0;i<S.n;i++){if(unresolvedAt(i)){target=i;break;}}
+  if(target<0)for(let i=0;i<S.n;i++){if(matchesFilter(i)){target=i;break;}}
+  goto(target<0?S.cur:target);
+}
+document.getElementById("prev").onclick=()=>stepRow(-1);
+document.getElementById("next").onclick=()=>stepRow(1);
+document.getElementById("nextflag").onclick=nextFlagged;
+document.getElementById("filterField").onchange=e=>setFilter(e.target.value);
+document.getElementById("trackbtn").onclick=()=>document.getElementById("trackpop").classList.toggle("open");
+document.addEventListener("click",e=>{
+  const w=document.querySelector(".trackwrap");
+  if(w&&!w.contains(e.target))document.getElementById("trackpop").classList.remove("open");
+});
+document.getElementById("jump").onchange=e=>goto((+e.target.value||1)-1);
+document.getElementById("srch").addEventListener("input",e=>runSearch(e.target.value));
+document.getElementById("srch").addEventListener("keydown",e=>{
+  if(e.key==="Enter"){e.preventDefault();stepSearch(e.shiftKey?-1:1);}
+});
+document.getElementById("srchnext").onclick=()=>stepSearch(1);
+document.getElementById("srchprev").onclick=()=>stepSearch(-1);
+document.addEventListener("keydown",e=>{
+  if(!ready())return;
+  if(e.target.tagName==="INPUT"&&e.target.type==="text")return;
+  if(e.key==="ArrowRight"){goto(S.cur+1);e.preventDefault();}
+  else if(e.key==="ArrowLeft"){goto(S.cur-1);e.preventDefault();}
+  else if(e.key==="f"){nextFlagged();}
+  else if(e.key==="1"||e.key==="2"){
+    const fo=currentFields().find(f=>f.field===S.activeField&&f.options.length);
+    if(fo){const opt=fo.options.find(o=>o.run===+e.key);if(opt){applyChoice(S.cur,fo.field,opt.value,"run"+opt.run,null);render();}}
+  }
+  else if(e.key==="r"){S.reviewed.add(S.cur);nextFlagged();}
+});
+
+/* ---------- export ---------- */
+function download(name,text,type){
+  const blob=new Blob([text],{type:type||"text/plain"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();
+  setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+}
+document.getElementById("download").onclick=()=>{
+  const out=[S.ext.header.map(csvCell).join(",")];
+  S.ext.rows.forEach((r,i)=>{
+    const row=r.slice();
+    if(S.edits[i])for(const f in S.edits[i]){const ci=colIndex(f);if(ci!=null)row[ci]=S.edits[i][f];}
+    out.push(row.map(csvCell).join(","));
+  });
+  download("extracted_reviewed.csv",out.join("\n")+"\n","text/csv");
+};
+document.getElementById("save").onclick=()=>{
+  download("dsb_review_progress.json",JSON.stringify({edits:S.edits,reviewed:[...S.reviewed],log:S.log,vocabChanges:S.vocabChanges},null,0),"application/json");
+};
+document.getElementById("loadbtn").onclick=()=>document.getElementById("loadsession").click();
+document.getElementById("loadsession").onchange=e=>{
+  const file=e.target.files[0];if(!file)return;const rd=new FileReader();
+  rd.onload=()=>{try{const j=JSON.parse(rd.result);S.edits=j.edits||{};S.reviewed=new Set(j.reviewed||[]);
+    S.log=j.log||[];S.vocabChanges=j.vocabChanges||{};
+    for(const f in S.vocabChanges){if(!VOCAB[f])continue;
+      (S.vocabChanges[f].canon||[]).forEach(t=>{if(!VOCAB[f].canon.includes(t))VOCAB[f].canon.push(t);});
+      Object.assign(VOCAB[f].syn,Object.fromEntries(Object.entries(S.vocabChanges[f].syn||{}).map(([k,v])=>[k.toLowerCase(),v])));}
+    document.getElementById("logcount").textContent=S.log.length;
+    const vc=document.getElementById("vocabcount");if(vc)vc.textContent=vocabChangeCount();
+    render();}
+    catch(err){alert("Could not read that progress file.");}};
+  rd.readAsText(file);
+};
+document.getElementById("logbtn").onclick=()=>{
+  if(!S.log.length){alert("No decisions logged yet.");return;}
+  const cols=["ts","row","last","first","field","chosen","source","original","run1","run2","in_source","bulk_id","bulk_size"];
+  const out=[cols.join(",")];
+  S.log.forEach(e=>out.push(cols.map(c=>csvCell(e[c])).join(",")));
+  download("dsb_decision_log.csv",out.join("\n")+"\n","text/csv");
+};
+document.getElementById("vocabbtn").onclick=()=>{
+  if(!vocabChangeCount()){alert("No vocabulary additions yet.\n\nWhile editing a custom value, an unrecognized term shows options to add it as canonical or map it to an existing term.");return;}
+  download("dsb_vocab_additions.json",vocabAdditionsJSON(),"application/json");
+};
+// optional Chrome/Edge auto-save straight to the additions file
+if(window.showSaveFilePicker){
+  const lb=document.getElementById("linkbtn");if(lb){lb.style.display="";
+    lb.onclick=async()=>{
+      if(S.vocabHandle){S.vocabHandle=null;lb.textContent="⛓ Auto-save: off";return;}
+      try{S.vocabHandle=await window.showSaveFilePicker({suggestedName:"dsb_vocab_additions.json",
+          types:[{description:"JSON",accept:{"application/json":[".json"]}}]});
+        await persistVocab();lb.textContent="⛓ Auto-save: on";}
+      catch(e){/* user cancelled */}
+    };}
+}
+</script>
+</body>
+</html>

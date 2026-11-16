@@ -1,0 +1,10 @@
+
+===== Half Title Page  (stop_reason=end_turn, length=643 chars) =====
+I cannot process this input. The text you've provided is a half-title page from the Dictionary of Scientific Biography itself, not a biographical entry for a historical figure.
+
+A valid input requires:
+- **NAME**: a person's name in the form "Surname, Forename" (e.g., "Abano, Pietro D'")
+- **CONTENT**: the full biographical narrative with a structured header line `(b. PLACE, DATE; d. PLACE, DATE) discipline, discipline, ...` followed by prose
+- **SOURCES**: the bibliography section
+
+Please provide a complete DSB entry for an actual historical figure (scientist, mathematician, physician, etc.) and I will extract it into the JSON schema.
