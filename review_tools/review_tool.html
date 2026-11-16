@@ -1087,13 +1087,37 @@ function download(name,text,type){
   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=name;a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
+function sentinelFor(field){
+  if(field==="Father_Is_Wealthy")return "-1";
+  if(/_Certain$/.test(field))return "0";
+  if(/_Notes$/.test(field)||["Alt_Name","Education_Institution","Education_Degrees","Education_Locations","Instruments","Scientific_Societies_Membership","Sources_List","Not_Available_and_Not_Consulted_List","Compiler_Details_Notes","Inconsistent_Fields"].includes(field))return "None";
+  if(field==="Disagreement_Count")return "0";
+  return "Unknown";
+}
 document.getElementById("download").onclick=()=>{
-  const out=[S.ext.header.map(csvCell).join(",")];
+  if(!S.report){alert("Load the validation report first.\n\nWithout it, a flagged cell would be exported as if it had been checked.");return;}
+  const header=S.ext.header.slice();
+  if(!header.includes("Verification"))header.push("Verification");
+  const out=[header.map(csvCell).join(",")];
+  let withheld=0;
   S.ext.rows.forEach((r,i)=>{
     const row=r.slice();
+    while(row.length<header.length-1)row.push("");
+    const e=S.report[i];
+    if(e&&!e.clean){
+      e.order.forEach(f=>{
+        if(fieldEdited(i,f))return;
+        const ci=colIndex(f);
+        if(ci==null)return;
+        const blank=sentinelFor(f);
+        if(String(row[ci]||"")!==blank){row[ci]=blank;withheld++;}
+      });
+    }
     if(S.edits[i])for(const f in S.edits[i]){const ci=colIndex(f);if(ci!=null)row[ci]=S.edits[i][f];}
+    row.push("reviewed");
     out.push(row.map(csvCell).join(","));
   });
+  if(withheld)alert(withheld+" flagged cell"+(withheld===1?"":"s")+" had not been accepted.\nThey were written as Unknown or None.\nAccept a cell by editing it or by choosing a run, then export again if you want that value kept.");
   download("extracted_reviewed.csv",out.join("\n")+"\n","text/csv");
 };
 document.getElementById("save").onclick=()=>{

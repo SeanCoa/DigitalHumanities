@@ -158,7 +158,7 @@ MAPTILER_API_KEY = "WS5k0XeBJBUUDowtC8l1"  # https://cloud.maptiler.com/account/
 USER_AGENT = "combined_geocoder/1.0 (+mailto:s@gmail.com)"  # set a real contact per Pleiades/Nominatim/Wikidata etiquette
 
 # --- AGGREGATION SETTINGS ---
-CLUSTER_DISTANCE_KM = 100  # sources within this distance of each other count as "agreeing"
+CLUSTER_DISTANCE_KM = 40  # sources within this distance of each other count as "agreeing"
 # Dedicated place geocoders first; Wikipedia/Wikidata (entity search, which can
 # occasionally latch onto a wrong same-named entity with no other corroboration)
 # ranked below them, and only used to break ties when 2+ dedicated geocoders
@@ -714,14 +714,10 @@ def _main():
           OR if sources were in total disagreement (see no_consensus below).
         - note is None unless sources disagreed (some fell outside the main
           cluster) or there was no consensus at all.
-        - no_consensus is True when 2+ sources returned a result but NONE of
-          them were within CLUSTER_DISTANCE_KM of any other (i.e. every source
-          is its own singleton cluster). In this case we deliberately do NOT
-          pick a single source via SOURCE_PRIORITY and call it "the answer" --
-          with zero corroboration, that tie-break is as likely to select a
-          wrong/mismatched result as a correct one. Instead the aggregate is
-          left "Unknown" and the row is flagged for manual review, listing every
-          source's raw value.
+        - no_consensus is True unless a strict majority of the returned
+          points lie in one cluster within CLUSTER_DISTANCE_KM. A single
+          source is not a majority. The aggregate is left "Unknown" and the
+          row is flagged for manual review.
         """
         points = {}
         for src, val in results.items():
@@ -737,7 +733,9 @@ def _main():
 
         if len(points) == 1:
             src, (lat, lon) = next(iter(points.items()))
-            return round(lat, 6), round(lon, 6), None, False
+            note = (f"SINGLE SOURCE: only {src} returned ({lat}, {lon}); "
+                    "left Unknown until a reviewer accepts it")
+            return "Unknown", "Unknown", note, True
 
         # Union-Find (disjoint set) clustering: two sources merge into the same
         # cluster if they're within CLUSTER_DISTANCE_KM of EITHER a common
@@ -772,11 +770,13 @@ def _main():
 
         best_size = max(len(c) for c in clusters)
 
-        if best_size == 1:
-            # No two sources agree on anything -- do not silently trust a
-            # priority tie-break here. Flag for manual review instead.
+        if best_size < 2 or best_size * 2 <= len(points):
+            # A place is kept only when a strict majority of the sources that
+            # returned a point lie within CLUSTER_DISTANCE_KM of each other.
+            # Anything weaker is left Unknown for a reviewer.
             raw_values = ", ".join(f"{src}=({points[src][0]}, {points[src][1]})" for src in names)
-            note = f"NO CONSENSUS: {len(points)} sources all disagreed (>{CLUSTER_DISTANCE_KM}km apart); raw values: {raw_values}"
+            note = (f"NO CONSENSUS: largest cluster is {best_size}/{len(points)} "
+                    f"(need a strict majority within {CLUSTER_DISTANCE_KM}km); raw values: {raw_values}")
             return "Unknown", "Unknown", note, True
 
         # Largest cluster wins; ties broken by which cluster contains the
@@ -1039,6 +1039,9 @@ def _main():
                 years = []
 
             if is_unknown(city):
+                # Keep a slot so coordinates stay aligned with the original stops.
+                # Geocoding the country alone pins an unknown town on the wrong city.
+                entries.append(None)
                 continue
 
             state = None if is_unknown(region) else region
@@ -1085,6 +1088,10 @@ def _main():
         p_coords, m_coords, mt_coords, g_coords, n_coords, w_coords, wp_coords = [], [], [], [], [], [], []
         agg_coords = []
         for entry in entries:
+            if entry is None:
+                for bucket in (p_coords, m_coords, mt_coords, g_coords, n_coords, w_coords, wp_coords, agg_coords):
+                    bucket.append("Unknown")
+                continue
             res = geocode_place_multi(entry["query"], sheet_row(i), "Education_Locations",
                                        city=entry["city"], state=entry["state"], country=entry["country"],
                                        skip_pleiades=entry["skip_pleiades"])

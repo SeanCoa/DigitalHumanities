@@ -68,6 +68,22 @@ def render_field(field, spec):
             prefix = f"- *{label}:* " if label else "- "
             out.append(prefix + ", ".join(terms) + ".")
 
+    parents = spec.get("parents") or {}
+    if parents:
+        out.append("")
+        out.append("**Two levels.** When the entry names a specific term, write "
+                   "`Parent; Specific`, parent first. The parent is the filter; the "
+                   "specific term is what the entry names. Use the parent alone when the "
+                   "entry is no more specific. Never store a specific term without its parent.")
+        out.append("")
+        by_parent = {}
+        order = [t for group in groups.values() for t in group]
+        for specific, parent in parents.items():
+            by_parent.setdefault(parent, []).append(specific)
+        for parent in sorted(by_parent, key=lambda t: order.index(t) if t in order else 999):
+            specifics = sorted(by_parent[parent], key=lambda t: order.index(t) if t in order else 999)
+            out.append(f"- **{parent}** → {', '.join(specifics)}.")
+
     if spec["synonyms"]:
         out.append("")
         out.append("**Mapping** — route the term the entry uses to the canonical term on "

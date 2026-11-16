@@ -102,9 +102,12 @@ different meanings, and the field-by-field spec tells you which applies:
   memberships, no university degree, no alternate name) and for every empty
   free-text **Notes** field.
 
-If you ever feel yourself reconstructing a "plausible" value the text doesn't
-support, stop and emit the sentinel instead. A correct `Unknown` is worth far
-more than a confident error.
+The only sources are the NAME, CONTENT, and SOURCES in the user message. A fact
+you know from training — a date, a place, a discipline, a degree, a post, a
+patron, an instrument, the author of the entry — is not in the entry. If the
+text does not state it, emit the sentinel. If you ever feel yourself
+reconstructing a plausible value, stop and emit the sentinel instead. A correct
+`Unknown` is worth far more than a confident error.
 
 **B. Use the controlled vocabulary; reuse before you extend.** For every
 closed-vocabulary field (marked ★ below), first try to match an existing term in the
@@ -113,29 +116,49 @@ describes something no existing term reasonably covers, and then keep it short a
 the existing style. Three rules prevent the duplicate-phrasing that fragments sorting:
 
   1. *No synonyms or spelling variants of an existing term.* If a term already exists,
-     use it verbatim — `Anglican`, not `Episcopalian`; `Government`, not
-     `Government Official` or `Government Advisory`.
+     use it verbatim — `Protestant; Anglican`, not `Episcopalian`.
   2. *One canonical form per concept.* Normalize abbreviations and language variants to
-     a single spelling — e.g. `B.S.` (not `B.Sc.`), `D.Sc.` (not `Docteur es Sciences`).
-     Pick the form already in the Appendix; if none, pick one and use it consistently.
+     a single spelling — e.g. `B.S.` (not `B.Sc.`). A named degree keeps its own
+     abbreviation; do not fold it into a neighbor.
   3. *Respect field boundaries.* Each ★ field draws only from its own list — e.g. a
      patronage label like `Court Official` must never appear in `Means_of_Support`
      (use `Government` or `Patronage`).
+  4. *Two levels where the Appendix marks them.* Write `Parent; Specific`, parent
+     first (`Artisan; Watchmaker`, `Protestant; Lutheran`, `Church Life; Parish`).
+     The parent is the filter. The specific term is what the entry names. Use the
+     parent alone when the entry is no more specific, and never store a specific
+     term without its parent. Do not invent a specific term that is not listed.
+     A court patron stays `Court`: the sovereign's name belongs in `Patronage_Notes`,
+     not a separate filter term for every title. Degrees stay the named abbreviation,
+     because that abbreviation is already the filter.
 
 **C. Paraphrase; do not copy.** The DSB text is copyrighted. All `_Notes` fields
 must be your own concise summary in neutral encyclopedic prose, not sentences
 lifted from the entry. Keep each note to 1–3 sentences. (This also matches the
 compiler's voice in the existing database.) The `Sources_List` may carry
 bibliographic citations, since those are factual references, not prose.
+`Compiler_Details_Notes` may quote the printed dates when the date rules tell you
+to record a contradiction.
 
 **D. Multi-value fields** are ordered by prominence — most significant first,
 following the emphasis and ordering of the entry's header line where one exists.
 
 **E. Evidence mode (optional).** If the wrapper sets evidence mode on, add one
-extra top-level key, `"_evidence"`, mapping each non-trivial field to a short
-(<15-word) supporting phrase from the entry, or `"inferred"` / `"absent"`. Your
-script should log `_evidence` to a separate review file and strip it before
-writing the row. Leave it out entirely when evidence mode is off.
+extra top-level key, `"_evidence"`. For every field that is not a sentinel, the
+value is a contiguous quotation of fewer than 15 words copied from CONTENT or
+SOURCES — the words that state the fact (`born at Basel in 1707`), not a gloss
+(`astronomy in header`). Use `"inferred"` only for a derivation this prompt
+explicitly allows: gender from a pronoun or kinship word in the entry, the
+country-name convention, or a city that is part of the institution's name. Use
+`"absent"` for `Unknown`, `None`, and `Father_Is_Wealthy` of `-1`. If you cannot
+quote the support or point to one of those derivations, the value is not
+supported: change it to the sentinel and mark `"absent"`. Leave `_evidence` out
+entirely when evidence mode is off.
+
+**F. An empty or non-biographical text has no facts.** If CONTENT is empty, or
+NAME is a half-title or any other page that is not a biography, parse
+`Last_Name` and `First_Name` from NAME and set every other field to its
+sentinel. Do not write the life you remember for that name.
 
 ---
 
@@ -170,13 +193,16 @@ Fields marked ★ use a controlled vocabulary (see Appendix).
   When a heading does not split cleanly into a Western forename + surname, default to the
   mononym / byname rule (full name in `Last_Name`, `First_Name` = `None`) rather than
   forcing an artificial split or dropping an epithet into `First_Name`.
-- `Alt_Name` — variant spellings, Latinized or vernacular forms, English name
-  (e.g. `Peter of Abano`). Separate multiple alternate names with semicolons. `None` if
-  the entry gives no variant.
-- ★ `Gender` — inferred from the entry's pronouns and context: `Male` if the entry
-  uses he/him/his, `Female` if it uses she/her/hers. Use other gendered cues (titles,
-  "daughter of", "her husband") to confirm. Use `Unknown` only when the entry contains
-  no gendered pronoun or indicator at all.
+- `Alt_Name` — variant spellings, Latinized or vernacular forms, and a fuller
+  form of the heading, but only when that string appears in NAME, CONTENT, or
+  SOURCES. The heading `Abano, Pietro D'` supports `Pietro d'Abano`; it does not
+  support an English or Latin form you supply yourself. Separate multiple forms
+  with semicolons. `None` if the entry gives no variant.
+- ★ `Gender` — from the entry's own words: `Male` if it uses he/him/his, `Female`
+  if it uses she/her/hers. Titles and kinship words in the entry ("daughter of",
+  "her husband") count. Do not infer gender from the name, from a typical ending,
+  or from who the person is. If the entry has no gendered word, or CONTENT is
+  empty, use `Unknown`.
 
 **Birth and death** (parse the header line `(b. … ; d. …)`)
 
@@ -188,6 +214,11 @@ Fields marked ★ use a controlled vocabulary (see Appendix).
   entry gives it — `Faribault, Minnesota`; `Königsberg, East Prussia`. When the entry
   names only the town, give the town alone — never supply a state or region from your own
   knowledge, even when it is obvious.
+  Copy the place name the entry uses. You may repair an obvious misprint of one
+  or two letters when the sentence already identifies that same place
+  (`Gottiigen` → `Göttingen`). Do not substitute a later name for the place:
+  `Falmouth` stays `Falmouth` when the entry says Falmouth, even if it adds
+  "now Portland".
   Naming conventions, applied the same way here and in
   `Education_Locations`: the country slot holds a **country, never a sub-national
   region** (no state or province); for the British Isles use the historical
@@ -203,6 +234,24 @@ Fields marked ★ use a controlled vocabulary (see Appendix).
   applies to every year field, including the `Start_Year` / `End_Year` of
   `Education_Locations` (`Athens, Unknown, Greece, -367, -347`). Never write `B.C.` as
   text, and never leave a B.C. year positive — a positive year always means A.D.
+  A year must be a numeral the entry prints for that event.
+  - `ca.`, `c.`, `about`, or `?` attached to a printed year: keep that year and set
+    the certainty flag to `0`.
+  - A century, or "the beginning of", "early", "late", or "around the turn of"
+    with no numeral year, is `Unknown`. Do not choose a representative year: the
+    beginning of the eleventh century is not `1000`.
+  - `after 665`, `before 1066`, and a floruit (`fl.`) are not a birth year or a
+    death year. Those fields stay `Unknown`. The same limits apply to
+    `Start_Year` and `End_Year`.
+  - Copy the numeral the entry prints. Do not replace it with a year from your own
+    knowledge, including to repair what you think is a misprint.
+  - If the entry's own dates contradict each other — the death year falls before
+    the birth year, a stated age is not the difference of the two years (one year
+    of tolerance), or the two years imply a lifespan under 20 or over 105 — do not
+    decide which numeral is the typo and do not substitute a year from your own
+    knowledge. Set each contradicted year to `Unknown`, its certainty flag to `0`,
+    set `Dates_Lifespan` to `Unknown`, and quote both printed dates in
+    `Compiler_Details_Notes`.
 - `Born_Month`, `Died_Month` — full English month name (`January`…`December`), or
   `Unknown`.
 - `Born_Day`, `Died_Day` — integer day, or `Unknown`.
@@ -220,8 +269,10 @@ Fields marked ★ use a controlled vocabulary (see Appendix).
 
 **Father**
 
-- ★ `Father_Occupation` — one Appendix term, or `Unknown` if not stated. Map a specific
-  job title or foreign term to its category using the Appendix mapping.
+- ★ `Father_Occupation` — the father's principal occupation, or `Unknown` if not stated.
+  One occupation. Where the Appendix gives a parent and a specific term, write
+  `Parent; Specific`. Map a job title to that pair; do not coin a trade the list
+  does not have. The office or rank finer than the list goes in `Father_Notes`.
 - `Father_Is_Wealthy` — `1` wealthy, `0` poor / not wealthy, `-1` not stated.
 - `Father_Notes` — brief paraphrase of what the entry says about the father /
   family origins / finances. `None` if nothing is said.
@@ -234,7 +285,9 @@ Fields marked ★ use a controlled vocabulary (see Appendix).
   list can never fall out of alignment. Do not emit an `Education_Institution` key.
 - ★ `Education_Degrees` — from the degree set; multiple in ascending order
   (Bachelor → Master → Doctorate), joined by `"; "`. Map any variant, Latin, or foreign
-  degree to a listed term using the Appendix mapping. Use `None` when no degree is
+  degree to a listed term using the Appendix mapping. Keep the abbreviation the entry
+  names; do not wrap a degree in a level word and do not fold it into a neighboring
+  degree. Use `None` when no degree is
   recorded. *(Note: the existing data uses `None` both for "held no degree" and
   for "degree not recorded"; follow that convention — do not introduce `Unknown`
   here.)*
@@ -263,9 +316,12 @@ Fields marked ★ use a controlled vocabulary (see Appendix).
     - If the figure studied at the same institution across two separate periods, repeat
       it as two stops — every stop has exactly one institution.
   Rules for the **location** (after the `@`): exactly five comma-separated parts,
-  `City/Town, Region, Country, Start_Year, End_Year`, with `Unknown` for any part not
-  given (you may still infer the *city* and *country* from a named institution —
-  University of Michigan → `Ann Arbor, ..., United States`). **Always emit all five parts,
+  `City/Town, Region, Country, Start_Year, End_Year`, with `Unknown` for any part the
+  entry does not state. A city may be taken from the institution's own name when
+  that name contains it (`University of Padua` → `Padua`). Do not look up the seat
+  of an institution: `University of Michigan` does not become Ann Arbor unless the
+  entry says Ann Arbor, and a missing town is not filled in from the country.
+  **Always emit all five parts,
   in this order, even when some are `Unknown`** — never four, never six.
     - `Region` is its own slot here (it is *not* folded into the town as it is in
       `Born_Town`). Fill it **only when the entry explicitly states a state, province,
@@ -290,26 +346,29 @@ Fields marked ★ use a controlled vocabulary (see Appendix).
 **Religion**
 
 - ★ `Religion_Affiliation` — from the religion set; `Unknown` if the entry gives no
-  basis. Multiple allowed (e.g. `Catholic; Jewish` for a convert). Use the MOST
-  SPECIFIC denomination the entry supports — `Wesleyan`, not the broader `Protestant`,
-  when the source identifies a Wesleyan/Methodist; fall back to a broad term only when
-  no specific denomination is given. Extend the vocabulary for traditions outside the
-  list per Rule B.
-  For a figure clearly embedded in a religious culture whose faith the entry does not
-  state (e.g. a scholar working in the classical Islamic world), infer the expected
-  affiliation (`Muslim`) and set `Religion_Affiliation_Certain` = 0. Reserve `Unknown`
-  for cases where even the cultural context gives no basis to infer.
+  basis. Multiple allowed for a genuine change (`Catholic; Protestant; Lutheran`).
+  Where the Appendix pairs a denomination with a parent, write both — `Protestant;
+  Methodist`, `Muslim; Sunni`, `Jewish; Orthodox Judaism`. The parent alone is only
+  for an entry that names no denomination. Quaker, Unitarian, and Anabaptist are not
+  filed under Protestant. `Christian`, `Evangelical`, and `Reformed` are not terms.
+  A named tradition that is genuinely absent from the Appendix may be added per Rule B;
+  a vague label may not.
+  Do not assign a faith from the region, the century, or the person's fame. Infer
+  an affiliation only when the entry shows a religious role or community and does
+  not name the faith (a monk, an imam, a parish priest), and set
+  `Religion_Affiliation_Certain` = 0. If the entry is silent, use `Unknown`.
 - `Religion_Affiliation_Certain` — `1` only if the affiliation is explicitly stated,
-  `0` if inferred or hedged (and `0` if `Unknown`). An affiliation inferred from
-  cultural context is always `0`, never `1`.
+  `0` if inferred from a role in the entry or hedged, and `0` if `Unknown`.
 - `Religion_Notes` — paraphrase (order, conversions, condemnations). `None` if
   empty.
 
 **Disciplines**
 
 - ★ `Scientific_Disciplines` — multiple values, ordered by prominence (header-line
-  disciplines first, then any clearly evidenced in the body). Never `Unknown` or
-  `None` — every figure has at least one.
+  disciplines first, then any clearly evidenced in the body). Take them only from
+  the header and from work the body describes. If the entry names none, use
+  `Unknown`. Do not supply the field the person is known for when the text does
+  not say it.
   **Invariant — a broad parent for every subfield.** Whenever you record a specific
   subfield, its broad canonical parent from the Appendix MUST also appear in the cell
   (immediately before the subfield when practical; for a figure spanning several broad
@@ -329,12 +388,10 @@ Fields marked ★ use a controlled vocabulary (see Appendix).
   sustained focus of the figure's work — a named contribution or a line of research,
   not a single passing mention. This keeps borderline disciplines from flickering in
   and out between runs.
-  **Prefer the broad discipline when a subfield is marginal.** Adding or dropping one
-  borderline subfield is the single largest source of run-to-run flicker here, so when
-  you are unsure whether a specialization rises to a distinct subfield, record only its
-  broad parent and stop. Add a subfield only when the entry clearly frames that
-  specialization as a distinct focus (names it, or devotes a body of work to it) — not
-  merely because the broad work happens to touch it.
+  **One subfield per parent.** The parent is the filter (`Mathematics`, `Chemistry`).
+  Add at most one subfield after it, the focus the entry names (`Mathematics; Algebra`).
+  A narrower slice than that subfield goes in the notes. When you are unsure the
+  specialization is a distinct focus, record the parent alone.
   **One canonical name per concept.** Where a subfield has common synonyms, always use
   the same standard form so the two runs cannot split on wording — e.g. `Phycology`
   (not `Algology`), `Otolaryngology` (not `Oto-rhinolaryngology`).
@@ -348,15 +405,18 @@ Fields marked ★ use a controlled vocabulary (see Appendix).
   a genuinely distinct kind of livelihood that no existing term reasonably covers —
   and then keep it short and in the existing style. Do not coin a synonym or spelling
   variant of a term that already exists, and do not split one concept into near-
-  duplicates: use `Industry` for industrial/consulting/applied practice (not
-  `Consulting`, `Chemical Industry`, or `Mining Engineering`), and one form per concept
-  (`Mining`, not both `Mining` and `Mining Engineering`). This field also never borrows
-  from another field: never use a discipline name (`Chemistry`, `Astronomy`) or a
-  patronage label (`Court`, `Government Official`) here — map to the livelihood it
-  funded (teaching/research → `Academia`; a government post → `Government`; practising
-  medicine → `Medicine`; a patron's support → `Patronage`). Multiple allowed, ordered
-  by prominence; `Unknown` if the entry gives no basis. (Affirmative `None` is
-  essentially never right — everyone supported themselves somehow.)
+  duplicates. `Mining` is its own living, not `Industry`. Consulting and factory work
+  are `Industry`. A parish, a monastery, and a canonry keep `Church Life` and add
+  `Parish`, `Monastery`, or `Canonry`. A research post is `Academia; Research`; a chair
+  is `Academia`. Banking is `Banking`. An author who lived by writing is `Writing`; a
+  printer or bookseller is `Publishing`. This field also never borrows a discipline
+  name (`Chemistry`, `Astronomy`) or a patronage label (`Government Official`) — map
+  to the livelihood it funded (teaching → `Academia`; a government post → `Government`;
+  practising medicine → `Medicine`; a patron's support → `Patronage`). Multiple allowed, ordered
+  by prominence; `Unknown` if the entry gives no basis. Do not supply a livelihood
+  from the person's reputation when the entry does not describe one. (Affirmative
+  `None` is essentially never right — everyone supported themselves somehow — but
+  silence is `Unknown`, not a guessed career.)
   **Inclusion threshold:** list a source of support only if the entry shows it was a
   genuine, sustained basis of livelihood — not a one-off or incidental payment. This
   keeps marginal means from flickering between runs.
@@ -371,10 +431,12 @@ Fields marked ★ use a controlled vocabulary (see Appendix).
   weak cues. Key distinctions:
     - a sovereign or ruling court (monarch, prince, emir, caliph, pope acting as
       ruler), or a salaried post in a ruler's personal household → `Court`, **not**
-      `Government Official`.
+      `Government Official`. Do not split `Court` into a term per title; the
+      sovereign's name goes in `Patronage_Notes`.
     - appointment to or sponsorship by a state office, bureau, or public institution
       (a ministry, a state observatory or geological-survey directorship, a named
-      minister or councillor) → `Government Official`.
+      minister or councillor) → `Government Official`. A diplomatic patron is
+      `Government Official; Diplomat`. A banker patron is `Merchant; Banker`.
     - a noble or aristocratic patron → `Aristocrat`.
     - a church official acting as patron (bishop, cardinal, abbot) → `Ecclesiastical Official`.
     - a professor, mentor, or academic body that actively sponsored, funded, or
@@ -416,13 +478,16 @@ Fields marked ★ use a controlled vocabulary (see Appendix).
 
 - `Sources_List` — transfer the DSB SOURCES content as a condensed bibliographic
   list (author, short title, place/year). Lead with
-  `Dictionary of Scientific Biography, entry by <author>.` Never invent citations.
+  `Dictionary of Scientific Biography, entry by <author>.` The `<author>` is only
+  a name printed in the entry. Never invent a citation or an author. If SOURCES
+  is empty and no author is printed, the list is `Dictionary of Scientific Biography.`
+  with no author.
 - `Not_Available_and_Not_Consulted_List` — default `None`. (The DSB has no
   equivalent of Westfall's "not consulted" apparatus; leave it `None` unless the
   entry itself flags a source as lost/unavailable.)
-- `Compiler_Details_Notes` — record the DSB entry's author (the capitalized name
-  at the end of the content) as
-  `Dictionary of Scientific Biography entry by <Author Name>.`
+- `Compiler_Details_Notes` — the capitalized author name printed at the end of
+  CONTENT, as `Dictionary of Scientific Biography entry by <Author Name>.`
+  If no author is printed, `None`. A remembered author is not a substitute.
 
 ---
 
@@ -437,7 +502,7 @@ astrology, the heresy trial and posthumous burning; author `LORIS PREMUDA`.
 
 ```json
 {
-  "Last_Name": "Abano", "First_Name": "Pietro", "Alt_Name": "Pietro d'Abano; Peter of Abano", "Gender": "Male",
+  "Last_Name": "Abano", "First_Name": "Pietro", "Alt_Name": "Pietro d'Abano", "Gender": "Male",
   "Born_Country": "Italy", "Born_Town": "Abano", "Born_Year": 1257, "Born_Month": "Unknown", "Born_Day": "Unknown",
   "Died_Country": "Italy", "Died_Town": "Padua", "Died_Year": 1315, "Died_Month": "Unknown", "Died_Day": "Unknown",
   "Dates_Born_Certain": 1, "Date_Died_Certain": 0, "Dates_Lifespan": 58,
@@ -488,76 +553,118 @@ These are the canonical terms. Reuse them exactly; extend only per Rule B.
 **Gender:**
  Male, Female, Unknown.
 
-**Father_Occupation (canonical list):** one term per figure (the father's principal
-occupation), or `Unknown` if not stated. Prefer the category that fits; map any specific
-job title, synonym, or foreign term to its category using the mapping below rather than
-coining a new one.
+**Father_Occupation (canonical list):** the father's principal occupation, or `Unknown`
+if not stated. Write one occupation. Where a specific term is listed under a parent below,
+write `Parent; Specific` (`Artisan; Watchmaker`, `Cleric; Rabbi`, `Sailor; Naval Officer`).
+The parent is what a reader filters on; the specific term is what the entry names. Use the
+parent alone when the entry is no more specific. A rank, a trade, or an office finer than
+the list goes in `Father_Notes`, not a new term.
 
-- *Upper ranks & land:* Aristocrat, Gentry, Landowner, Estate Administrator.
-- *State & arms:* Government Official, Magistrate, Soldier.
-- *Church:* Cleric.
-- *Professions:* Physician, Pharmacist, Lawyer, Academic, Schoolmaster, Scientist, Engineer, Architect.
-- *Commerce & making:* Merchant, Banker, Manufacturer, Publisher, Drug Merchant, Innkeeper.
-- *Crafts & trades:* Artisan, Cobbler, Weaver, Mason, Scribe.
+- *Rank & land:* Aristocrat, Gentry, Landowner, Farmer, Peasant, Estate Administrator.
+- *State & arms:* Government Official, Diplomat, Magistrate, Soldier, Sailor, Naval Officer.
+- *Church:* Cleric, Bishop, Priest, Monk, Rabbi, Imam.
+- *Professions:* Physician, Surgeon, Pharmacist, Lawyer, Notary, Academic, Schoolmaster, Scientist, Mathematician, Astronomer, Naturalist, Engineer, Architect, Accountant.
+- *Commerce:* Merchant, Draper, Banker, Manufacturer, Publisher, Printer, Drug Merchant, Innkeeper.
+- *Crafts:* Artisan, Smith, Goldsmith, Watchmaker, Carpenter, Weaver, Tailor, Cobbler, Mason, Baker, Brewer, Tanner, Potter, Scribe.
 - *Arts & letters:* Musician, Artist, Man Of Letters.
-- *Land labor & service:* Farmer, Laborer, Servant, Sailor, Fishmonger, Miner.
+- *Labor & service:* Laborer, Servant, Fisherman, Fishmonger, Miner.
 - *Sentinel:* Unknown.
+
+**Two levels.** When the entry names a specific term, write `Parent; Specific`, parent first. The parent is the filter; the specific term is what the entry names. Use the parent alone when the entry is no more specific. Never store a specific term without its parent.
+
+- **Government Official** → Diplomat.
+- **Sailor** → Naval Officer.
+- **Cleric** → Bishop, Priest, Monk, Rabbi, Imam.
+- **Scientist** → Mathematician, Astronomer, Naturalist.
+- **Merchant** → Draper.
+- **Publisher** → Printer.
+- **Artisan** → Smith, Goldsmith, Watchmaker, Carpenter, Weaver, Tailor, Cobbler, Mason, Baker, Brewer, Tanner, Potter, Scribe.
 
 **Mapping** — route the term the entry uses to the canonical term on the left:
 
 - **Aristocrat** ← nobleman, noble, lord, baron, count, earl, marquis, titled noble.
 - **Gentry** ← squire, esquire, gentleman, landed gentry, minor nobility.
 - **Landowner** ← landholder, estate owner, plantation owner, planter.
-- **Estate Administrator** ← estate manager, steward, bailiff, land agent, factor.
-- **Government Official** ← civil servant, official, bureaucrat, state administrator, diplomat, ambassador, consul, councillor, tax officer, revenue officer, customs officer, town clerk.
+- **Farmer** ← husbandman.
+- **Peasant** ← cottager, smallholder, crofter.
+- **Estate Administrator** ← estate manager, steward, bailiff, land agent.
+- **Government Official** ← civil servant, bureaucrat, state administrator, councillor, tax officer, revenue officer, customs officer, town clerk.
+- **Diplomat** ← ambassador, consul.
 - **Magistrate** ← judge, justice of the peace, alderman, sheriff.
-- **Soldier** ← military officer, army officer, naval officer, general, colonel, cavalry officer, mercenary.
-- **Cleric** ← clergyman, priest, pastor, vicar, rector, parson, curate, deacon, chaplain, canon, bishop, monk, friar, abbot, rabbi, imam, mullah.
-- **Physician** ← surgeon, medical practitioner.
+- **Soldier** ← military officer, army officer, military, general, colonel, cavalry officer, mercenary.
+- **Sailor** ← mariner, seaman, sea captain.
+- **Naval Officer** ← navy officer.
+- **Priest** ← clergyman, pastor, vicar, rector, parson, curate, deacon, chaplain, canon.
+- **Monk** ← friar, abbot.
+- **Imam** ← mullah.
+- **Physician** ← medical practitioner.
 - **Pharmacist** ← apothecary, druggist.
-- **Lawyer** ← attorney, advocate, barrister, solicitor, notary, jurist, counselor, procurator.
-- **Academic** ← professor, university lecturer, scholar, don.
+- **Lawyer** ← attorney, advocate, barrister, solicitor.
+- **Notary** ← procurator.
+- **Academic** ← professor, university lecturer, don.
 - **Schoolmaster** ← teacher, schoolteacher, tutor, preceptor, headmaster, instructor.
-- **Scientist** ← naturalist, mathematician, astronomer, natural philosopher.
+- **Naturalist** ← natural philosopher.
 - **Engineer** ← civil engineer, mechanical engineer, surveyor.
 - **Architect** ← master builder.
-- **Merchant** ← trader, dealer, businessman, tradesman, importer, exporter, draper.
+- **Merchant** ← trader, dealer, businessman, tradesman, importer, exporter.
+- **Draper** ← cloth merchant.
 - **Banker** ← financier, moneylender, money-changer, bill broker.
 - **Manufacturer** ← industrialist, factory owner, mill owner, ironmaster.
-- **Publisher** ← printer, bookseller, editor, typographer.
+- **Publisher** ← bookseller, editor.
+- **Printer** ← typographer.
 - **Innkeeper** ← tavern keeper, publican, alehouse keeper, hotelier.
-- **Artisan** ← craftsman, blacksmith, smith, carpenter, joiner, cabinetmaker, goldsmith, silversmith, jeweller, watchmaker, clockmaker, locksmith, tailor, baker, brewer, distiller, tanner, currier, butcher, potter, glassmaker, cutler, saddler, cooper, dyer.
-- **Cobbler** ← shoemaker, cordwainer, bootmaker.
+- **Artisan** ← craftsman, butcher, saddler, cooper, dyer.
+- **Smith** ← blacksmith, locksmith, cutler.
+- **Goldsmith** ← silversmith, jeweller.
+- **Watchmaker** ← clockmaker.
+- **Carpenter** ← joiner, cabinetmaker.
 - **Weaver** ← cloth weaver, clothier.
+- **Cobbler** ← shoemaker, cordwainer, bootmaker.
 - **Mason** ← stonemason, bricklayer.
+- **Brewer** ← distiller.
+- **Tanner** ← currier.
+- **Potter** ← glassmaker.
 - **Scribe** ← copyist, amanuensis.
 - **Musician** ← composer, organist, choirmaster, cantor, kapellmeister, instrumentalist.
 - **Artist** ← painter, sculptor, actor, performer.
 - **Man Of Letters** ← writer, author, poet, journalist, historian.
-- **Farmer** ← peasant, husbandman, cottager, smallholder, crofter.
 - **Laborer** ← labourer, workman, day laborer.
 - **Servant** ← domestic servant, valet, footman.
-- **Sailor** ← mariner, seaman, sea captain, fisherman.
 - **Fishmonger** ← fish dealer, fish seller.
 - **Miner** ← collier.
 
 *(`Publisher` replaces the older abbreviation `Pub`.)*
 
-*Disambiguation:* "minister" → `Cleric` if of religion, `Government Official` if of
-state; "chemist" → `Pharmacist` in British usage, `Scientist` only if clearly a research
-chemist; "captain" → `Soldier` if military, `Sailor` if a ship's master.
+*Disambiguation:* "minister" → `Cleric` if of religion and no closer office is named,
+`Government Official` if of state; "chemist" → `Pharmacist` in British usage, `Scientist`
+only if clearly a research chemist; "captain" → `Soldier` if military, `Sailor` if a ship's
+master. A naval officer is `Sailor; Naval Officer`. A surgeon is `Surgeon`, a physician
+is `Physician`. `Peasant` is a smallholder or cottager; `Farmer` is a husbandman; `Landowner`
+holds an estate. `Gentry` is a status, used only when the entry names no trade. A university
+post is `Academic`; a private scholar is not. A jurist in practice is `Lawyer`; a jurist who
+held a chair is `Academic`. A commercial factor is `Merchant`; an estate factor is
+`Estate Administrator`. Do not force `official` or `counselor`.
 
 **Religion_Affiliation (canonical list):** the figure's religious affiliation; multiple
-allowed only for a genuine change (e.g. `Catholic; Protestant` for a convert). Use the
-MOST SPECIFIC term the entry supports; map a variant or related label to a listed term
-using the mapping below. An affiliation inferred from clear cultural context (not
-explicitly stated) still uses the term, with `Religion_Affiliation_Certain` = 0.
+allowed only for a genuine change (e.g. `Catholic; Protestant; Lutheran`). Where a specific
+denomination has a parent below, write `Parent; Specific` (`Protestant; Lutheran`, `Muslim; Sunni`).
+The parent is the filter; the specific term is the denomination the entry names. Use the parent
+alone only when the entry gives no denomination. Quaker, Unitarian, and Anabaptist stay their
+own terms and are not filed under Protestant. An affiliation inferred from a religious role
+in the entry still uses the term, with `Religion_Affiliation_Certain` = 0.
 
-- *Western Christian:* Catholic, Protestant, Lutheran, Calvinist, Anglican, Puritan, Presbyterian, Baptist, Congregationalist, Wesleyan, Quaker, Unitarian, Anabaptist, Moravian.
+- *Western Christian:* Catholic, Protestant, Lutheran, Calvinist, Anglican, Puritan, Presbyterian, Baptist, Congregationalist, Methodist, Quaker, Unitarian, Anabaptist, Moravian.
 - *Eastern Christian:* Orthodox, Russian Orthodox, Greek Orthodox, Coptic, Nestorian.
-- *Other traditions:* Jewish, Muslim, Hindu, Buddhist, Confucian, Taoist, Zoroastrian.
+- *Other traditions:* Jewish, Orthodox Judaism, Reform Judaism, Muslim, Sunni, Shia, Sufi, Hindu, Buddhist, Confucian, Taoist, Zoroastrian.
 - *Non-affiliated / other:* Deist, Agnostic, Atheist, Heterodox, Sect.
 - *Sentinel:* Unknown.
+
+**Two levels.** When the entry names a specific term, write `Parent; Specific`, parent first. The parent is the filter; the specific term is what the entry names. Use the parent alone when the entry is no more specific. Never store a specific term without its parent.
+
+- **Protestant** → Lutheran, Calvinist, Anglican, Puritan, Presbyterian, Baptist, Congregationalist, Methodist, Moravian.
+- **Orthodox** → Russian Orthodox, Greek Orthodox.
+- **Jewish** → Orthodox Judaism, Reform Judaism.
+- **Muslim** → Sunni, Shia, Sufi.
 
 **Mapping** — route the term the entry uses to the canonical term on the left:
 
@@ -565,9 +672,9 @@ explicitly stated) still uses the term, with `Religion_Affiliation_Certain` = 0.
 - **Protestant** ← nonconformist, dissenter.
 - **Lutheran** ← evangelical lutheran, augsburg confession.
 - **Calvinist** ← huguenot, dutch reformed, reformed church.
-- **Anglican** ← church of england, episcopalian.
+- **Anglican** ← church of england, episcopalian, latitudinarian.
 - **Presbyterian** ← church of scotland, kirk.
-- **Wesleyan** ← methodist.
+- **Methodist** ← wesleyan.
 - **Quaker** ← society of friends.
 - **Unitarian** ← socinian.
 - **Anabaptist** ← mennonite.
@@ -575,47 +682,60 @@ explicitly stated) still uses the term, with `Religion_Affiliation_Certain` = 0.
 - **Orthodox** ← eastern orthodox.
 - **Coptic** ← egyptian christian.
 - **Nestorian** ← church of the east, assyrian christian, east-syriac christian.
-- **Jewish** ← hebrew, israelite, judaic.
-- **Muslim** ← islamic, mohammedan, sunni, shia, shiite, sufi.
+- **Jewish** ← judaic.
+- **Muslim** ← islamic, mohammedan.
+- **Shia** ← shiite.
 - **Zoroastrian** ← parsi.
 - **Deist** ← natural religion.
-- **Heterodox** ← latitudinarian.
 
 *Notes:* a **pope** or **prince-bishop** is `Catholic` here (his role as a *patron* is a
 separate field). `Heterodox` vs `Sect`: `Heterodox` marks unorthodox belief within/against
-a main tradition; `Sect` marks membership in a small unnamed body. Sub-traditions
-(Sunni/Shia, Orthodox/Reform Judaism) map to the parent term unless the entry stresses the
-distinction. Reserve `Unknown` for when the entry gives no basis and no clear cultural
-context supports an inference.
+a main tradition; `Sect` marks membership in a small unnamed body. A named denomination keeps its parent: `Muslim; Sunni`, `Jewish;
+Orthodox Judaism`, `Protestant; Anglican`. `Church of the East` is
+stored as `Nestorian` so the catalog has one term for it. `Christian`, `Evangelical`, and
+`Reformed` are not terms: a denomination the entry names is recorded, and a vague label
+goes in `Religion_Notes` with the field left `Unknown`. A latitudinarian is `Protestant; Anglican`; the tendency goes in `Religion_Notes`.
+Quaker, Unitarian, and Anabaptist are not given a Protestant parent. Reserve `Unknown` for when the entry names no faith and
+shows no religious role or community.
 
 **Scientific_Disciplines (broad parents):**
  Mathematics, Medicine, Astronomy, Botany, Anatomy, Natural Philosophy, Physics, Optics, Natural History, Pharmacology, Physiology, Mechanics, Chemistry, Alchemy, Cartography, Geography, Astrology, Iatrochemistry, Zoology, Instrumentation, Navigation, Embryology, Surgery, Geology, Engineering, Hydraulics, Entomology, Meteorology, Mineralogy, Scientific Organization, Paleontology, Microscopy, Magnetism, Scientific Communication, Philosophy, Music, Metallurgy, Electricity, Demography, Anthropology, Oceanography, Psychology, History, Theology, Military Engineering, Watchmaking, Geometry, Chemical Technology, Biology, Art.
 
 *(These are the broad categories. Per the field spec, always emit the broad term and
-then any supported subfield after it, e.g. `Chemistry; Organic Chemistry`. Recognized
-subfields of `Philosophy` — always paired with it — include `Scholastic Philosophy`,
-`Occult Philosophy`, `Logic`, and `Metaphysics`
-(→ `Philosophy; Scholastic Philosophy`, etc.). Do not use `Magic` as a discipline —
-record occult work as `Philosophy; Occult Philosophy`. Do not use `Mining` as a
-discipline — map mining science to `Metallurgy` / `Mineralogy` / `Geology` as fits.)*
+then any supported subfield after it, e.g. `Chemistry; Organic Chemistry`. `Geometry`,
+`Algebra`, and `Analysis` are subfields of `Mathematics` and are paired with it
+(`Mathematics; Geometry`). Recognized subfields of `Philosophy` — always paired with it —
+include `Scholastic Philosophy`, `Occult Philosophy`, `Logic`, and `Metaphysics`. Do not use
+`Magic` as a discipline — record occult work as `Philosophy; Occult Philosophy`. Do not use
+`Mining` as a discipline — map mining science to `Metallurgy` / `Mineralogy` / `Geology` as
+fits. One spelling per subfield: `Phycology` not `Algology`, `Otolaryngology` not
+`Oto-rhinolaryngology`. At most one subfield after each parent — the focus the entry
+names, not every neighboring specialty. A narrower slice than that subfield goes in
+the notes. Do not add a discipline the entry does not name.)*
 
 **Means_of_Support (canonical list):** how the figure earned their living; multiple
 allowed, ordered by prominence, or `Unknown` if the entry gives no basis. These categories
 are complete — map any specific or foreign description to one of them rather than coining a
 term, and never borrow a discipline name or a patronage label (see below and the field spec).
 
-- *Scholarly & teaching:* Academia, Schoolmastering, Scientific Society, Museum.
+- *Scholarly & teaching:* Academia, Research, Schoolmastering, Scientific Society, Museum.
 - *Practice of a profession:* Medicine, Apothecary, Law, Engineering.
-- *Church, state, arms:* Church Life, Government, Military.
+- *Church, state, arms:* Church Life, Parish, Monastery, Canonry, Government, Military.
 - *Support without employment:* Patronage, Personal Means, Court.
-- *Land & commerce:* Estate Administration, Agriculture, Merchant, Industry.
-- *Making, arts, craft:* Instruments, Art, Musician, Artisan, Publishing.
+- *Land & commerce:* Estate Administration, Agriculture, Merchant, Banking, Industry, Mining.
+- *Making, arts, craft:* Instruments, Art, Musician, Artisan, Publishing, Writing.
 - *Historical specialties:* Calendars, Astrology, Sailing.
 - *Catch-alls:* Miscellaneous, Unknown.
 
+**Two levels.** When the entry names a specific term, write `Parent; Specific`, parent first. The parent is the filter; the specific term is what the entry names. Use the parent alone when the entry is no more specific. Never store a specific term without its parent.
+
+- **Academia** → Research.
+- **Church Life** → Parish, Monastery, Canonry.
+
 **Mapping** — route the term the entry uses to the canonical term on the left:
 
-- **Academia** ← professorship, chair, university teaching, college teaching, lectureship, research post, academic fellowship.
+- **Academia** ← professorship, chair, university teaching, college teaching, lectureship, academic fellowship.
+- **Research** ← research post, research institute.
 - **Schoolmastering** ← school teaching, running a school, private tutoring.
 - **Scientific Society** ← chemical society, society office, academy office, secretaryship.
 - **Museum** ← curatorship, keeper of a collection, museum post, curator.
@@ -623,19 +743,25 @@ term, and never borrow a discipline name or a patronage label (see below and the
 - **Apothecary** ← pharmacy, dispensing.
 - **Law** ← legal practice, advocacy, notarial work.
 - **Engineering** ← engineering practice, surveying.
-- **Church Life** ← ecclesiastical living, benefice, prebend, canonry, monastic support, parish income, holy orders.
+- **Church Life** ← holy orders.
+- **Parish** ← ecclesiastical living, benefice, parish income.
+- **Monastery** ← monastic support.
+- **Canonry** ← prebend.
 - **Government** ← civil service, state office, municipal office, public appointment, diplomacy, tax office, revenue office.
-- **Military** ← army pay, naval pay, officer's commission, military engineering.
+- **Military** ← army pay, naval pay, officer's commission.
 - **Personal Means** ← private wealth, inherited wealth, family money, independent means, rentier income, private fortune.
 - **Estate Administration** ← managing an estate, stewardship, land agency.
 - **Agriculture** ← farming, husbandry, viticulture, plantation, planter.
-- **Merchant** ← trade, commerce, family business, banking, finance, importing, exporting, drapery business.
-- **Industry** ← industrial employment, manufacturing, consulting, mining, factory management, works management, engineering consultancy.
+- **Merchant** ← trade, commerce, family business, importing, exporting, drapery business.
+- **Banking** ← finance.
+- **Industry** ← industrial employment, manufacturing, consulting, factory management, works management, engineering consultancy.
+- **Mining** ← mine employment.
 - **Instruments** ← instrument-making, instrument making.
 - **Art** ← painting, sculpture, artistic commissions, illustration.
 - **Musician** ← music post, organist post, court musician, composing, performing.
 - **Artisan** ← craft trade.
-- **Publishing** ← writing, authorship, journalism, editing, bookselling, printing.
+- **Publishing** ← editing, bookselling, printing.
+- **Writing** ← authorship, journalism.
 - **Calendars** ← calendar-making, almanac-making, computus.
 - **Astrology** ← astrological practice.
 - **Sailing** ← seafaring, navigation, pilotage.
@@ -643,9 +769,17 @@ term, and never borrow a discipline name or a patronage label (see below and the
 *(`Museum` covers curatorial / collection-keeping posts, distinct from a university
 post, which is `Academia`.)*
 
-*Never in this field:* a discipline name (`Chemistry`, `Astronomy`, `Mining`, `Pharmacy`)
-— map to the livelihood it funded; or a patronage label (`Court`, `Government Official`) —
-use `Patronage` or `Government` per the mapping above.
+*`Court` here is a livelihood* drawn from a ruler's household. It is not the patronage
+type of the same name. Never put `Government Official` in this field; a state salary is
+`Government`.
+
+*Never in this field:* a discipline name (`Chemistry`, `Astronomy`, `Pharmacy`,
+`Science`) — map to the livelihood it funded. A printer, bookseller, or editor is
+`Publishing`. An author or journalist who lived by writing is `Writing`. Banking
+is `Banking`, not `Merchant`. Mining is `Mining`. Consulting and factory work are
+`Industry`. A parish living is `Church Life; Parish`; a monastery is `Church Life;
+Monastery`; a prebend or canonry is `Church Life; Canonry`. A research post is
+`Academia; Research`; a chair or lectureship is `Academia`.
 
 **Patronage_Types (canonical list):** the kinds of patrons who supported, sponsored, or
 promoted the figure; multiple allowed. Assign a type only when the entry actually
@@ -655,22 +789,29 @@ category using the mapping below.
 
 - *Rulers & nobility:* Court, Aristocrat, Gentry.
 - *Church:* Ecclesiastical Official.
-- *State & city:* Government Official, City Magistrate.
+- *State & city:* Government Official, Diplomat, City Magistrate.
 - *Scholarly & professional:* Academic, Scientist, Physician.
-- *Commercial:* Merchant.
+- *Commercial:* Merchant, Banker.
 - *Institutional:* Scientific Society, Foundation.
 - *Sentinels:* None, Unknown.
 
+**Two levels.** When the entry names a specific term, write `Parent; Specific`, parent first. The parent is the filter; the specific term is what the entry names. Use the parent alone when the entry is no more specific. Never store a specific term without its parent.
+
+- **Government Official** → Diplomat.
+- **Merchant** → Banker.
+
 **Mapping** — route the term the entry uses to the canonical term on the left:
 
-- **Court** ← king, queen, emperor, empress, prince, princess, sultan, emir, caliph, shah, tsar, czar, grand duke, elector, khedive, royal patron, monarch.
+- **Court** ← king, queen, emperor, empress, prince, princess, sultan, emir, caliph, shah, tsar, czar, grand duke, elector, khedive, royal patron, monarch, court official.
 - **Aristocrat** ← nobleman, lord, baron, count, earl, marquis, landed magnate.
 - **Gentry** ← squire, gentleman.
 - **Ecclesiastical Official** ← bishop, archbishop, cardinal, abbot, prelate, dean, canon.
-- **Government Official** ← secretary of state, councillor, governor, minister of state, ministry, bureau.
+- **Government Official** ← secretary of state, councillor, government, governor, minister of state, ministry, bureau.
+- **Diplomat** ← ambassador.
 - **City Magistrate** ← mayor, alderman, burgomaster, town council.
 - **Academic** ← professor, university, college, faculty, mentor.
-- **Merchant** ← banker, industrialist, businessman, financier.
+- **Merchant** ← industrialist, businessman.
+- **Banker** ← financier.
 - **Scientific Society** ← learned society, royal society.
 - **Foundation** ← endowment, trust, research fund.
 
@@ -682,42 +823,51 @@ here means sponsorship, not mere election to membership, which belongs in
 
 *Notes:* a **pope** is `Court` when acting as a temporal ruler (Papal States) and
 `Ecclesiastical Official` when acting as head of the Church — choose by what the entry
-describes. Use `None` only when the entry indicates the figure had no patrons; use
+describes. `Court` is not split into a term per title; the patron's name stays in
+`Patronage_Notes`. Use `None` only when the entry indicates the figure had no patrons; use
 `Unknown` when patronage is simply not discussed (the default).
 
 **Education_Degrees (canonical list):** in the output, `"; "`-separated and ordered
 bachelor → master → doctorate.
 
-- *Bachelor's:* B.A., B.S., B.D., B.Th., Ph.B., M.B., LL.B..
-- *Master's:* M.A., M.S., C.M..
-- *Doctorate:* M.D., Ph.D., D.Sc., D.Th., LL.D., Litt.D..
+- *Bachelor's:* B.A., B.S., B.D., B.Th., Ph.B., M.B., Ch.B., LL.B., Licence, Licencié ès Sciences, Licencié ès Lettres.
+- *Master's:* M.A., M.S., C.M., Ph.M., Diplom, Diplom-Ingenieur.
+- *Doctorate:* M.D., J.D., Ph.D., D.Sc., D.Th., LL.D., Litt.D., D.C.L., J.U.D., D.D., S.T.D., Dr. med., Dr. phil., Dr. rer. nat., Dr.-Ing., Dr. jur., Docteur ès Sciences, Docteur en Médecine, Doctorat ès Lettres.
+- *Historical degrees:* Laurea, Laurea Magistrale, Laurea in Medicina.
+- *Professional qualifications:* L.S.A., L.R.C.P., M.R.C.S..
 - *Retained from the existing catalog:* L.D., P.D..
 - *Sentinel:* None.
 
 **Mapping** — route the term the entry uses to the canonical term on the left:
 
-- **B.A.** ← A.B., Licencié ès Lettres.
-- **B.S.** ← Sc.B., B.Sc., Licence, Licencié ès Sciences.
-- **M.B.** ← Ch.B., L.S.A., L.R.C.P., M.R.C.S..
-- **M.A.** ← A.M., Ph.M., Laurea.
-- **M.S.** ← Sc.M., M.Sc., Diplom, Diplom-Ingenieur.
-- **C.M.** ← Ch.M..
-- **M.D.** ← Dr. med., Docteur en Médecine, Laurea in Medicina.
-- **Ph.D.** ← Dr. phil., Dr. rer. nat., Dr.-Ing., doctoratus.
-- **D.Sc.** ← Sc.D., D.S., Docteur ès Sciences.
-- **D.Th.** ← Th.D., D.D., S.T.D..
-- **LL.D.** ← D.C.L., J.D., J.U.D., Dr. jur..
-- **Litt.D.** ← D.Litt., Doctorat ès Lettres.
+- **B.A.** ← A.B..
+- **B.S.** ← Sc.B., B.Sc..
+- **M.A.** ← A.M..
+- **M.S.** ← Sc.M., M.Sc..
+- **C.M.** ← Ch.M., M.Ch..
+- **Ph.M.** ← M.Phil..
+- **Diplom-Ingenieur** ← Dipl.-Ing..
+- **D.Sc.** ← Sc.D., D.S..
+- **D.Th.** ← Th.D..
+- **Litt.D.** ← D.Litt..
 
-Use the `B.S.` / `D.Sc.` letter style throughout, and map any degree the entry names to
-the nearest term above rather than coining a new abbreviation.
+Use the `B.S.` / `D.Sc.` letter style throughout. Record the degree the entry names.
+A `Ch.B.` is not an `M.B.`. `Dr. phil.`, `Dr. rer. nat.`, and `Dr.-Ing.` are not a `Ph.D.`.
+`J.D.` is not an `LL.D.`. `Docteur ès Sciences` is not a `D.Sc.`. A historical Italian
+`Laurea` is not a bachelor's or a master's; record `Laurea`, `Laurea Magistrale`, or
+`Laurea in Medicina` as named. `L.S.A.`, `L.R.C.P.`, and `M.R.C.S.` are professional
+qualifications, not bachelor's degrees. Do not assign `L.D.` or `P.D.` to a new entry;
+they remain only so older rows stay valid.
 
 *Not degrees — never record as a degree:* secondary-school certificates (French
-`baccalauréat`, German `Abitur`) and post-doctoral qualifications (`Habilitation`, French
-`agrégation`). If the entry names only such a qualification, the degree is `None`.
+`baccalauréat`, German `Abitur`), post-doctoral qualifications (`Habilitation`, French
+`agrégation`), and a bare medieval `doctoratus`. When the entry names the faculty,
+use that degree (`M.D.`, `J.U.D.`, `D.D.`); otherwise the degree is `None` and the
+wording goes in `Education_Notes`.
 
 If a named degree still has no clear match, choose the closest listed term by level
-(bachelor / master / doctorate) and field; never coin a new abbreviation.
+and field only when the match is the same qualification. Otherwise leave the degree
+`None`, describe it in `Education_Notes`, and do not invent an abbreviation.
 
 **Instruments:** *not* a controlled vocabulary — record the actual named devices
 the figure built, used, or is associated with (Telescope, Microscope, Planetarium,
@@ -745,5 +895,6 @@ Refractometer, etc.), semicolon-separated, singular and capitalized, or `None`.
    full/short name as the sort key. If you would rather keep a forename in
    `First_Name` for Arabic names (the earlier behavior), change the Classical Arabic
    case in the Identity rule.
-5. **Coordinates.** Not in scope — your separate geocoder fills lat/long from
-   `Born_Town`/`Born_Country` downstream, so no place names are ever invented here.
+5. **Coordinates.** Not in scope. The geocoder fills lat/long from the place
+   fields. A town left `Unknown` must stay `Unknown`; do not invent a town so
+   that a coordinate can be found.

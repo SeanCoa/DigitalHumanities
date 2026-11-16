@@ -1237,6 +1237,15 @@ def build_data_layer(csv_path):
     """Read + clean the CSV and return a pure-data dict (no rendering)."""
     print("Loading and cleaning data...")
     df = pd.read_csv(csv_path)
+    if "Verification" in df.columns:
+        bad = df["Verification"].fillna("").astype(str).str.strip().str.casefold() != "reviewed"
+        if bad.any():
+            raise SystemExit(
+                f"{int(bad.sum())} row(s) are not marked reviewed. "
+                "The map is built only from a review export."
+            )
+    else:
+        print("-> this catalog has no Verification column; it predates the review gate")
 
     for c in ['Born_Latitude', 'Born_Longitude', 'Died_Latitude', 'Died_Longitude']:
         df[c] = pd.to_numeric(df[c], errors='coerce')

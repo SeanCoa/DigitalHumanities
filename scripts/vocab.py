@@ -24,7 +24,10 @@ Per field:
 DELIBERATELY NOT MAPPED -- ambiguous terms with two legitimate targets, left to human
 review so they never mis-flag: chemist (Pharmacist/Scientist), minister (Cleric/
 Government Official), captain (Soldier/Sailor), doctor, duke, viceroy, evangelical,
-reformed, brahmin, freethinker, and "Court" inside Means_of_Support.
+reformed, brahmin, freethinker, factor (estate steward / commercial agent), jurist
+(Lawyer/Academic), scholar, official, counselor, hebrew, israelite, and authorship
+as a Means_of_Support. "Court" inside Means_of_Support is a livelihood, not the
+patronage type.
 """
 
 FIELDS = {
@@ -41,24 +44,43 @@ FIELDS = {
     # ------------------------------------------------------ Father_Occupation
     "Father_Occupation": {
         "intro": (
-            "**Father_Occupation (canonical list):** one term per figure (the father's "
-            "principal\noccupation), or `Unknown` if not stated. Prefer the category that "
-            "fits; map any specific\njob title, synonym, or foreign term to its category "
-            "using the mapping below rather than\ncoining a new one."
+            "**Father_Occupation (canonical list):** the father's principal occupation, "
+            "or `Unknown`\nif not stated. Write one occupation. Where a specific term is "
+            "listed under a parent below,\nwrite `Parent; Specific` (`Artisan; Watchmaker`, "
+            "`Cleric; Rabbi`, `Sailor; Naval Officer`).\nThe parent is what a reader filters "
+            "on; the specific term is what the entry names. Use the\nparent alone when the "
+            "entry is no more specific. A rank, a trade, or an office finer than\nthe list "
+            "goes in `Father_Notes`, not a new term."
         ),
         "groups": {
-            "Upper ranks & land": ["Aristocrat", "Gentry", "Landowner", "Estate Administrator"],
-            "State & arms": ["Government Official", "Magistrate", "Soldier"],
-            "Church": ["Cleric"],
-            "Professions": ["Physician", "Pharmacist", "Lawyer", "Academic", "Schoolmaster",
-                            "Scientist", "Engineer", "Architect"],
-            "Commerce & making": ["Merchant", "Banker", "Manufacturer", "Publisher",
-                                  "Drug Merchant", "Innkeeper"],
-            "Crafts & trades": ["Artisan", "Cobbler", "Weaver", "Mason", "Scribe"],
+            "Rank & land": ["Aristocrat", "Gentry", "Landowner", "Farmer", "Peasant",
+                            "Estate Administrator"],
+            "State & arms": ["Government Official", "Diplomat", "Magistrate", "Soldier",
+                             "Sailor", "Naval Officer"],
+            "Church": ["Cleric", "Bishop", "Priest", "Monk", "Rabbi", "Imam"],
+            "Professions": ["Physician", "Surgeon", "Pharmacist", "Lawyer", "Notary",
+                            "Academic", "Schoolmaster", "Scientist", "Mathematician",
+                            "Astronomer", "Naturalist", "Engineer", "Architect", "Accountant"],
+            "Commerce": ["Merchant", "Draper", "Banker", "Manufacturer", "Publisher",
+                         "Printer", "Drug Merchant", "Innkeeper"],
+            "Crafts": ["Artisan", "Smith", "Goldsmith", "Watchmaker", "Carpenter", "Weaver",
+                       "Tailor", "Cobbler", "Mason", "Baker", "Brewer", "Tanner", "Potter",
+                       "Scribe"],
             "Arts & letters": ["Musician", "Artist", "Man Of Letters"],
-            "Land labor & service": ["Farmer", "Laborer", "Servant", "Sailor",
-                                     "Fishmonger", "Miner"],
+            "Labor & service": ["Laborer", "Servant", "Fisherman", "Fishmonger", "Miner"],
             "Sentinel": ["Unknown"],
+        },
+        "parents": {
+            "Diplomat": "Government Official",
+            "Naval Officer": "Sailor",
+            "Bishop": "Cleric", "Priest": "Cleric", "Monk": "Cleric",
+            "Rabbi": "Cleric", "Imam": "Cleric",
+            "Mathematician": "Scientist", "Astronomer": "Scientist", "Naturalist": "Scientist",
+            "Draper": "Merchant", "Printer": "Publisher",
+            "Smith": "Artisan", "Goldsmith": "Artisan", "Watchmaker": "Artisan",
+            "Carpenter": "Artisan", "Weaver": "Artisan", "Tailor": "Artisan",
+            "Cobbler": "Artisan", "Mason": "Artisan", "Baker": "Artisan",
+            "Brewer": "Artisan", "Tanner": "Artisan", "Potter": "Artisan", "Scribe": "Artisan",
         },
         "synonyms": {
             "nobleman": "Aristocrat", "noble": "Aristocrat", "lord": "Aristocrat",
@@ -70,57 +92,55 @@ FIELDS = {
             "plantation owner": "Landowner", "planter": "Landowner",
             "estate manager": "Estate Administrator", "steward": "Estate Administrator",
             "bailiff": "Estate Administrator", "land agent": "Estate Administrator",
-            "factor": "Estate Administrator",
-            "civil servant": "Government Official", "official": "Government Official",
+            "civil servant": "Government Official",
             "bureaucrat": "Government Official", "state administrator": "Government Official",
-            "diplomat": "Government Official", "ambassador": "Government Official",
-            "consul": "Government Official", "councillor": "Government Official",
+            "ambassador": "Diplomat",
+            "consul": "Diplomat", "councillor": "Government Official",
             "tax officer": "Government Official", "revenue officer": "Government Official",
             "customs officer": "Government Official", "town clerk": "Government Official",
             "judge": "Magistrate", "justice of the peace": "Magistrate",
             "alderman": "Magistrate", "sheriff": "Magistrate",
             "military officer": "Soldier", "army officer": "Soldier",
-            "naval officer": "Soldier", "general": "Soldier", "colonel": "Soldier",
+            "military": "Soldier", "general": "Soldier", "colonel": "Soldier",
             "cavalry officer": "Soldier", "mercenary": "Soldier",
-            "clergyman": "Cleric", "priest": "Cleric", "pastor": "Cleric",
-            "vicar": "Cleric", "rector": "Cleric", "parson": "Cleric", "curate": "Cleric",
-            "deacon": "Cleric", "chaplain": "Cleric", "canon": "Cleric", "bishop": "Cleric",
-            "monk": "Cleric", "friar": "Cleric", "abbot": "Cleric", "rabbi": "Cleric",
-            "imam": "Cleric", "mullah": "Cleric",
-            "surgeon": "Physician", "medical practitioner": "Physician",
+            "clergyman": "Priest", "pastor": "Priest",
+            "vicar": "Priest", "rector": "Priest", "parson": "Priest", "curate": "Priest",
+            "deacon": "Priest", "chaplain": "Priest", "canon": "Priest",
+            "friar": "Monk", "abbot": "Monk",
+            "mullah": "Imam",
+            "medical practitioner": "Physician",
             "apothecary": "Pharmacist", "druggist": "Pharmacist",
             "attorney": "Lawyer", "advocate": "Lawyer", "barrister": "Lawyer",
-            "solicitor": "Lawyer", "notary": "Lawyer", "jurist": "Lawyer",
-            "counselor": "Lawyer", "procurator": "Lawyer",
+            "solicitor": "Lawyer",
+            "procurator": "Notary",
             "professor": "Academic", "university lecturer": "Academic",
-            "scholar": "Academic", "don": "Academic",
+            "don": "Academic",
             "teacher": "Schoolmaster", "schoolteacher": "Schoolmaster", "tutor": "Schoolmaster",
             "preceptor": "Schoolmaster", "headmaster": "Schoolmaster",
             "instructor": "Schoolmaster",
-            "naturalist": "Scientist", "mathematician": "Scientist",
-            "astronomer": "Scientist", "natural philosopher": "Scientist",
+            "natural philosopher": "Naturalist",
             "civil engineer": "Engineer", "mechanical engineer": "Engineer",
             "surveyor": "Engineer",
             "master builder": "Architect",
             "trader": "Merchant", "dealer": "Merchant", "businessman": "Merchant",
             "tradesman": "Merchant", "importer": "Merchant", "exporter": "Merchant",
-            "draper": "Merchant",
+            "cloth merchant": "Draper",
             "financier": "Banker", "moneylender": "Banker", "money-changer": "Banker",
             "bill broker": "Banker",
             "industrialist": "Manufacturer", "factory owner": "Manufacturer",
             "mill owner": "Manufacturer", "ironmaster": "Manufacturer",
-            "printer": "Publisher", "bookseller": "Publisher", "editor": "Publisher",
-            "typographer": "Publisher",
+            "bookseller": "Publisher", "editor": "Publisher",
+            "typographer": "Printer",
             "tavern keeper": "Innkeeper", "publican": "Innkeeper",
             "alehouse keeper": "Innkeeper", "hotelier": "Innkeeper",
-            "craftsman": "Artisan", "blacksmith": "Artisan", "smith": "Artisan",
-            "carpenter": "Artisan", "joiner": "Artisan", "cabinetmaker": "Artisan",
-            "goldsmith": "Artisan", "silversmith": "Artisan", "jeweller": "Artisan",
-            "watchmaker": "Artisan", "clockmaker": "Artisan", "locksmith": "Artisan",
-            "tailor": "Artisan", "baker": "Artisan", "brewer": "Artisan",
-            "distiller": "Artisan", "tanner": "Artisan", "currier": "Artisan",
-            "butcher": "Artisan", "potter": "Artisan", "glassmaker": "Artisan",
-            "cutler": "Artisan", "saddler": "Artisan", "cooper": "Artisan", "dyer": "Artisan",
+            "craftsman": "Artisan", "blacksmith": "Smith",
+            "locksmith": "Smith", "cutler": "Smith",
+            "joiner": "Carpenter", "cabinetmaker": "Carpenter",
+            "silversmith": "Goldsmith", "jeweller": "Goldsmith",
+            "clockmaker": "Watchmaker",
+            "distiller": "Brewer", "currier": "Tanner",
+            "butcher": "Artisan", "glassmaker": "Potter",
+            "saddler": "Artisan", "cooper": "Artisan", "dyer": "Artisan",
             "shoemaker": "Cobbler", "cordwainer": "Cobbler", "bootmaker": "Cobbler",
             "cloth weaver": "Weaver", "clothier": "Weaver",
             "stonemason": "Mason", "bricklayer": "Mason",
@@ -131,22 +151,27 @@ FIELDS = {
             "performer": "Artist",
             "writer": "Man Of Letters", "author": "Man Of Letters", "poet": "Man Of Letters",
             "journalist": "Man Of Letters", "historian": "Man Of Letters",
-            "peasant": "Farmer",
-            "husbandman": "Farmer", "cottager": "Farmer",
-            "smallholder": "Farmer", "crofter": "Farmer",
+            "husbandman": "Farmer", "cottager": "Peasant",
+            "smallholder": "Peasant", "crofter": "Peasant",
             "labourer": "Laborer", "workman": "Laborer", "day laborer": "Laborer",
             "domestic servant": "Servant", "valet": "Servant", "footman": "Servant",
             "mariner": "Sailor", "seaman": "Sailor", "sea captain": "Sailor",
-            "fisherman": "Sailor",
+            "navy officer": "Naval Officer",
             "fish dealer": "Fishmonger", "fish seller": "Fishmonger",
             "collier": "Miner",
         },
         "notes": (
             "*(`Publisher` replaces the older abbreviation `Pub`.)*\n\n"
-            "*Disambiguation:* \"minister\" → `Cleric` if of religion, `Government Official` "
-            "if of\nstate; \"chemist\" → `Pharmacist` in British usage, `Scientist` only if "
-            "clearly a research\nchemist; \"captain\" → `Soldier` if military, `Sailor` if a "
-            "ship's master."
+            "*Disambiguation:* \"minister\" → `Cleric` if of religion and no closer office is "
+            "named,\n`Government Official` if of state; \"chemist\" → `Pharmacist` in British "
+            "usage, `Scientist`\nonly if clearly a research chemist; \"captain\" → `Soldier` "
+            "if military, `Sailor` if a ship's\nmaster. A naval officer is `Sailor; Naval "
+            "Officer`. A surgeon is `Surgeon`, a physician\nis `Physician`. `Peasant` is a "
+            "smallholder or cottager; `Farmer` is a husbandman; `Landowner`\nholds an estate. "
+            "`Gentry` is a status, used only when the entry names no trade. A university\n"
+            "post is `Academic`; a private scholar is not. A jurist in practice is `Lawyer`; "
+            "a jurist who\nheld a chair is `Academic`. A commercial factor is `Merchant`; an "
+            "estate factor is\n`Estate Administrator`. Do not force `official` or `counselor`."
         ),
     },
 
@@ -154,21 +179,24 @@ FIELDS = {
     "Religion_Affiliation": {
         "intro": (
             "**Religion_Affiliation (canonical list):** the figure's religious affiliation; "
-            "multiple\nallowed only for a genuine change (e.g. `Catholic; Protestant` for a "
-            "convert). Use the\nMOST SPECIFIC term the entry supports; map a variant or "
-            "related label to a listed term\nusing the mapping below. An affiliation inferred "
-            "from clear cultural context (not\nexplicitly stated) still uses the term, with "
-            "`Religion_Affiliation_Certain` = 0."
+            "multiple\nallowed only for a genuine change (e.g. `Catholic; Protestant; Lutheran`). "
+            "Where a specific\ndenomination has a parent below, write `Parent; Specific` "
+            "(`Protestant; Lutheran`, `Muslim; Sunni`).\nThe parent is the filter; the specific "
+            "term is the denomination the entry names. Use the parent\nalone only when the entry "
+            "gives no denomination. Quaker, Unitarian, and Anabaptist stay their\nown terms and "
+            "are not filed under Protestant. An affiliation inferred from a religious role\n"
+            "in the entry still uses the term, with `Religion_Affiliation_Certain` = 0."
         ),
         "groups": {
             "Western Christian": ["Catholic", "Protestant", "Lutheran", "Calvinist",
                                   "Anglican", "Puritan", "Presbyterian", "Baptist",
-                                  "Congregationalist", "Wesleyan", "Quaker", "Unitarian",
+                                  "Congregationalist", "Methodist", "Quaker", "Unitarian",
                                   "Anabaptist", "Moravian"],
             "Eastern Christian": ["Orthodox", "Russian Orthodox", "Greek Orthodox",
                                   "Coptic", "Nestorian"],
-            "Other traditions": ["Jewish", "Muslim", "Hindu", "Buddhist", "Confucian",
-                                 "Taoist", "Zoroastrian"],
+            "Other traditions": ["Jewish", "Orthodox Judaism", "Reform Judaism",
+                                 "Muslim", "Sunni", "Shia", "Sufi",
+                                 "Hindu", "Buddhist", "Confucian", "Taoist", "Zoroastrian"],
             "Non-affiliated / other": ["Deist", "Agnostic", "Atheist", "Heterodox", "Sect"],
             "Sentinel": ["Unknown"],
         },
@@ -180,7 +208,7 @@ FIELDS = {
             "reformed church": "Calvinist",
             "church of england": "Anglican", "episcopalian": "Anglican",
             "church of scotland": "Presbyterian", "kirk": "Presbyterian",
-            "methodist": "Wesleyan",
+            "wesleyan": "Methodist",
             "society of friends": "Quaker",
             "socinian": "Unitarian",
             "mennonite": "Anabaptist",
@@ -189,20 +217,35 @@ FIELDS = {
             "church of the east": "Nestorian", "assyrian christian": "Nestorian",
             "east-syriac christian": "Nestorian",
             "egyptian christian": "Coptic",
-            "hebrew": "Jewish", "israelite": "Jewish", "judaic": "Jewish",
-            "islamic": "Muslim", "mohammedan": "Muslim", "sunni": "Muslim",
-            "shia": "Muslim", "shiite": "Muslim", "sufi": "Muslim",
+            "judaic": "Jewish",
+            "islamic": "Muslim", "mohammedan": "Muslim",
+            "shiite": "Shia",
             "parsi": "Zoroastrian",
             "natural religion": "Deist",
-            "latitudinarian": "Heterodox",
+            "latitudinarian": "Anglican",
+        },
+        "parents": {
+            "Lutheran": "Protestant", "Calvinist": "Protestant", "Anglican": "Protestant",
+            "Puritan": "Protestant", "Presbyterian": "Protestant", "Baptist": "Protestant",
+            "Congregationalist": "Protestant", "Methodist": "Protestant",
+            "Moravian": "Protestant",
+            "Russian Orthodox": "Orthodox", "Greek Orthodox": "Orthodox",
+            "Orthodox Judaism": "Jewish", "Reform Judaism": "Jewish",
+            "Sunni": "Muslim", "Shia": "Muslim", "Sufi": "Muslim",
         },
         "notes": (
             "*Notes:* a **pope** or **prince-bishop** is `Catholic` here (his role as a "
             "*patron* is a\nseparate field). `Heterodox` vs `Sect`: `Heterodox` marks "
             "unorthodox belief within/against\na main tradition; `Sect` marks membership in a "
-            "small unnamed body. Sub-traditions\n(Sunni/Shia, Orthodox/Reform Judaism) map to "
-            "the parent term unless the entry stresses the\ndistinction. Reserve `Unknown` for "
-            "when the entry gives no basis and no clear cultural\ncontext supports an inference."
+            "small unnamed body. A named denomination keeps its parent: `Muslim; Sunni`, "
+            "`Jewish;\nOrthodox Judaism`, `Protestant; Anglican`. "
+            "`Church of the East` is\nstored as `Nestorian` so the catalog has one term for it. "
+            "`Christian`, `Evangelical`, and\n`Reformed` are not terms: a denomination the entry "
+            "names is recorded, and a vague label\ngoes in `Religion_Notes` with the field left "
+            "`Unknown`. A latitudinarian is `Protestant; Anglican`; the tendency goes in "
+            "`Religion_Notes`.\nQuaker, Unitarian, and Anabaptist are not given a Protestant parent. "
+            "Reserve `Unknown` for when the entry names no faith and\nshows no religious role "
+            "or community."
         ),
     },
 
@@ -226,12 +269,16 @@ FIELDS = {
         "notes": (
             "*(These are the broad categories. Per the field spec, always emit the broad term "
             "and\nthen any supported subfield after it, e.g. `Chemistry; Organic Chemistry`. "
-            "Recognized\nsubfields of `Philosophy` — always paired with it — include "
-            "`Scholastic Philosophy`,\n`Occult Philosophy`, `Logic`, and `Metaphysics`\n"
-            "(→ `Philosophy; Scholastic Philosophy`, etc.). Do not use `Magic` as a discipline "
-            "—\nrecord occult work as `Philosophy; Occult Philosophy`. Do not use `Mining` as "
-            "a\ndiscipline — map mining science to `Metallurgy` / `Mineralogy` / `Geology` as "
-            "fits.)*"
+            "`Geometry`,\n`Algebra`, and `Analysis` are subfields of `Mathematics` and are "
+            "paired with it\n(`Mathematics; Geometry`). Recognized subfields of `Philosophy` — "
+            "always paired with it —\ninclude `Scholastic Philosophy`, `Occult Philosophy`, "
+            "`Logic`, and `Metaphysics`. Do not use\n`Magic` as a discipline — record occult "
+            "work as `Philosophy; Occult Philosophy`. Do not use\n`Mining` as a discipline — "
+            "map mining science to `Metallurgy` / `Mineralogy` / `Geology` as\nfits. One "
+            "spelling per subfield: `Phycology` not `Algology`, `Otolaryngology` not\n"
+            "`Oto-rhinolaryngology`. At most one subfield after each parent — the focus the "
+            "entry\nnames, not every neighboring specialty. A narrower slice than that subfield "
+            "goes in\nthe notes. Do not add a discipline the entry does not name.)*"
         ),
         "inline": True,
     },
@@ -246,23 +293,25 @@ FIELDS = {
             "a patronage label (see below and the field spec)."
         ),
         "groups": {
-            "Scholarly & teaching": ["Academia", "Schoolmastering", "Scientific Society",
-                                     "Museum"],
+            "Scholarly & teaching": ["Academia", "Research", "Schoolmastering",
+                                     "Scientific Society", "Museum"],
             "Practice of a profession": ["Medicine", "Apothecary", "Law", "Engineering"],
-            "Church, state, arms": ["Church Life", "Government", "Military"],
+            "Church, state, arms": ["Church Life", "Parish", "Monastery", "Canonry",
+                                    "Government", "Military"],
             "Support without employment": ["Patronage", "Personal Means", "Court"],
             "Land & commerce": ["Estate Administration", "Agriculture", "Merchant",
-                                "Industry"],
+                                "Banking", "Industry", "Mining"],
             "Making, arts, craft": ["Instruments", "Art", "Musician", "Artisan",
-                                    "Publishing"],
+                                    "Publishing", "Writing"],
             "Historical specialties": ["Calendars", "Astrology", "Sailing"],
             "Catch-alls": ["Miscellaneous", "Unknown"],
         },
         "synonyms": {
             "professorship": "Academia", "chair": "Academia",
             "university teaching": "Academia", "college teaching": "Academia",
-            "lectureship": "Academia", "research post": "Academia",
-            "academic fellowship": "Academia",
+            "lectureship": "Academia", "academic fellowship": "Academia",
+            "research post": "Research",
+            "research institute": "Research",
             "school teaching": "Schoolmastering", "running a school": "Schoolmastering",
             "private tutoring": "Schoolmastering",
             "chemical society": "Scientific Society", "society office": "Scientific Society",
@@ -274,16 +323,17 @@ FIELDS = {
             "pharmacy": "Apothecary", "dispensing": "Apothecary",
             "legal practice": "Law", "advocacy": "Law", "notarial work": "Law",
             "engineering practice": "Engineering", "surveying": "Engineering",
-            "ecclesiastical living": "Church Life", "benefice": "Church Life",
-            "prebend": "Church Life", "canonry": "Church Life",
-            "monastic support": "Church Life", "parish income": "Church Life",
+            "ecclesiastical living": "Parish", "benefice": "Parish",
+            "parish income": "Parish",
+            "prebend": "Canonry",
+            "monastic support": "Monastery",
             "holy orders": "Church Life",
             "civil service": "Government", "state office": "Government",
             "municipal office": "Government", "public appointment": "Government",
             "diplomacy": "Government", "tax office": "Government",
             "revenue office": "Government",
             "army pay": "Military", "naval pay": "Military",
-            "officer's commission": "Military", "military engineering": "Military",
+            "officer's commission": "Military",
             "private wealth": "Personal Means", "inherited wealth": "Personal Means",
             "family money": "Personal Means", "independent means": "Personal Means",
             "rentier income": "Personal Means", "private fortune": "Personal Means",
@@ -293,10 +343,10 @@ FIELDS = {
             "viticulture": "Agriculture", "plantation": "Agriculture",
             "planter": "Agriculture",
             "trade": "Merchant", "commerce": "Merchant", "family business": "Merchant",
-            "banking": "Merchant", "finance": "Merchant", "importing": "Merchant",
-            "exporting": "Merchant", "drapery business": "Merchant",
+            "importing": "Merchant", "exporting": "Merchant", "drapery business": "Merchant",
+            "finance": "Banking",
             "industrial employment": "Industry", "manufacturing": "Industry",
-            "consulting": "Industry", "mining": "Industry",
+            "consulting": "Industry", "mine employment": "Mining",
             "factory management": "Industry", "works management": "Industry",
             "engineering consultancy": "Industry",
             "instrument-making": "Instruments", "instrument making": "Instruments",
@@ -305,19 +355,30 @@ FIELDS = {
             "music post": "Musician", "organist post": "Musician",
             "court musician": "Musician", "composing": "Musician", "performing": "Musician",
             "craft trade": "Artisan",
-            "writing": "Publishing", "authorship": "Publishing", "journalism": "Publishing",
             "editing": "Publishing", "bookselling": "Publishing", "printing": "Publishing",
+            "authorship": "Writing", "journalism": "Writing",
             "calendar-making": "Calendars", "almanac-making": "Calendars",
             "computus": "Calendars",
             "astrological practice": "Astrology",
             "seafaring": "Sailing", "navigation": "Sailing", "pilotage": "Sailing",
         },
+        "parents": {
+            "Research": "Academia",
+            "Parish": "Church Life", "Monastery": "Church Life", "Canonry": "Church Life",
+        },
         "notes": (
             "*(`Museum` covers curatorial / collection-keeping posts, distinct from a "
             "university\npost, which is `Academia`.)*\n\n"
-            "*Never in this field:* a discipline name (`Chemistry`, `Astronomy`, `Mining`, "
-            "`Pharmacy`)\n— map to the livelihood it funded; or a patronage label (`Court`, "
-            "`Government Official`) —\nuse `Patronage` or `Government` per the mapping above."
+            "*`Court` here is a livelihood* drawn from a ruler's household. It is not the "
+            "patronage\ntype of the same name. Never put `Government Official` in this field; "
+            "a state salary is\n`Government`.\n\n"
+            "*Never in this field:* a discipline name (`Chemistry`, `Astronomy`, `Pharmacy`,\n"
+            "`Science`) — map to the livelihood it funded. A printer, bookseller, or editor is\n"
+            "`Publishing`. An author or journalist who lived by writing is `Writing`. Banking\n"
+            "is `Banking`, not `Merchant`. Mining is `Mining`. Consulting and factory work are\n"
+            "`Industry`. A parish living is `Church Life; Parish`; a monastery is "
+            "`Church Life;\nMonastery`; a prebend or canonry is `Church Life; Canonry`. A "
+            "research post is\n`Academia; Research`; a chair or lectureship is `Academia`."
         ),
     },
 
@@ -333,9 +394,9 @@ FIELDS = {
         "groups": {
             "Rulers & nobility": ["Court", "Aristocrat", "Gentry"],
             "Church": ["Ecclesiastical Official"],
-            "State & city": ["Government Official", "City Magistrate"],
+            "State & city": ["Government Official", "Diplomat", "City Magistrate"],
             "Scholarly & professional": ["Academic", "Scientist", "Physician"],
-            "Commercial": ["Merchant"],
+            "Commercial": ["Merchant", "Banker"],
             "Institutional": ["Scientific Society", "Foundation"],
             "Sentinels": ["None", "Unknown"],
         },
@@ -354,16 +415,22 @@ FIELDS = {
             "prelate": "Ecclesiastical Official", "dean": "Ecclesiastical Official",
             "canon": "Ecclesiastical Official",
             "secretary of state": "Government Official", "councillor": "Government Official",
+            "government": "Government Official", "court official": "Court",
+            "ambassador": "Diplomat",
             "governor": "Government Official", "minister of state": "Government Official",
             "ministry": "Government Official", "bureau": "Government Official",
             "mayor": "City Magistrate", "alderman": "City Magistrate",
             "burgomaster": "City Magistrate", "town council": "City Magistrate",
             "professor": "Academic", "university": "Academic", "college": "Academic",
             "faculty": "Academic", "mentor": "Academic",
-            "banker": "Merchant", "industrialist": "Merchant", "businessman": "Merchant",
-            "financier": "Merchant",
+            "financier": "Banker",
+            "industrialist": "Merchant", "businessman": "Merchant",
             "learned society": "Scientific Society", "royal society": "Scientific Society",
             "endowment": "Foundation", "trust": "Foundation", "research fund": "Foundation",
+        },
+        "parents": {
+            "Diplomat": "Government Official",
+            "Banker": "Merchant",
         },
         "notes": (
             "*(`Scientific Society` and `Foundation` cover institutional patrons — a learned "
@@ -373,7 +440,8 @@ FIELDS = {
             "membership, which belongs in\n`Scientific_Societies_Membership`.)*\n\n"
             "*Notes:* a **pope** is `Court` when acting as a temporal ruler (Papal States) and\n"
             "`Ecclesiastical Official` when acting as head of the Church — choose by what the "
-            "entry\ndescribes. Use `None` only when the entry indicates the figure had no "
+            "entry\ndescribes. `Court` is not split into a term per title; the patron's name "
+            "stays in\n`Patronage_Notes`. Use `None` only when the entry indicates the figure had no "
             "patrons; use\n`Unknown` when patronage is simply not discussed (the default)."
         ),
     },
@@ -397,10 +465,6 @@ FIELDS = {
             "Licence",
             "Licencié ès Sciences",
              "Licencié ès Lettres",
-            "Laurea",
-             "L.S.A.",
-            "L.R.C.P.",
-             "M.R.C.S."
     ],
     "Master's": [
       "M.A.",
@@ -409,7 +473,6 @@ FIELDS = {
       "Ph.M.",
       "Diplom",
       "Diplom-Ingenieur",
-      "Laurea Magistrale"
     ],
     "Doctorate": [
       "M.D.",
@@ -431,7 +494,20 @@ FIELDS = {
       "Docteur ès Sciences",
       "Docteur en Médecine",
       "Doctorat ès Lettres",
-      "Laurea in Medicina"
+    ],
+    "Historical degrees": [
+      "Laurea",
+      "Laurea Magistrale",
+      "Laurea in Medicina",
+    ],
+    "Professional qualifications": [
+      "L.S.A.",
+      "L.R.C.P.",
+      "M.R.C.S.",
+    ],
+    "Retained from the existing catalog": [
+      "L.D.",
+      "P.D.",
     ],
     "Sentinel": [
       "None"
@@ -452,17 +528,25 @@ FIELDS = {
     "M.Ch.": "C.M.",
     "M.Phil.": "Ph.M.",
     "Dipl.-Ing.": "Diplom-Ingenieur",
-    "doctoratus": "Ph.D."
   },
         "notes": (
-            "Use the `B.S.` / `D.Sc.` letter style throughout, and map any degree the entry "
-            "names to\nthe nearest term above rather than coining a new abbreviation.\n\n"
+            "Use the `B.S.` / `D.Sc.` letter style throughout. Record the degree the entry "
+            "names.\nA `Ch.B.` is not an `M.B.`. `Dr. phil.`, `Dr. rer. nat.`, and `Dr.-Ing.` "
+            "are not a `Ph.D.`.\n`J.D.` is not an `LL.D.`. `Docteur ès Sciences` is not a "
+            "`D.Sc.`. A historical Italian\n`Laurea` is not a bachelor's or a master's; record "
+            "`Laurea`, `Laurea Magistrale`, or\n`Laurea in Medicina` as named. `L.S.A.`, "
+            "`L.R.C.P.`, and `M.R.C.S.` are professional\nqualifications, not bachelor's "
+            "degrees. Do not assign `L.D.` or `P.D.` to a new entry;\nthey remain only so "
+            "older rows stay valid.\n\n"
             "*Not degrees — never record as a degree:* secondary-school certificates (French\n"
-            "`baccalauréat`, German `Abitur`) and post-doctoral qualifications (`Habilitation`, "
-            "French\n`agrégation`). If the entry names only such a qualification, the degree is "
-            "`None`.\n\n"
+            "`baccalauréat`, German `Abitur`), post-doctoral qualifications (`Habilitation`, "
+            "French\n`agrégation`), and a bare medieval `doctoratus`. When the entry names the "
+            "faculty,\nuse that degree (`M.D.`, `J.U.D.`, `D.D.`); otherwise the degree is "
+            "`None` and the\nwording goes in `Education_Notes`.\n\n"
             "If a named degree still has no clear match, choose the closest listed term by "
-            "level\n(bachelor / master / doctorate) and field; never coin a new abbreviation."
+            "level\nand field only when the match is the same qualification. Otherwise leave "
+            "the degree\n`None`, describe it in `Education_Notes`, and do not invent an "
+            "abbreviation."
         ),
     },
 }
@@ -498,10 +582,16 @@ def field_synonym_maps():
             for f in FIELDS if FIELDS[f]["synonyms"]}
 
 
+def field_parent_maps():
+    """{field: {specific term: parent term}} — a specific term is stored with its parent."""
+    return {f: dict(FIELDS[f].get("parents") or {})
+            for f in FIELDS if FIELDS[f].get("parents")}
+
+
 def self_check():
-    """Guard against the two mistakes that would break the validator: a synonym key that
-    is itself canonical (would flag a valid value), and a synonym pointing at a target
-    that is not canonical (would suggest an invalid fix). Returns a list of problems."""
+    """Guard against the mistakes that would break the validator: a synonym key that
+    is itself canonical, a synonym pointing at a non-canonical target, or a parent
+    link whose two ends are not both canonical terms. Returns a list of problems."""
     problems = []
     for field, spec in FIELDS.items():
         canon = canonical_set(field)
@@ -512,6 +602,15 @@ def self_check():
             if target not in canon:
                 problems.append(f"{field}: synonym '{variant}' targets '{target}', "
                                 f"which is not canonical")
+        for specific, parent in (spec.get("parents") or {}).items():
+            if specific not in canon:
+                problems.append(f"{field}: specific '{specific}' is not canonical")
+            if parent not in canon:
+                problems.append(f"{field}: parent '{parent}' of '{specific}' is not canonical")
+            if specific == parent:
+                problems.append(f"{field}: '{specific}' is its own parent")
+            if parent in (spec.get("parents") or {}):
+                problems.append(f"{field}: parent '{parent}' is itself a specific term")
     return problems
 
 

@@ -54,6 +54,7 @@ def _import_paths():
 
 
 paths = _import_paths()
+import ground
 
 # Controlled vocabularies live in ONE place: scripts/vocab.py. Both the new-term detector
 # (KNOWN_VOCAB) and the validator's synonym check are derived from it, and the prompt
@@ -63,8 +64,9 @@ try:
     import vocab as dsb_vocab
     KNOWN_VOCAB = dsb_vocab.known_vocab()
     FIELD_SYNONYM_MAPS = dsb_vocab.field_synonym_maps()
+    FIELD_PARENT_MAPS = dsb_vocab.field_parent_maps()
 except ImportError:      # pipeline still runs; these two checks degrade gracefully
-    KNOWN_VOCAB, FIELD_SYNONYM_MAPS = {}, {}
+    KNOWN_VOCAB, FIELD_SYNONYM_MAPS, FIELD_PARENT_MAPS = {}, {}, {}
     print("WARNING: scripts/vocab.py not found -- new-term detection and the synonym "
           "check are disabled.")
 
@@ -167,12 +169,15 @@ def load_system_prompt():
         prompt += (
             "\n\n## Evidence (REQUIRED — the response is invalid without it)\n"
             "In ADDITION to every schema field, your JSON MUST include a top-level key "
-            "\"_evidence\" whose value is an object. For each field you filled with a "
-            "substantive value (not Unknown/None), map the field name to a SHORT phrase "
-            "(<15 words) from the entry that justifies it; use \"inferred\" if you inferred "
-            "the value, or \"absent\" if the entry does not state it. Do not omit "
-            "\"_evidence\". Example: \"_evidence\": {\"Born_Year\": \"born at Basel in 1707\", "
-            "\"Father_Occupation\": \"son of a pastor\"}."
+            "\"_evidence\" whose value is an object. For each field whose value is not a "
+            "sentinel, map the field name to a contiguous quotation of fewer than 15 words "
+            "copied from CONTENT or SOURCES — the words that state the fact, not a gloss. "
+            "Use \"inferred\" only for a derivation the prompt explicitly allows (gender from "
+            "a pronoun in the entry, the country-name convention, or a city that is part of "
+            "the institution's name). Use \"absent\" for Unknown, None, and Father_Is_Wealthy "
+            "of -1. If you cannot quote the support, change the value to its sentinel and "
+            "mark \"absent\". Do not omit \"_evidence\". Example: \"_evidence\": "
+            "{\"Born_Year\": \"born at Basel in 1707\", \"Father_Occupation\": \"son of a pastor\"}."
         )
     return prompt
 
@@ -191,6 +196,15 @@ def read_entries():
         content = r[COL_CONTENT].replace("\\n", "\n").strip()
         sources = r[COL_SOURCES].replace("\\n", "\n").strip() if len(r) > COL_SOURCES else ""
         if not name and not content:
+            continue
+        # An empty body or a title page has nothing to extract. Sending it to the
+        # model produces a biography from outside knowledge (as with Brahe and Bohr
+        # in volume 2) or a blank person row (the half-title page).
+        if "half title" in name.lower():
+            print(f"Skipping {name!r}: half-title page, not a biography.")
+            continue
+        if not content:
+            print(f"Skipping {name!r}: entry text is empty. Nothing is extracted.")
             continue
         user_msg = f"NAME: {name}\n\nCONTENT:\n{content}\n\nSOURCES:\n{sources}"
         yield (f"entry-{i:04d}", name, user_msg)
@@ -345,6 +359,17 @@ def collect_new_terms(rows):
     return {f: t for f, t in found.items() if t}
 
 
+def _write_with_grounding(rows, evidence_rows, extra_columns=None):
+    """Write the validation report, including facts the grounder rejected, then the CSV."""
+    grounding_by_index = {}
+    for i, row in enumerate(rows):
+        gissues = row.pop("_grounding", None)
+        if gissues:
+            grounding_by_index[i] = gissues
+    write_validation_report(rows, extra_by_index=grounding_by_index)
+    write_outputs(rows, evidence_rows, collect_new_terms(rows), extra_columns)
+
+
 def write_outputs(rows, evidence_rows, new_terms, extra_columns=None):
     fieldnames = COLUMNS + list(extra_columns or [])
     with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as f:
@@ -411,6 +436,9 @@ def run_test(client, system_prompt):
             errors.append((name, (perr or "parse failed") + note))
             print(f"[{n}/{total}] PARSE FAIL {name}  ({usage_str}){note}")
             continue
+        gissues = _ground_row(row, ev, user_msg)
+        if gissues:
+            row["_grounding"] = gissues
         rows.append(row)
         if ev is not None:
             evidence_rows.append((name, ev))
@@ -418,7 +446,7 @@ def run_test(client, system_prompt):
         print(f"[{n}/{total}] ok  {row['Last_Name']}, {row['First_Name']}  ({usage_str}){flag}")
     print_cost_summary(billed, tot_in, tot_cr, tot_cw, tot_out, tot_cost,
                        batched=False, project_to=len(all_entries))
-    write_outputs(rows, evidence_rows, collect_new_terms(rows))
+    _write_with_grounding(rows, evidence_rows)
     if errors:
         print(f"\n{len(errors)} entries failed:")
         for nm, e in errors:
@@ -449,6 +477,7 @@ def run_batch(client, system_prompt):
             "messages": build_messages(user_msg),
         }} for cid, _, user_msg in entries]
     id_to_name = {cid: name for cid, name, _ in entries}
+    id_to_msg = {cid: msg for cid, _, msg in entries}
 
     batch = client.messages.batches.create(requests=requests)
     print(f"Submitted batch {batch.id}. Polling every {POLL_SECONDS}s...")
@@ -487,6 +516,9 @@ def run_batch(client, system_prompt):
             errors.append((name, (perr or "parse failed") + note))
             print(f"[{n}/{total}] PARSE FAIL {name}  ({usage_str}){note}")
             continue
+        gissues = _ground_row(row, ev, id_to_msg.get(entry.custom_id, ""))
+        if gissues:
+            row["_grounding"] = gissues
         by_id[entry.custom_id] = row
         if ev is not None:
             evidence_rows.append((name, ev))
@@ -494,7 +526,7 @@ def run_batch(client, system_prompt):
 
     print_cost_summary(billed, tot_in, tot_cr, tot_cw, tot_out, tot_cost, batched=True)
     rows = [by_id[cid] for cid, _, _ in entries if cid in by_id]
-    write_outputs(rows, evidence_rows, collect_new_terms(rows))
+    _write_with_grounding(rows, evidence_rows)
     if errors:
         print(f"\n{len(errors)} entries failed (resubmit these in a follow-up batch):")
         for nm, e in errors:
@@ -512,18 +544,27 @@ def _field_multiset(field, value):
 
 
 def consensus_row(run_rows):
-    """Build one row from several runs: per field, take the majority value (ties broken
-    by the first run). Also return the list of fields where the runs disagreed."""
+    """Build one row from several runs.
+
+    A value is kept only when one candidate has a strict majority. A tie is the
+    field's sentinel, never the first run. The disagreement list still names
+    every run's value so a reviewer can choose one."""
     row, diffs = {}, []
     for col in COLUMNS:
         vals = [r[col] for r in run_rows]
         counts = Counter(vals)
-        top_count = counts.most_common(1)[0][1]
-        tied = [v for v, c in counts.items() if c == top_count]
-        row[col] = run_rows[0][col] if run_rows[0][col] in tied else counts.most_common(1)[0][0]
+        value, top_count = counts.most_common(1)[0]
+        winners = [v for v, c in counts.items() if c == top_count]
+        row[col] = ground.sentinel_for(col) if len(winners) > 1 else value
         if col in COMPARED_FIELDS and len({_field_multiset(col, v) for v in vals}) > 1:
             diffs.append((col, vals))
     return row, diffs
+
+
+def _ground_row(row, evidence, user_msg):
+    """Blank facts the entry does not support. Returns the issue strings."""
+    content, sources, heading = ground.split_entry(user_msg or "")
+    return ground.apply(row, evidence or {}, content, sources, heading)
 
 
 MONTHS = {"January","February","March","April","May","June",
@@ -609,6 +650,14 @@ def validate_row(row, disagreement_fields=()):
             if target and target != token:
                 issues.append(f"{field}: '{token}' should be mapped to '{target}'")
 
+    # --- specific terms must keep the parent a reader filters on ---
+    for field, parents in FIELD_PARENT_MAPS.items():
+        tokens = [t.strip() for t in (row.get(field) or "").split(";") if t.strip()]
+        for token in tokens:
+            parent = parents.get(token)
+            if parent and parent not in tokens:
+                issues.append(f"{field}: '{token}' is missing its parent '{parent}'")
+
     # --- duplicate tokens within a multi-value cell ---
     for field in DUPLICATE_CHECK_FIELDS:
         tokens = [t.strip() for t in (row.get(field) or "").split(";") if t.strip()]
@@ -643,11 +692,12 @@ def validate_row(row, disagreement_fields=()):
     return issues
 
 
-def write_validation_report(rows, diffs_by_index=None):
+def write_validation_report(rows, diffs_by_index=None, extra_by_index=None):
     """Row-by-row report: 'GOOD' when a row passes every check, otherwise the issues.
     diffs_by_index maps a row's 0-based position -> [field, ...] that disagreed across runs
     (keyed positionally because the DSB heading and the parsed name need not match)."""
     diffs_by_index = diffs_by_index or {}
+    extra_by_index = extra_by_index or {}
     total_issues = clean = 0
     issue_counts = Counter()
     with open(VALIDATION_REPORT, "w", encoding="utf-8") as f:
@@ -661,7 +711,8 @@ def write_validation_report(rows, diffs_by_index=None):
         for i, row in enumerate(rows, 1):
             name = f"{row.get('Last_Name','?')}, {row.get('First_Name','?')}"
             key = name.upper()
-            issues = validate_row(row, diffs_by_index.get(i - 1, ()))
+            issues = list(extra_by_index.get(i - 1, []))
+            issues.extend(validate_row(row, diffs_by_index.get(i - 1, ())))
             if issues:
                 # lines starting with spaces are run-value continuations of the issue
                 # above them, not issues in their own right
@@ -711,6 +762,20 @@ def _agreement_finalize(entries, rows_by_cid, evidence_rows, cost, runs, batched
             print(f"  {name}: no successful runs")
             continue
         row, diffs = consensus_row(run_rows)
+        kept_ev = {}
+        run_evs = evidence_by_cid.get(cid, [])
+        for col in COLUMNS:
+            if ground.is_sentinel(col, row.get(col)):
+                continue
+            for i, run in enumerate(run_rows):
+                if str(run.get(col)) == str(row.get(col)) and i < len(run_evs) and run_evs[i]:
+                    kept_ev[col] = run_evs[i].get(col, "")
+                    break
+        user_msg = next((msg for eid, _, msg in entries if eid == cid), "")
+        gissues = _ground_row(row, kept_ev, user_msg)
+        if gissues:
+            # filled in below once the list exists; stash on the row temporarily
+            row["_grounding"] = gissues
         row["Disagreement_Count"] = str(len(diffs))
         row["Inconsistent_Fields"] = "; ".join(f for f, _ in diffs) if diffs else "None"
         if diffs:
@@ -733,7 +798,8 @@ def _agreement_finalize(entries, rows_by_cid, evidence_rows, cost, runs, batched
         f.write(f"Entries checked: {len(entries)}\n")
         f.write("Every disagreement across the compared fields is listed. Comparison ignores\n")
         f.write("ordering and duplicates, so a mere reordering is not counted. Free-text\n")
-        f.write("'_Notes' and source fields are excluded (they vary in wording by design).\n\n")
+        f.write("'_Notes' and source fields are excluded (they vary in wording by design).\n")
+        f.write("A tie is written as the field's sentinel. It is not resolved by keeping run 1.\n\n")
         f.write("FIELD VOLATILITY (entries where the runs disagreed on this field):\n")
         if field_volatility:
             for field, c in field_volatility.most_common():
@@ -748,7 +814,12 @@ def _agreement_finalize(entries, rows_by_cid, evidence_rows, cost, runs, batched
                 for i, v in enumerate(vals, 1):
                     f.write(f"     run{i}: {v}\n")
     print(f"\nAgreement report written to {AGREEMENT_REPORT}")
-    write_validation_report(rows, diffs_by_index)
+    grounding_by_index = {}
+    for i, row in enumerate(rows):
+        gissues = row.pop("_grounding", None)
+        if gissues:
+            grounding_by_index[i] = gissues
+    write_validation_report(rows, diffs_by_index, grounding_by_index)
     print_cost_summary(billed, tot_in, tot_cr, tot_cw, tot_out, tot_cost, batched=batched)
     write_outputs(rows, evidence_rows, collect_new_terms(rows),
                   extra_columns=AGREEMENT_FLAG_COLUMNS)
@@ -934,6 +1005,9 @@ def run_verify(client, system_prompt):
             errors.append((name, (perr or "parse failed") + note))
             print(f"[{n}/{total}] PARSE FAIL {name}{note}")
             continue
+        gissues = _ground_row(row, ev, user_msg)
+        if gissues:
+            row["_grounding"] = gissues
         rows.append(row)
         if ev is not None:
             evidence_rows.append((name, ev))
@@ -991,7 +1065,7 @@ def run_verify(client, system_prompt):
     print(f"\nVerification report written to {AGREEMENT_REPORT}")
     print_cost_summary(entries_done, tot_in, tot_cr, tot_cw, tot_out, tot_cost,
                        batched=False, project_to=len(all_entries))
-    write_outputs(rows, evidence_rows, collect_new_terms(rows))
+    _write_with_grounding(rows, evidence_rows)
     if errors:
         print(f"\n{len(errors)} entries failed:")
         for nm, e in errors:

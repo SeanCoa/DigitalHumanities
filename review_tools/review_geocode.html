@@ -258,7 +258,7 @@ function haversineKm(lat1,lon1,lat2,lon2){
   const a=Math.sin(dLat/2)**2+Math.cos(toRad(lat1))*Math.cos(toRad(lat2))*Math.sin(dLon/2)**2;
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
-const CLUSTER_KM=100;
+const CLUSTER_KM=40;
 const SOURCE_COLORS=["#0f766e","#9a5406","#1d4ed8","#be123c","#4d7c0f","#a16207","#0891b2","#7c3aed","#b45309","#065f46"];
 
 /* ---------- state ---------- */
@@ -962,7 +962,10 @@ function finalFor(mode,rowIdx){
   return items.map(it=>{
     const chosen=S.edits[it.key];
     if(chosen)return {lat:chosen.lat,lon:chosen.lon,source:chosen.source};
-    if(it.agg)return {lat:it.agg.lat,lon:it.agg.lon,source:"aggregate"};
+    // Only a cluster every returned source agrees on is exported untouched.
+    // A single source, a partial cluster, or no consensus stays Unknown
+    // until someone chooses it.
+    if(it.status==="full"&&it.agg)return {lat:it.agg.lat,lon:it.agg.lon,source:"full agreement"};
     return null;
   });
 }
@@ -977,11 +980,26 @@ document.getElementById("download").onclick=()=>{
     const row=S.header.map((h,ci)=>S.rows[r][ci]||"");
     const bornVals=finalFor("Born",r), diedVals=finalFor("Died",r), eduVals=finalFor("Education",r);
     const cellsByName={};
-    if(bornVals.length&&bornVals[0]){cellsByName.Born_Final_Latitude=bornVals[0].lat;cellsByName.Born_Final_Longitude=bornVals[0].lon;cellsByName.Born_Final_Source=bornVals[0].source;}
-    if(diedVals.length&&diedVals[0]){cellsByName.Died_Final_Latitude=diedVals[0].lat;cellsByName.Died_Final_Longitude=diedVals[0].lon;cellsByName.Died_Final_Source=diedVals[0].source;}
+    if(bornVals.length){
+      const v=bornVals[0];
+      cellsByName.Born_Latitude=v?v.lat:"Unknown";
+      cellsByName.Born_Longitude=v?v.lon:"Unknown";
+      cellsByName.Born_Final_Latitude=cellsByName.Born_Latitude;
+      cellsByName.Born_Final_Longitude=cellsByName.Born_Longitude;
+      cellsByName.Born_Final_Source=v?v.source:"withheld";
+    }
+    if(diedVals.length){
+      const v=diedVals[0];
+      cellsByName.Died_Latitude=v?v.lat:"Unknown";
+      cellsByName.Died_Longitude=v?v.lon:"Unknown";
+      cellsByName.Died_Final_Latitude=cellsByName.Died_Latitude;
+      cellsByName.Died_Final_Longitude=cellsByName.Died_Longitude;
+      cellsByName.Died_Final_Source=v?v.source:"withheld";
+    }
     if(eduVals.length){
-      cellsByName.Education_Final_Coordinates=eduVals.map(v=>v?(v.lat+", "+v.lon):"Unknown").join("; ");
-      cellsByName.Education_Final_Source=eduVals.map(v=>v?v.source:"none").join("; ");
+      cellsByName.Education_Coordinates=eduVals.map(v=>v?(v.lat+", "+v.lon):"Unknown").join("; ");
+      cellsByName.Education_Final_Coordinates=cellsByName.Education_Coordinates;
+      cellsByName.Education_Final_Source=eduVals.map(v=>v?v.source:"withheld").join("; ");
     }
     const full=header.map(h=>{
       if(h in cellsByName)return cellsByName[h];
